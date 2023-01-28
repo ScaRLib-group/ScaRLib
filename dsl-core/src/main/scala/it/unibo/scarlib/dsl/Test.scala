@@ -1,8 +1,23 @@
 package it.unibo.scarlib.dsl
 
-implicit val myFactory: () => RewardFunction = () => new SimpleRF()
+object Test extends App{
+  var env = environment{
+    rewardFunction{
+      new SimpleRF()
+    }
+    actions{
+      action(new Action {
+        val name: String = "Prova1"
+        override def toString: String = name
+      })
+      action(new Action {
+        val name: String = "Prova2"
+        override def toString: String = name
+      })
 
-var env = environment{
-  rewardFunction{}
+    }
+  }
+
+  print(env)
 }
 
