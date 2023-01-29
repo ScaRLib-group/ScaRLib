@@ -9,7 +9,7 @@ class Environment:
   def setActions(set: MSet[Action]):Unit = actionSpace = collection.immutable.Set[Action](set.toSeq:_*)
 
   override def toString: String = s"rf: ${rewardFunction}, as: ${actionSpace}"
-
+/*
 def environment(init: Environment ?=> Unit) =
     given env: Environment = Environment()
     init
@@ -25,4 +25,4 @@ def actions(init: MSet[Action] ?=> Unit)(using env: Environment) =
   env.setActions(set)
 
 def action(a: Action)(using set: MSet[Action]) =
-  set.add(a)
+  set.add(a)*/
