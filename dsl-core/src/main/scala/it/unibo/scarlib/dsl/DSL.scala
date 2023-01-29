@@ -31,3 +31,6 @@ object DSL:
     map.addOne((variableName, variableValue))
 
   def v(variableName: String, variableValue: Double)(using map: MMap[String, Double]) = variable(variableName, variableValue)
+  
+  def agent(agent: Class[Agent])(using env: Environment) =
+    env.setAgent(agent)

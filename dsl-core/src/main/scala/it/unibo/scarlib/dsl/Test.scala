@@ -21,6 +21,9 @@ object Test extends App{
       variable("Var2", 2.0)
       v("Var3", 3.0)
     }
+
+    //agent(classOf[SimpleAgent])
+
   }
 
   print(env)
