@@ -1,7 +1,11 @@
 package it.unibo.scarlib.dsl
 
-trait RewardFunction:
+sealed trait RewardFunction:
   def compute: Double
 
-class SimpleRF extends RewardFunction:
+trait CollectiveRewardFunction extends RewardFunction
+
+trait LocalRewardFunction extends RewardFunction
+
+class SimpleRF extends CollectiveRewardFunction:
   override def compute: Double = ???

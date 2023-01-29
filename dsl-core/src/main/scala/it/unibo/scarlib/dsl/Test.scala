@@ -1,4 +1,5 @@
 package it.unibo.scarlib.dsl
+import DSL.*
 
 object Test extends App{
   var env = environment{
