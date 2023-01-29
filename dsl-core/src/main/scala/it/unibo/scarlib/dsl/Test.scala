@@ -15,7 +15,11 @@ object Test extends App{
         val name: String = "Prova2"
         override def toString: String = name
       })
-
+    }
+    variables {
+      variable("Var1", 2.0)
+      variable("Var2", 2.0)
+      v("Var3", 3.0)
     }
   }
 
