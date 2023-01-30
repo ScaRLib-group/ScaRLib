@@ -1,0 +1,35 @@
+name: CI
+
+'on':
+  push:
+    
+jobs:
+  simple-test:
+    name: Simple test with scalatest
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          #- windows-latest
+          #- macos-latest
+        java-version:
+          - 17
+        jdk-distribution:
+          - adopt-hotspot
+    runs-on: ${{matrix.os}}
+    steps:
+      - name: JDK ${{ matrix.jdk-distribution }} v${{ matrix.java-version }}
+        uses: actions/setup-java@v3
+        with:
+          distribution: ${{ matrix.jdk-distribution }}
+          java-version: ${{ matrix.java-version }}
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          submodule: recursive
+          fetch-dept: 0
+      - name: Run test
+        run: ./gradlew test
+      
+      
+  
