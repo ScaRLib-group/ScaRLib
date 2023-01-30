@@ -1,5 +1,6 @@
 package it.unibo.scarlib.dsl
 import DSL.*
+import AlchemistEnvironmentConverter.toAlchemistEnv
 
 object Test extends App{
   var env = environment{
@@ -26,6 +27,6 @@ object Test extends App{
 
   }
 
-  print(env)
+  print(env.toAlchemistEnv)
 }
 
