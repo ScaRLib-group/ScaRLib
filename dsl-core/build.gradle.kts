@@ -14,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.scala-lang:scala3-library_3:3.0.1")
+    implementation("org.scala-lang:scala3-library_3:3.0.2")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.scalatest:scalatest_2.13:3.2.13")
     testImplementation("org.scalatestplus:junit-4-13_3:3.2.15.0")
