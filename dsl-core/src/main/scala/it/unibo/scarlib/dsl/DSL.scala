@@ -32,5 +32,8 @@ object DSL:
 
   def v(variableName: String, variableValue: Double)(using map: MMap[String, Double]) = variable(variableName, variableValue)
   
-  def agent(agent: Class[Agent])(using env: Environment) =
+  //def agent(agent: Class[Agent])(using env: Environment) =
+  //  env.setAgent(agent)
+
+  def agent(agent: String)(using env: Environment) =
     env.setAgent(agent)
