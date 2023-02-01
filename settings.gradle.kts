@@ -3,7 +3,6 @@ plugins {
 }
 
 rootProject.name = "ScaRLib"
-include("dsl-core")
 
 gitHooks {
     commitMsg {
@@ -11,3 +10,6 @@ gitHooks {
     }
     createHooks(true)
 }
+
+include("scarlib-core")
+include("dsl-core")
