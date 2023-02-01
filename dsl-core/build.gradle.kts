@@ -1,6 +1,7 @@
 plugins {
     java
     scala
+    application
 }
 
 group = "it.unibo.scarlib"
@@ -21,6 +22,6 @@ dependencies {
     testRuntimeOnly("org.scala-lang.modules:scala-xml_3:2.1.0")
 }
 
-tasks.getByName<Test>("test") {
+/*tasks.getByName<Test>("test") {
     useJUnitPlatform()
-}
+}*/
