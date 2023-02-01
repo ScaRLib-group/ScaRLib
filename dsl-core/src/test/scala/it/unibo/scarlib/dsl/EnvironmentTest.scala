@@ -7,17 +7,8 @@ import org.scalatest.matchers.should.Matchers
 
 
 @RunWith(classOf[JUnitRunner])
-class EnvironmentTest extends AnyFlatSpec with Matchers{
+class EnvironmentTest extends AnyFlatSpec with Matchers {
   "Simple test" should "success" in {
       1 shouldBe 1
-  }
-}
-
-
-import org.scalatest.funsuite.AnyFunSuite
-@RunWith(classOf[JUnitRunner])
-class AppSuite extends AnyFunSuite {
-  test("App has a greeting") {
-    assert(1 == 1)
   }
 }
