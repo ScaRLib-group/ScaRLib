@@ -34,5 +34,5 @@ dependencies {
     implementation("dev.scalapy:scalapy-core_2.13:0.5.3")
     testImplementation("org.scalatest:scalatest_3:3.2.9")
     testImplementation("org.scalatestplus:junit-4-13_3:3.2.15.0")
-    testImplementation("junit:junit:4.13")
+    testImplementation("junit:junit:4.13.2")
 }
