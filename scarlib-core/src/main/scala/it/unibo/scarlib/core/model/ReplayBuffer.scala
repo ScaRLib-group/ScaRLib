@@ -8,6 +8,7 @@ trait ReplayBuffer[State, Action]:
   def insert(actualState: State, action: Action, reward: Double, nextState: State): Unit
   def reset: Unit
   def subsample(batchSize: Int): Seq[Experience[State, Action]]
+  def getAll: Seq[Experience[State, Action]]
 
 object ReplayBuffer:
   def apply[S, A](size: Int): ReplayBuffer[S, A] =
@@ -22,6 +23,7 @@ object ReplayBuffer:
       queue = (Experience(actualState, action, reward, nextState) +: queue).take(size)
     override def subsample(batchSize: Int): Seq[Experience[State, Action]] =
       Random(42).shuffle(queue).take(batchSize)
+    override def getAll: Seq[Experience[State, Action]] = queue
 
 object BufferTest extends App:
   val buffer = ReplayBuffer[Double, Int](10)
