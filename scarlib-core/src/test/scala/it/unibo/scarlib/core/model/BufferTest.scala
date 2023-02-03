@@ -23,3 +23,4 @@ class BufferTest extends AnyFlatSpec with Matchers:
     buffer.insert(1.5, 1, 10, 1.3)
     buffer.getAll.size shouldBe 5
   }
+
