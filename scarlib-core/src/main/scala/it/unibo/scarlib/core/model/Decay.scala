@@ -10,3 +10,8 @@ class ExponentialDecay(initialValue: Double, rate: Double) extends Decay[Double]
 
   override def update: Unit = elapsedTime = elapsedTime + 1
   override def value: Double = initialValue * Math.pow(1-rate, elapsedTime)
+
+
+class ConstantDecay(initialValue: Double) extends Decay[Double]:
+  override def update: Unit = ()
+  override def value: Double = initialValue
