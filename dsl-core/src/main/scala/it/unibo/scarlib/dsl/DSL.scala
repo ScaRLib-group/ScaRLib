@@ -1,7 +1,9 @@
 package it.unibo.scarlib.dsl
 
-import scala.collection.mutable.{Set => MSet}
-import scala.collection.mutable.{Map => MMap}
+import it.unibo.scarlib.core.model.{Action, Environment, RewardFunction}
+
+import scala.collection.mutable.Set as MSet
+import scala.collection.mutable.Map as MMap
 
 
 object DSL:

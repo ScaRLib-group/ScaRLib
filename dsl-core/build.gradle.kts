@@ -32,4 +32,5 @@ dependencies {
     testImplementation("org.scalatest:scalatest_3:3.2.15")
     testImplementation("org.scalatestplus:junit-4-13_3:3.2.15.0")
     testImplementation("junit:junit:4.13.2")
+    implementation(project(":scarlib-core"))
 }

@@ -1,5 +1,7 @@
 package it.unibo.scarlib.dsl
 
+import it.unibo.scarlib.core.model.Environment
+
 object AlchemistEnvironmentConverter:
   extension (env: Environment)
     def toAlchemistEnv: String =

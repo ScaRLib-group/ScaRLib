@@ -1,7 +1,6 @@
-package it.unibo.scarlib.dsl
+package it.unibo.scarlib.core.model
 
-import scala.collection.mutable.{Set => MSet}
-import scala.collection.mutable.{Map => MMap}
+import scala.collection.mutable.{Map as MMap, Set as MSet}
 
 class Environment:
   private var _rewardFunction: RewardFunction = _
