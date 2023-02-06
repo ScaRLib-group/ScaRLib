@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 package it.unibo.alchemist.scafi
 
 import it.unibo.alchemist.model.implementations.nodes.SimpleNodeManager
@@ -56,8 +55,3 @@ abstract class AbstractReaction[T, P <: Position[P]](
   def managers = agents.map(new SimpleNodeManager[T](_))
 
 }
-=======
-package it.unibo.alchemist-scafi
-
-class AbstractReaction
->>>>>>> Stashed changes
