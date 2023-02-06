@@ -1,8 +1,14 @@
 plugins {
     java
+    scala
 }
 
 group = "it.unibo.scarlib"
+
+scala {
+    zincVersion.set("1.6.1")
+}
+
 
 repositories {
     mavenCentral()
