@@ -1,6 +1,8 @@
 package it.unibo.scarlib.dsl
 import DSL.*
 import AlchemistEnvironmentConverter.toAlchemistEnv
+import it.unibo.scarlib.core.model.SimpleRF
+import it.unibo.scarlib.core.model.Action
 
 object Test extends App {
   var env = environment {
@@ -23,7 +25,7 @@ object Test extends App {
       v("Var3", 3.0)
     }
 
-    agent("it.unibo.scarlib.dsl.SimpleAgent")
+    agent("it.unibo.scarlib.core.model.SimpleAgent")
     //agent(classOf[SimpleAgent])
   }
 
