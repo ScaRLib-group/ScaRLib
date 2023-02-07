@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import me.shadaj.scalapy.py.{PyQuote, SeqConverters}
 
-class DeepQLearner[State, Action](
+class DeepQLearner(
                                    memory: ReplayBuffer[State, Action],
                                    actionSpace: Seq[Action],
                                    var epsilon: Decay[Double],
