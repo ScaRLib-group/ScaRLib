@@ -11,18 +11,19 @@ import java.util.Date
 import me.shadaj.scalapy.py.{PyQuote, SeqConverters}
 
 class DeepQLearner(
-                                   memory: ReplayBuffer[State, Action],
-                                   actionSpace: Seq[Action],
-                                   var epsilon: Decay[Double],
-                                   gamma: Double,
-                                   learningRate: Double,
-                                   batchSize: Int = 32,
-                                   val updateEach: Int = 100,
-                                   val hiddenSize: Int = 32,
-                                   val _agentMode: AgentMode = AgentMode.Training,
-                                   val inputSize: Int
-                                 )(implicit random: Random)
-  extends Agent {
+                   memory: ReplayBuffer[State, Action],
+                   actionSpace: Seq[Action],
+                   var epsilon: Decay[Double],
+                   gamma: Double,
+                   learningRate: Double,
+                   batchSize: Int = 32,
+                   val updateEach: Int = 100,
+                   val hiddenSize: Int = 32,
+                   val _agentMode: AgentMode = AgentMode.Training,
+                   val inputSize: Int
+                 )(implicit random: Random)
+  //extends Agent
+  {
     private var updates = 0
 
     private val targetNetwork = SimpleSequentialDQN(inputSize, hiddenSize, actionSpace.size)
@@ -38,7 +39,8 @@ class DeepQLearner(
             random.shuffle(actionSpace).head
         } else behaviouralPolicy(state)
 
-    override def mode: AgentMode = _agentMode
+    //override def mode: AgentMode = _agentMode
+    def mode: AgentMode = _agentMode
 
     def record(state: State, action: Action, reward: Double, nextState: State): Unit =
         memory.insert(state, action, reward, nextState)
