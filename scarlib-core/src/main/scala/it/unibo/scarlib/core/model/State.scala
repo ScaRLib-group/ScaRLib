@@ -4,17 +4,16 @@ import it.unibo.scarlib.core.neuralnetwork.NeuralNetworkEncoding
 
 
 trait State:
-    implicit val encoding: NeuralNetworkEncoding[State]
+    def elements: Int
+    def toSeq(): Seq[Double]
 
 class TestState(distances: List[(Double, Double)], directionToLeader: (Double, Double)) extends State:
-    override implicit val encoding: NeuralNetworkEncoding[State] = new NeuralNetworkEncoding[TestState] {
-        override def elements: Int = (5 + 1) * 2
+    override def elements: Int = (5 + 1) * 2
 
-        override def toSeq(elem: TestState): Seq[Double] =
-            elem.getDistances.flatMap { case (l, r) =>
-                List(l, r)
-            } ++ List(elem.getDirectionToLeader._1, elem.getDirectionToLeader._2)
-    }.asInstanceOf[NeuralNetworkEncoding[State]]
+    override def toSeq(): Seq[Double] =
+        getDistances.flatMap { case (l, r) =>
+            List(l, r)
+        } ++ List(getDirectionToLeader._1, getDirectionToLeader._2)
 
     def getDistances: List[(Double, Double)] = distances
 
