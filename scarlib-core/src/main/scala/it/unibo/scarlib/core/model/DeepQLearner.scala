@@ -35,9 +35,10 @@ class DeepQLearner(
     val optimal: State => Action = targetPolicy
 
     val behavioural: State => Action = state =>
-        if (random.nextDouble() < epsilon.value) {
+        if random.nextDouble() < epsilon.value then
             random.shuffle(actionSpace).head
-        } else behaviouralPolicy(state)
+        else
+          behaviouralPolicy(state)
 
     //override def mode: AgentMode = _agentMode
     def mode: AgentMode = _agentMode
@@ -47,8 +48,8 @@ class DeepQLearner(
 
     def improve(): Unit = if (this.mode == AgentMode.Training) {
         val memorySample = memory.subsample(batchSize)
-        if (memory.subsample(batchSize).size == batchSize) {
-            val states = memorySample.map(_.actualState).toSeq.map(state => state.toSeq().toPythonCopy).toPythonCopy //TODO ActualState o NextState?
+        if (memorySample.size == batchSize) {
+            val states = memorySample.map(_.actualState).toSeq.map(state => state.toSeq().toPythonCopy).toPythonCopy
             val action = memorySample.map(_.action).toSeq.map(action => actionSpace.indexOf(action)).toPythonCopy
             val rewards = TorchSupport.deepLearningLib.tensor(memorySample.map(_.reward).toSeq.toPythonCopy)
             val nextState = memorySample.map(_.nextState).toSeq.map(state => state.toSeq().toPythonCopy).toPythonCopy

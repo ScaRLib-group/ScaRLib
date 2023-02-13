@@ -18,21 +18,22 @@ class DecentralizedAgent(
 
   private var dataset: ReplayBuffer[State, Action] = ReplayBuffer[State, Action](datasetSize)
   private var epsilon: Decay[Double] = ExponentialDecay(0.9, 0.1) // TODO - aggiungi metodo bounded a decay
-  private var learner: DeepQLearner = DeepQLearner(dataset, actionSpace, epsilon, 0.9, 0.0005, inputSize = 3)(Random(42)) //TODO migliora inputsize
+  private var learner: DeepQLearner = DeepQLearner(dataset, actionSpace, epsilon, 0.9, 0.0005, inputSize = 4)(Random(42)) //TODO migliora inputsize
 
-  def loop: Unit =
-      while checkReward do
-        println(s"Agent: ${agentId} --- before step")
-        val state = environment.observe(agentId)
-        println(s"Agent: ${agentId} --- after observe")
-        val policy = learner.behavioural
-        val action = policy(state)
-        println(s"Agent: ${agentId} --- after policy")
-        val result: (Double, State) = environment.step(action, agentId)
-        println(s"Agent: ${agentId} --- reward: ${result._1}")
-        dataset.insert(state, action, result._1, result._2)
-        learner.improve()
-        epsilon.update
+  def step: Unit =
+    println(s"Agent: ${agentId} --- init")
+    val state = environment.observe(agentId)
+    val policy = learner.behavioural
+    val action = policy(state)
+    println(s"Agent: ${agentId} --- choosen action: $action")
+    val result: (Double, State) = environment.step(action, agentId)
+    println(s"Agent: ${agentId} --- reward: ${result._1}")
+    dataset.insert(state, action, result._1, result._2)
+    println(s"Agent: ${agentId} --- calling improve")
+    learner.improve()
+    println(s"Agent: ${agentId} --- called improve")
+    epsilon.update
+    println(s"Agent: ${agentId} --- updated epsilon")
 
   private def checkReward: Boolean = !(dataset.size > previousExperience && meanReward > targetRewardLB && meanReward < targetRewardUB)
   private def meanReward: Double = average(dataset.getAll.take(previousExperience).map(_.reward))

@@ -1,6 +1,6 @@
 package it.unibo.scarlib.core
 
-import it.unibo.scarlib.core.deepRL.{DecentralizedAgent, DTDESystem}
+import it.unibo.scarlib.core.deepRL.{DTDESystem, DecentralizedAgent}
 import it.unibo.scarlib.core.model.{Action, Actuator, CollectiveRewardFunction, GeneralEnvironment, RewardFunction, State}
 
 import scala.collection.mutable.Map
@@ -24,6 +24,31 @@ object MyActuator extends Actuator[Double]:
     case Actions.West => -dt
   }
 
+class MyEnv(rewardFunction: RewardFunction, actionSpace: Seq[Action]) extends GeneralEnvironment(rewardFunction, actionSpace) {
+  private var positions: Map[Int, (Double, Double)] = Map((1, (3,5)), (2, (10,2)), (3, (1,18)))
+
+  override def step(action: Action, agentId: Int): (Double, State) =
+    val currentState = observe(agentId)
+    val agentPos = currentState.asInstanceOf[MyState].agentPosition
+    val newAgentPos: (Double, Double) = action match {
+      case Actions.North => (agentPos._1 + MyActuator.convert(action), agentPos._2)
+      case Actions.South => (agentPos._1 + MyActuator.convert(action), agentPos._2)
+      case Actions.Est => (agentPos._1, agentPos._2 + MyActuator.convert(action))
+      case Actions.West => (agentPos._1, agentPos._2 + MyActuator.convert(action))
+    }
+    positions.put(agentId, newAgentPos)
+    val otherPos = positions.filter((index, pos) => index != agentId).values.toList
+    val newState: State = MyState(otherPos, newAgentPos)
+    val reward: Double = rewardFunction.compute(currentState, newState)
+    (reward, newState)
+
+  override def observe(agentId: Int): State =
+      val otherPos = positions.filter((index, pos) => index != agentId).values.toList
+      val myPos = positions.filter((index, pos) => index == agentId).values.head
+      MyState(otherPos, myPos)
+
+}
+
 case class MyState(positions: List[(Double, Double)], agentPosition: (Double, Double)) extends State:
   override def elements: Int = 2 * 2
   override def toSeq(): Seq[Double] = positions.flatMap { case (l, r) => List(l, r) }
@@ -42,38 +67,7 @@ object TrySimulation extends App:
 
   private val actionSpace: Seq[Action] = Actions.toSeq
 
-
-  private val environment = new GeneralEnvironment(rewardFunction, actionSpace) {
-    private var positions: Map[Int, (Double, Double)] = Map((1, (3,5)), (2, (10,2)), (3, (1,18)))
-
-    override def step(action: Action, agentId: Int): (Double, State) = //TODO - Synch
-      this.synchronized(stepPreElaboration(action, agentId))
-      //stepPreElaboration(action, agentId)
-
-    private def stepPreElaboration(action: Action, agentId: Int): (Double, State) =
-      val currentState = observe(agentId)
-      val agentPos = positions.filter((index, pos) => index == agentId).values.head
-      val newAgentPos: (Double, Double) = action match {
-        case Actions.North => (agentPos._1 + MyActuator.convert(action), agentPos._2)
-        case Actions.South => (agentPos._1 + MyActuator.convert(action), agentPos._2)
-        case Actions.Est => (agentPos._1, agentPos._2 + MyActuator.convert(action))
-        case Actions.West => (agentPos._1, agentPos._2 + MyActuator.convert(action))
-      }
-      positions.put(agentId, newAgentPos)
-      val newState: State = MyState(positions.values.toList, newAgentPos)
-      val reward: Double = rewardFunction.compute(currentState, newState)
-      (reward, newState)
-
-    override def observe(agentId: Int): State =
-      println(s"Agent: ${agentId} --- inside observe")
-      val otherPos = positions.filter((index, pos) => index != agentId).values.toList
-      val myPos = positions.filter((index, pos) => index == agentId).values.head
-      println(s"Agent: ${agentId} --- inside observe + after filter")
-      MyState(positions.values.toList, myPos)
-
-    //def setPositions(p: Map[Int, (Double, Double)]): Unit = positions = p
-
-  }
+  private val environment = MyEnv(rewardFunction, actionSpace)
 
   private val agents: Seq[DecentralizedAgent] = Seq(
     DecentralizedAgent(1, environment, 10000, actionSpace, -1, 1, 100),
@@ -81,6 +75,4 @@ object TrySimulation extends App:
     DecentralizedAgent(3, environment, 10000, actionSpace, -1, 1, 100)
   )
 
-  DTDESystem(agents).start
-
-  while true do ()
+  DTDESystem(agents).learn(100)
