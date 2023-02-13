@@ -47,6 +47,8 @@ class MyEnv(rewardFunction: RewardFunction, actionSpace: Seq[Action]) extends Ge
       val myPos = positions.filter((index, pos) => index == agentId).values.head
       MyState(otherPos, myPos)
 
+  override def reset: Unit = positions = Map((1, (3,5)), (2, (10,2)), (3, (1,18)))
+
 }
 
 case class MyState(positions: List[(Double, Double)], agentPosition: (Double, Double)) extends State:
@@ -75,4 +77,4 @@ object TrySimulation extends App:
     DecentralizedAgent(3, environment, 10000, actionSpace)
   )
 
-  DTDESystem(agents).learn(1000)
+  DTDESystem(agents, environment).learn(10000, 100)
