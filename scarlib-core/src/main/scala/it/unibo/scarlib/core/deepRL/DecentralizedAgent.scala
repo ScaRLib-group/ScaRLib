@@ -16,9 +16,9 @@ class DecentralizedAgent(
             previousExperience: Int
             ):
 
-  private var dataset: ReplayBuffer[State, Action] = ReplayBuffer[State, Action](datasetSize)
-  private var epsilon: Decay[Double] = ExponentialDecay(0.9, 0.1) // TODO - aggiungi metodo bounded a decay
-  private var learner: DeepQLearner = DeepQLearner(dataset, actionSpace, epsilon, 0.9, 0.0005, inputSize = 4)(Random(42)) //TODO migliora inputsize
+  private val dataset: ReplayBuffer[State, Action] = ReplayBuffer[State, Action](datasetSize)
+  private val epsilon: Decay[Double] = ExponentialDecay(0.9, 0.1, 0.01)
+  private val learner: DeepQLearner = DeepQLearner(dataset, actionSpace, epsilon, 0.9, 0.0005, inputSize = 4)(Random(42)) //TODO migliora inputsize
 
   def step: Unit =
     println(s"Agent: ${agentId} --- init")

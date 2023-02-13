@@ -1,22 +1,14 @@
 package it.unibo.scarlib.core.deepRL
 
 import it.unibo.scarlib.core.model.*
-/*
-class IndipendentAgent:
 
-  private var policy: State => Action = _
-  private var environment: GeneralEnvironment = _
-  private var dataset: ReplayBuffer[State, Action] = _
-  
-  def setDataset(d: ReplayBuffer[State, Action]): Unit = dataset = d
-  def setEnvironment(env: GeneralEnvironment): Unit = environment = env
-  def notifyNewPolicy(newPolicy: State => Action): Unit = policy = newPolicy
+class IndipendentAgent(environment: GeneralEnvironment, agentId: Int, dataset: ReplayBuffer[State, Action]):
 
-  def loop: Unit =
-      while(true){ //TODO - Trovare una condizione più sensata 
-        val state = environment.observe
+    private var policy: State => Action = _
+
+    def notifyNewPolicy(newPolicy: State => Action): Unit = policy = newPolicy
+    def step: Unit =
+        val state = environment.observe(agentId)
         val action = policy(state)
-        val result: (Double, State) = environment.step(action)
+        val result: (Double, State) = environment.step(action, agentId)
         dataset.insert(state, action, result._1, result._2)
-      }
-*/

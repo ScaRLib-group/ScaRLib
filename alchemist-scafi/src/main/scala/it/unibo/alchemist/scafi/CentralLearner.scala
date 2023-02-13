@@ -44,7 +44,7 @@
 //        }
 //    }
 //
-//    override def initializationComplete(time: Time, environment: Environment[T, _]): Unit = ???
+//     override def initializationComplete(time: Time, environment: Environment[T, _]): Unit = ???
 //        //initialPosition = agents.map(this.environment.getPosition)
 //
 ////    def improvePolicy(states: Seq[State]): Unit = {

@@ -58,7 +58,7 @@ class DeepQLearner(
             val expectedValue = (nextStateValues * gamma) + rewards
             val criterion = TorchSupport.neuralNetworkModule.SmoothL1Loss()
             val loss = criterion(stateActionValue, expectedValue.unsqueeze(1))
-            TorchLiveLogger.logScalar("Loss", loss.item().as[Double], updates)
+//            TorchLiveLogger.logScalar("Loss", loss.item().as[Double], updates)
             optimizer.zero_grad()
             loss.backward()
             py"[param.grad.data.clamp_(-1, 1) for param in ${policyNetwork.parameters()}]"
