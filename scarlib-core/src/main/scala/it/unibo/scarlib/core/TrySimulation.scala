@@ -70,9 +70,9 @@ object TrySimulation extends App:
   private val environment = MyEnv(rewardFunction, actionSpace)
 
   private val agents: Seq[DecentralizedAgent] = Seq(
-    DecentralizedAgent(1, environment, 10000, actionSpace, -1, 1, 100),
-    DecentralizedAgent(2, environment, 10000, actionSpace, -1, 1, 100),
-    DecentralizedAgent(3, environment, 10000, actionSpace, -1, 1, 100)
+    DecentralizedAgent(1, environment, 10000, actionSpace),
+    DecentralizedAgent(2, environment, 10000, actionSpace),
+    DecentralizedAgent(3, environment, 10000, actionSpace)
   )
 
-  DTDESystem(agents).learn(100)
+  DTDESystem(agents).learn(1000)

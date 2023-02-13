@@ -9,6 +9,7 @@ class DTDESystem(agents: Seq[DecentralizedAgent]):
   final def learn(episodes: Int): Unit =
     if episodes > 0 then
       agents.foreach(_.step)
+      
       learn(episodes-1)
 
     /*given context: ExecutionContext = ExecutionContext.global
