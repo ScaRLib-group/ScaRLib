@@ -1,80 +1,93 @@
 package it.unibo.scarlib.core
 
-import it.unibo.scarlib.core.deepRL.{DTDESystem, DecentralizedAgent}
-import it.unibo.scarlib.core.model.{Action, Actuator, CollectiveRewardFunction, GeneralEnvironment, RewardFunction, State}
+import it.unibo.scarlib.core.deepRL.{DTDESystem, DecentralizedAgent, IndipendentAgent, CTDESystem}
+import it.unibo.scarlib.core.model.{Action, Actuator, CollectiveRewardFunction, GeneralEnvironment, ReplayBuffer, RewardFunction, State}
 
 import scala.collection.mutable.Map
 
 object Actions:
-  case object North extends Action
-  case object South extends Action
-  case object Est extends Action
-  case object West extends Action
+    case object North extends Action
 
-  def toSeq: Seq[Action] = Seq(North, South, Est, West)
+    case object South extends Action
+
+    case object Est extends Action
+
+    case object West extends Action
+
+    def toSeq: Seq[Action] = Seq(North, South, Est, West)
 
 object MyActuator extends Actuator[Double]:
 
-  private val dt: Double = 0.5
+    private val dt: Double = 0.5
 
-  override def convert(action: Action): Double = action match {
-    case Actions.North => dt
-    case Actions.South => -dt
-    case Actions.Est => dt
-    case Actions.West => -dt
-  }
+    override def convert(action: Action): Double = action match {
+        case Actions.North => dt
+        case Actions.South => -dt
+        case Actions.Est => dt
+        case Actions.West => -dt
+    }
 
 class MyEnv(rewardFunction: RewardFunction, actionSpace: Seq[Action]) extends GeneralEnvironment(rewardFunction, actionSpace) {
-  private var positions: Map[Int, (Double, Double)] = Map((1, (3,5)), (2, (10,2)), (3, (1,18)))
+    private var positions: Map[Int, (Double, Double)] = Map((1, (3, 5)), (2, (10, 2)), (3, (1, 18)))
 
-  override def step(action: Action, agentId: Int): (Double, State) =
-    val currentState = observe(agentId)
-    val agentPos = currentState.asInstanceOf[MyState].agentPosition
-    val newAgentPos: (Double, Double) = action match {
-      case Actions.North => (agentPos._1 + MyActuator.convert(action), agentPos._2)
-      case Actions.South => (agentPos._1 + MyActuator.convert(action), agentPos._2)
-      case Actions.Est => (agentPos._1, agentPos._2 + MyActuator.convert(action))
-      case Actions.West => (agentPos._1, agentPos._2 + MyActuator.convert(action))
-    }
-    positions.put(agentId, newAgentPos)
-    val otherPos = positions.filter((index, pos) => index != agentId).values.toList
-    val newState: State = MyState(otherPos, newAgentPos)
-    val reward: Double = rewardFunction.compute(currentState, newState)
-    (reward, newState)
+    override def step(action: Action, agentId: Int): (Double, State) =
+        val currentState = observe(agentId)
+        val agentPos = currentState.asInstanceOf[MyState].agentPosition
+        val newAgentPos: (Double, Double) = action match {
+            case Actions.North => (agentPos._1 + MyActuator.convert(action), agentPos._2)
+            case Actions.South => (agentPos._1 + MyActuator.convert(action), agentPos._2)
+            case Actions.Est => (agentPos._1, agentPos._2 + MyActuator.convert(action))
+            case Actions.West => (agentPos._1, agentPos._2 + MyActuator.convert(action))
+        }
+        positions.put(agentId, newAgentPos)
+        val otherPos = positions.filter((index, pos) => index != agentId).values.toList
+        val newState: State = MyState(otherPos, newAgentPos)
+        val reward: Double = rewardFunction.compute(currentState, newState)
+        (reward, newState)
 
-  override def observe(agentId: Int): State =
-      val otherPos = positions.filter((index, pos) => index != agentId).values.toList
-      val myPos = positions.filter((index, pos) => index == agentId).values.head
-      MyState(otherPos, myPos)
+    override def observe(agentId: Int): State =
+        val otherPos = positions.filter((index, pos) => index != agentId).values.toList
+        val myPos = positions.filter((index, pos) => index == agentId).values.head
+        MyState(otherPos, myPos)
 
-  override def reset: Unit = positions = Map((1, (3,5)), (2, (10,2)), (3, (1,18)))
+    override def reset: Unit = positions = Map((1, (3, 5)), (2, (10, 2)), (3, (1, 18)))
 
 }
 
 case class MyState(positions: List[(Double, Double)], agentPosition: (Double, Double)) extends State:
-  override def elements: Int = 2 * 2
-  override def toSeq(): Seq[Double] = positions.flatMap { case (l, r) => List(l, r) }
+    override def elements: Int = 2 * 2
+
+    override def toSeq(): Seq[Double] = positions.flatMap { case (l, r) => List(l, r) }
 
 object TrySimulation extends App:
 
-  private def euclideanDistance(x: (Double, Double), y: (Double, Double)): Double = Math.sqrt(Math.pow((x._1 - y._1), 2) + Math.pow((x._2 - y._2), 2))
+    private def euclideanDistance(x: (Double, Double), y: (Double, Double)): Double = Math.sqrt(Math.pow((x._1 - y._1), 2) + Math.pow((x._2 - y._2), 2))
 
-  private val rewardFunction = new CollectiveRewardFunction {
-    override def compute(currentState: State, newState: State): Double =
-      val s = currentState.asInstanceOf[MyState]
-      val d1 = euclideanDistance(s.agentPosition, s.positions.head)
-      val d2 = euclideanDistance(s.agentPosition, s.positions.last)
-      Math.abs(d1 - d2) * (-1)
-  }
+    private val rewardFunction = new CollectiveRewardFunction {
+        override def compute(currentState: State, newState: State): Double =
+            val s = currentState.asInstanceOf[MyState]
+            val d1 = euclideanDistance(s.agentPosition, s.positions.head)
+            val d2 = euclideanDistance(s.agentPosition, s.positions.last)
+            Math.abs(d1 - d2) * (-1)
+    }
 
-  private val actionSpace: Seq[Action] = Actions.toSeq
+    private val actionSpace: Seq[Action] = Actions.toSeq
 
-  private val environment = MyEnv(rewardFunction, actionSpace)
+    private val environment = MyEnv(rewardFunction, actionSpace)
 
-  private val agents: Seq[DecentralizedAgent] = Seq(
-    DecentralizedAgent(1, environment, 10000, actionSpace),
-    DecentralizedAgent(2, environment, 10000, actionSpace),
-    DecentralizedAgent(3, environment, 10000, actionSpace)
-  )
+    //  private val agents: Seq[DecentralizedAgent] = Seq(
+    //    DecentralizedAgent(1, environment, 10000, actionSpace),
+    //    DecentralizedAgent(2, environment, 10000, actionSpace),
+    //    DecentralizedAgent(3, environment, 10000, actionSpace)
+    //  )
+    val datasetSize = 10000
+    private val dataset: ReplayBuffer[State, Action] = ReplayBuffer[State, Action](datasetSize)
 
-  DTDESystem(agents, environment).learn(10000, 100)
+    private val agents: Seq[IndipendentAgent] = Seq(
+        IndipendentAgent(environment, 1, dataset),
+        IndipendentAgent(environment, 2, dataset),
+        IndipendentAgent(environment, 3, dataset)
+    )
+    CTDESystem(agents, dataset, actionSpace, environment).learn(1000, 50)
+
+//DTDESystem(agents, environment).learn(5000, 100)

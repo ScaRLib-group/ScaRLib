@@ -19,5 +19,5 @@ class DTDESystem(agents: Seq[DecentralizedAgent], environment: GeneralEnvironmen
       singleEpisode(episodeLength)
       environment.reset
       learn(episodes-1, episodeLength)
-
-    
+    else
+        agents.foreach(_.logOnFile)
