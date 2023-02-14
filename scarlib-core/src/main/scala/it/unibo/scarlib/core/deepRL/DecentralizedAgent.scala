@@ -20,22 +20,15 @@ class DecentralizedAgent(
     private val posLogs: StringBuilder = StringBuilder()
 
     def step: Unit =
-        //    println(s"Agent: ${agentId} --- init")
         val state = environment.observe(agentId)
         val policy = learner.behavioural
         val action = policy(state)
-        //    println(s"Agent: ${agentId} --- choosen action: $action")
         val result: (Double, State) = environment.step(action, agentId)
         logPos(result._2.asInstanceOf[MyState].agentPosition)
-        //    println(s"Agent: ${agentId} --- reward: ${result._1}")
         dataset.insert(state, action, result._1, result._2)
-        //    println(s"Agent: ${agentId} --- calling improve")
         learner.improve()
-        //    println(s"Agent: ${agentId} --- called improve")
         epsilon.update
-        //    println(s"Agent: ${agentId} --- updated epsilon")
-
-
+  
     private def logPos(pos: (Double, Double)): Unit =
         posLogs.append(pos.toString + "\n")
 

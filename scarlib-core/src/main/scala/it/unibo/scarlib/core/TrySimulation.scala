@@ -7,11 +7,8 @@ import scala.collection.mutable.Map
 
 object Actions:
     case object North extends Action
-
     case object South extends Action
-
     case object Est extends Action
-
     case object West extends Action
 
     def toSeq: Seq[Action] = Seq(North, South, Est, West)
@@ -56,7 +53,6 @@ class MyEnv(rewardFunction: RewardFunction, actionSpace: Seq[Action]) extends Ge
 
 case class MyState(positions: List[(Double, Double)], agentPosition: (Double, Double)) extends State:
     override def elements: Int = 2 * 2
-
     override def toSeq(): Seq[Double] = positions.flatMap { case (l, r) => List(l, r) }
 
 object TrySimulation extends App:
@@ -72,14 +68,21 @@ object TrySimulation extends App:
     }
 
     private val actionSpace: Seq[Action] = Actions.toSeq
-
     private val environment = MyEnv(rewardFunction, actionSpace)
+
+
+    //DTDE Simulation starter
 
     //  private val agents: Seq[DecentralizedAgent] = Seq(
     //    DecentralizedAgent(1, environment, 10000, actionSpace),
     //    DecentralizedAgent(2, environment, 10000, actionSpace),
     //    DecentralizedAgent(3, environment, 10000, actionSpace)
     //  )
+
+    //DTDESystem(agents, environment).learn(5000, 100)
+
+
+    //CTDE Simulation starter
     val datasetSize = 10000
     private val dataset: ReplayBuffer[State, Action] = ReplayBuffer[State, Action](datasetSize)
 
@@ -90,4 +93,4 @@ object TrySimulation extends App:
     )
     CTDESystem(agents, dataset, actionSpace, environment).learn(1000, 50)
 
-//DTDESystem(agents, environment).learn(5000, 100)
+
