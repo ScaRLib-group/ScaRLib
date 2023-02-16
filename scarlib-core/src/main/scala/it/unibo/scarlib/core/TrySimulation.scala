@@ -1,31 +1,41 @@
 package it.unibo.scarlib.core
 
-import it.unibo.scarlib.core.deepRL.{DTDESystem, DecentralizedAgent, IndipendentAgent, CTDESystem}
-import it.unibo.scarlib.core.model.{Action, Actuator, CollectiveRewardFunction, GeneralEnvironment, ReplayBuffer, RewardFunction, State}
+import it.unibo.scarlib.core.deepRL.{CTDESystem, DTDESystem, DecentralizedAgent, IndipendentAgent}
+import it.unibo.scarlib.core.model.*
 
 import scala.collection.mutable.Map
+import scala.reflect.io.File
 
 object Actions:
     case object North extends Action
+
     case object South extends Action
+
     case object Est extends Action
+
     case object West extends Action
 
-    def toSeq: Seq[Action] = Seq(North, South, Est, West)
+    case object Clean extends Action
+
+    def toSeq: Seq[Action] = Seq(North, South, Est, West, Clean)
 
 object MyActuator extends Actuator[Double]:
 
-    private val dt: Double = 0.5
+    private val dt: Double = 1
 
     override def convert(action: Action): Double = action match {
         case Actions.North => dt
         case Actions.South => -dt
         case Actions.Est => dt
         case Actions.West => -dt
+        case Actions.Clean => 0.0
     }
 
 class MyEnv(rewardFunction: RewardFunction, actionSpace: Seq[Action]) extends GeneralEnvironment(rewardFunction, actionSpace) {
+    private val _dustPositions = Seq.fill(5)((math.random * 200 - 100, math.random * 200 - 100)).toList
     private var positions: Map[Int, (Double, Double)] = Map((1, (3, 5)), (2, (10, 2)), (3, (1, 18)))
+    private var dustPositions: List[(Double, Double)] = _dustPositions
+    private var logs = new StringBuilder()
 
     override def step(action: Action, agentId: Int): (Double, State) =
         val currentState = observe(agentId)
@@ -35,36 +45,61 @@ class MyEnv(rewardFunction: RewardFunction, actionSpace: Seq[Action]) extends Ge
             case Actions.South => (agentPos._1 + MyActuator.convert(action), agentPos._2)
             case Actions.Est => (agentPos._1, agentPos._2 + MyActuator.convert(action))
             case Actions.West => (agentPos._1, agentPos._2 + MyActuator.convert(action))
+            case Actions.Clean => agentPos
         }
+        if (action == Actions.Clean)
+            dustPositions.filter(euclideanDistance(_, newAgentPos) < 2.0).foreach(dustPos => dustPositions = dustPositions.filter(_ != dustPos))
         positions.put(agentId, newAgentPos)
         val otherPos = positions.filter((index, pos) => index != agentId).values.toList
-        val newState: State = MyState(otherPos, newAgentPos)
+        val newState: State = MyState(otherPos, newAgentPos, dustPositions)
         val reward: Double = rewardFunction.compute(currentState, newState)
         (reward, newState)
 
     override def observe(agentId: Int): State =
         val otherPos = positions.filter((index, pos) => index != agentId).values.toList
         val myPos = positions.filter((index, pos) => index == agentId).values.head
-        MyState(otherPos, myPos)
+        MyState(otherPos, myPos, dustPositions)
 
-    override def reset: Unit = positions = Map((1, (3, 5)), (2, (10, 2)), (3, (1, 18)))
+    override def reset: Unit =
+        positions = Map((1, (3, 5)), (2, (10, 2)), (3, (1, 18)))
+        dustPositions = _dustPositions //Seq.fill(20)((math.random * 150 - 75, math.random * 150 - 75)).toList
 
+    override def log: Unit =
+        dustPositions.foreach(dust => logs.append(s"$dust "))
+        logs = logs.dropRight(1)
+        logs.append("\n")
+
+    override def logOnFile: Unit =
+        val file = File("dusts.txt")
+        val bw = file.bufferedWriter(false)
+        bw.write(logs.toString.dropRight(1))
+        bw.close()
 }
 
-case class MyState(positions: List[(Double, Double)], agentPosition: (Double, Double)) extends State:
+case class MyState(positions: List[(Double, Double)], agentPosition: (Double, Double), dustsPositions: List[(Double, Double)]) extends State:
     override def elements: Int = 2 * 2
+
     override def toSeq(): Seq[Double] = positions.flatMap { case (l, r) => List(l, r) }
 
 object TrySimulation extends App:
 
-    private def euclideanDistance(x: (Double, Double), y: (Double, Double)): Double = Math.sqrt(Math.pow((x._1 - y._1), 2) + Math.pow((x._2 - y._2), 2))
-
     private val rewardFunction = new CollectiveRewardFunction {
         override def compute(currentState: State, newState: State): Double =
-            val s = currentState.asInstanceOf[MyState]
-            val d1 = euclideanDistance(s.agentPosition, s.positions.head)
-            val d2 = euclideanDistance(s.agentPosition, s.positions.last)
-            Math.abs(d1 - d2) * (-1)
+            val cs = currentState.asInstanceOf[MyState]
+            val ns = newState.asInstanceOf[MyState]
+            if (ns.dustsPositions.isEmpty) 100
+            else if (cs.dustsPositions.length > ns.dustsPositions.length) 25
+            else {
+                val currentDistance = cs.dustsPositions.map(dust => euclideanDistance(dust, cs.agentPosition)).min
+                val dustPos = cs.dustsPositions.filter(euclideanDistance(_, cs.agentPosition) == currentDistance).head
+                //val newDistance = ns.dustsPositions.map(dust => euclideanDistance(dust, ns.agentPosition)).min //TODO use the dust pos used in the currentDistance or it might cause weird decisions
+                val newDistance = euclideanDistance(dustPos, ns.agentPosition)
+                val normalizedDistance = normalize(newDistance, 0, 100)
+                if (newDistance < currentDistance)
+                    10.0 * (1 - normalizedDistance)
+                else
+                    -10.0 * normalizedDistance
+            }
     }
 
     private val actionSpace: Seq[Action] = Actions.toSeq
@@ -91,6 +126,7 @@ object TrySimulation extends App:
         IndipendentAgent(environment, 2, dataset),
         IndipendentAgent(environment, 3, dataset)
     )
-    CTDESystem(agents, dataset, actionSpace, environment).learn(1000, 50)
+    CTDESystem(agents, dataset, actionSpace, environment).learn(25, 300)
 
-
+def euclideanDistance(x: (Double, Double), y: (Double, Double)): Double = Math.sqrt(Math.pow((x._1 - y._1), 2) + Math.pow((x._2 - y._2), 2))
+def normalize(x: Double, min: Double, max: Double): Double = (x - min) / (max - min)

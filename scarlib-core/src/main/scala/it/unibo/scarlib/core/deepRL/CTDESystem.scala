@@ -17,6 +17,7 @@ class CTDESystem(agents: Seq[IndipendentAgent], dataset: ReplayBuffer[State, Act
             if time > 0 then
                 agents.foreach(_.notifyNewPolicy(learner.behavioural))
                 agents.foreach(_.step)
+                environment.log
                 learner.improve()
                 singleEpisode(time - 1)
 
@@ -25,3 +26,6 @@ class CTDESystem(agents: Seq[IndipendentAgent], dataset: ReplayBuffer[State, Act
             epsilon.update
             environment.reset
             learn(episodes - 1, episodeLength)
+        else
+            agents.foreach(_.logOnFile)
+            environment.logOnFile
