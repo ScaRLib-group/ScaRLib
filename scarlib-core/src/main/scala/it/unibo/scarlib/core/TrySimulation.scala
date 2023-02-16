@@ -103,13 +103,16 @@ object TrySimulation extends App:
     private val rewardFunction = new CollectiveRewardFunction {
         override def compute(currentState: State, action: Action, newState: State): Double =
             val cs = currentState.asInstanceOf[MyState]
-            val ns = newState.asInstanceOf[MyState]
-            val r: Double = action match {
-                case Actions.Clean =>
-                    val cleanableDust = cs.dustsPositions.filter(euclideanDistance(cs.agentPosition, _) < 2.0)
-                    if cleanableDust.isEmpty then -10.0 else 10.0
-                case _ => -1.0
-            }
+            var r: Double = 0.0
+            if cs.dustsPositions.isEmpty then
+              r = 100.0
+            else
+                r = action match {
+                    case Actions.Clean =>
+                        val cleanableDust = cs.dustsPositions.filter(euclideanDistance(cs.agentPosition, _) < 2.0)
+                        if cleanableDust.isEmpty then -10.0 else 10.0
+                    case _ => -1.0
+                }
             r
     }
 
