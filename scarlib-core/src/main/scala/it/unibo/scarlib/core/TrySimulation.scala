@@ -8,13 +8,9 @@ import scala.reflect.io.File
 
 object Actions:
     case object North extends Action
-
     case object South extends Action
-
     case object Est extends Action
-
     case object West extends Action
-
     case object Clean extends Action
 
     def toSeq: Seq[Action] = Seq(North, South, Est, West, Clean)
@@ -47,12 +43,14 @@ class MyEnv(rewardFunction: RewardFunction, actionSpace: Seq[Action]) extends Ge
             case Actions.West => (agentPos._1, agentPos._2 + MyActuator.convert(action))
             case Actions.Clean => agentPos
         }
-        if (action == Actions.Clean)
-            dustPositions.filter(euclideanDistance(_, newAgentPos) < 2.0).foreach(dustPos => dustPositions = dustPositions.filter(_ != dustPos))
+        if (action == Actions.Clean) then
+            val cleanableDust = dustPositions.filter(euclideanDistance(_, newAgentPos) < 2.0)
+            dustPositions = dustPositions.filter(!cleanableDust.contains(_))
+            //dustPositions.filter(euclideanDistance(_, newAgentPos) < 2.0).foreach(dustPos => dustPositions = dustPositions.filter(_ != dustPos))
         positions.put(agentId, newAgentPos)
         val otherPos = positions.filter((index, pos) => index != agentId).values.toList
         val newState: State = MyState(otherPos, newAgentPos, dustPositions)
-        val reward: Double = rewardFunction.compute(currentState, newState)
+        val reward: Double = rewardFunction.compute(currentState, action, newState)
         (reward, newState)
 
     override def observe(agentId: Int): State =
@@ -83,8 +81,8 @@ case class MyState(positions: List[(Double, Double)], agentPosition: (Double, Do
 
 object TrySimulation extends App:
 
-    private val rewardFunction = new CollectiveRewardFunction {
-        override def compute(currentState: State, newState: State): Double =
+    /*private val rewardFunction = new CollectiveRewardFunction {
+        override def compute(currentState: State, action: Action, newState: State): Double =
             val cs = currentState.asInstanceOf[MyState]
             val ns = newState.asInstanceOf[MyState]
             if (ns.dustsPositions.isEmpty) 100
@@ -100,6 +98,19 @@ object TrySimulation extends App:
                 else
                     -10.0 * normalizedDistance
             }
+    }*/
+
+    private val rewardFunction = new CollectiveRewardFunction {
+        override def compute(currentState: State, action: Action, newState: State): Double =
+            val cs = currentState.asInstanceOf[MyState]
+            val ns = newState.asInstanceOf[MyState]
+            val r: Double = action match {
+                case Actions.Clean =>
+                    val cleanableDust = cs.dustsPositions.filter(euclideanDistance(cs.agentPosition, _) < 2.0)
+                    if cleanableDust.isEmpty then -10.0 else 10.0
+                case _ => -1.0
+            }
+            r
     }
 
     private val actionSpace: Seq[Action] = Actions.toSeq
