@@ -1,4 +1,4 @@
-package it.unibo.alchemist.scafi
+package it.unibo.alchemist
 
 import it.unibo.alchemist.model.implementations.nodes.SimpleNodeManager
 import it.unibo.alchemist.model.interfaces._

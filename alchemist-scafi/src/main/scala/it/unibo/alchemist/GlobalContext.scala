@@ -1,4 +1,4 @@
-package it.unibo.alchemist.scafi
+package it.unibo.alchemist
 
 import it.unibo.alchemist.model.implementations.nodes.NodeManager
 import it.unibo.alchemist.model.interfaces.{Environment, Node, Position}
