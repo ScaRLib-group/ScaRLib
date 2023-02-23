@@ -28,8 +28,3 @@ dependencies {
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
-
-tasks.withType<ScalaCompile>(){
-    scalaCompileOptions.additionalParameters = listOf("-Ytasty-reader")
-}
-
