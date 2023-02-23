@@ -5,6 +5,7 @@ import it.unibo.scarlib.core.util.TorchLiveLogger
 import me.shadaj.scalapy.py
 
 
+
 import scala.util.Random
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -34,11 +35,13 @@ class DeepQLearner(
 
     val optimal: State => Action = targetPolicy
 
-    val behavioural: State => Action = state =>
-        if random.nextDouble() < epsilon.value then
-            random.shuffle(actionSpace).head
-        else
+    val behavioural: State => Action =
+      state =>
+        if (random.nextDouble() < epsilon.value) {
+          random.shuffle(actionSpace).head
+        } else {
           behaviouralPolicy(state)
+        }
 
     //override def mode: AgentMode = _agentMode
     def mode: AgentMode = _agentMode

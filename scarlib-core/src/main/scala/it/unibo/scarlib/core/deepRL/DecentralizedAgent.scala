@@ -12,14 +12,14 @@ class DecentralizedAgent(
                           agentId: Int,
                           environment: GeneralEnvironment,
                           datasetSize: Int,
-                          actionSpace: Seq[Action]):
+                          actionSpace: Seq[Action]){
 
     private val dataset: ReplayBuffer[State, Action] = ReplayBuffer[State, Action](datasetSize)
-    private val epsilon: Decay[Double] = ExponentialDecay(0.9, 0.1, 0.01)
-    private val learner: DeepQLearner = DeepQLearner(dataset, actionSpace, epsilon, 0.9, 0.0005, inputSize = 4)(Random(42)) //TODO migliora inputsize
-    private val posLogs: StringBuilder = StringBuilder()
+    private val epsilon: Decay[Double] = new ExponentialDecay(0.9, 0.1, 0.01)
+    private val learner: DeepQLearner = new DeepQLearner(dataset, actionSpace, epsilon, 0.9, 0.0005, inputSize = 4)(new Random(42)) //TODO migliora inputsize
+    private val posLogs: StringBuilder = new StringBuilder()
 
-    def step: Unit =
+    def step(): Unit = {
         val state = environment.observe(agentId)
         val policy = learner.behavioural
         val action = policy(state)
@@ -28,12 +28,18 @@ class DecentralizedAgent(
         dataset.insert(state, action, result._1, result._2)
         learner.improve()
         epsilon.update
-  
-    private def logPos(pos: (Double, Double)): Unit =
-        posLogs.append(pos.toString + "\n")
+    }
 
-    def logOnFile: Unit =
+    private def logPos(pos: (Double, Double)): Unit = {
+        posLogs.append(pos.toString + "\n")
+    }
+
+    def logOnFile(): Unit ={
         val file = File(s"agent-${agentId}.txt")
         val bw = file.bufferedWriter(append = true)
         bw.write(posLogs.toString())
         bw.close()
+    }
+
+}
+

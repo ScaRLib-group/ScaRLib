@@ -1,5 +1,8 @@
 package it.unibo.scarlib.core
 
+import it.unibo.scarlib.core.model.State
+
+/*
 import it.unibo.scarlib.core.deepRL.{CTDESystem, DTDESystem, DecentralizedAgent, IndipendentAgent}
 import it.unibo.scarlib.core.model.*
 
@@ -144,3 +147,10 @@ object TrySimulation extends App:
 
 def euclideanDistance(x: (Double, Double), y: (Double, Double)): Double = Math.sqrt(Math.pow((x._1 - y._1), 2) + Math.pow((x._2 - y._2), 2))
 def normalize(x: Double, min: Double, max: Double): Double = (x - min) / (max - min)
+
+
+ */
+case class MyState(positions: List[(Double, Double)], agentPosition: (Double, Double), dustsPositions: List[(Double, Double)]) extends State {
+  override def elements: Int = 2 * 2
+  override def toSeq(): Seq[Double] = positions.flatMap { case (l, r) => List(l, r) }
+}
