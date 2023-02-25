@@ -5,11 +5,11 @@ import it.unibo.scarlib.core.neuralnetwork.TorchSupport.{neuralNetworkModule => 
 
 object SimpleSequentialDQN extends DQN {
   def apply(input: Int, hidden: Int, output: Int): py.Dynamic =
-    nn.Sequential(
-      nn.Linear(input, hidden),
-      nn.ReLU(),
-      nn.Linear(hidden, hidden),
-      nn.ReLU(),
-      nn.Linear(hidden, output)
+    nn().Sequential(
+      nn().Linear(input, hidden),
+      nn().ReLU(),
+      nn().Linear(hidden, hidden),
+      nn().ReLU(),
+      nn().Linear(hidden, output)
     )
 }

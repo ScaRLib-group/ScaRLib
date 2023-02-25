@@ -37,7 +37,7 @@ class DeepQLearner(
 
     val behavioural: State => Action =
       state =>
-        if (random.nextDouble() < epsilon.value) {
+        if (random.nextDouble() < epsilon.value()) {
           random.shuffle(actionSpace).head
         } else {
           behaviouralPolicy(state)
