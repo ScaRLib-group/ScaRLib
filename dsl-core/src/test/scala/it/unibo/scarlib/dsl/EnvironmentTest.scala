@@ -1,5 +1,5 @@
 package it.unibo.scarlib.dsl
-
+/*
 import org.junit.runner.RunWith
 import org.scalatestplus.junit.JUnitRunner
 import org.scalatest.flatspec.AnyFlatSpec
@@ -12,3 +12,4 @@ class EnvironmentTest extends AnyFlatSpec with Matchers {
       1 shouldBe 1
   }
 }
+*/

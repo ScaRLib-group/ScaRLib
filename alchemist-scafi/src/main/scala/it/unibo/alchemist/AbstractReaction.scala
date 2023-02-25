@@ -4,7 +4,8 @@ import it.unibo.alchemist.model.implementations.nodes.SimpleNodeManager
 import it.unibo.alchemist.model.interfaces._
 import org.danilopianini.util.{ListSet, ListSets}
 import java.util
-import scala.jdk.CollectionConverters.IteratorHasAsScala
+//import scala.jdk.CollectionConverters.IteratorHasAsScala
+
 
 abstract class AbstractReaction[T, P <: Position[P]](
     val environment: Environment[T, P],
@@ -50,8 +51,8 @@ abstract class AbstractReaction[T, P <: Position[P]](
 
   override def compareTo(other: Actionable[T]): Int = getTau.compareTo(other.getTau)
 
-  def agents = environment.getNodes.iterator().asScala.toList
+  //def agents = environment.getNodes.iterator().asScala.toList
 
-  def managers = agents.map(new SimpleNodeManager[T](_))
+  //def managers = agents.map(new SimpleNodeManager[T](_))
 
 }

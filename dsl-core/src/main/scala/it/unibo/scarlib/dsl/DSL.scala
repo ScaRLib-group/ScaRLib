@@ -1,5 +1,5 @@
 package it.unibo.scarlib.dsl
-
+/*
 import it.unibo.scarlib.core.model.{Action, Environment, RewardFunction}
 
 import scala.collection.mutable.Set as MSet
@@ -38,4 +38,4 @@ object DSL:
   //  env.setAgent(agent)
 
   def agent(agent: String)(using env: Environment) =
-    env.setAgent(agent)
+    env.setAgent(agent)*/

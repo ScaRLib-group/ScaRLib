@@ -4,7 +4,9 @@ import it.unibo.alchemist.model.implementations.nodes.NodeManager
 import it.unibo.alchemist.model.interfaces.{Environment, Node, Position}
 import it.unibo.scarlib.core.model.Result
 
-import scala.jdk.CollectionConverters.CollectionHasAsScala
+//import scala.jdk.CollectionConverters.CollectionHasAsScala
+
+// TODO - probabilmente non serve
 
 trait GlobalContext[T, P <: Position[P]] {
     def agents: List[Node[T]]
@@ -13,11 +15,11 @@ trait GlobalContext[T, P <: Position[P]] {
 
     def environment: Environment[T, P]
 
-    def stateAndAction: (Seq[Result]) = {
+    /*def stateAndAction: (Seq[Result]) = {
         agents
           .map(_.getContents.values().asScala)
           .map(_.filter(_.isInstanceOf[Result]).head)
           .map(_.asInstanceOf[Result])
 
-    }
+    }*/
 }
