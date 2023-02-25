@@ -9,18 +9,18 @@ class DTDESystem(agents: Seq[DecentralizedAgent], environment: GeneralEnvironmen
     @tailrec
     def singleEpisode(time: Int): Unit = {
       if (time > 0) {
-        agents.foreach(_.step)
+        agents.foreach(_.step())
         singleEpisode(time - 1)
       }
     }
 
     if (episodes > 0) {
       singleEpisode(episodeLength)
-      environment.reset
+      environment.reset()
       agents.foreach(_.snapshot(episodes))
       learn(episodes - 1, episodeLength)
     } else {
-      agents.foreach(_.logOnFile)
+      agents.foreach(_.logOnFile())
     }
   }
 }

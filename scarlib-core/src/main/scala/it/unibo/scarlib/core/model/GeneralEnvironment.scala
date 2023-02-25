@@ -7,9 +7,9 @@ abstract class GeneralEnvironment(rewardFunction: RewardFunction, actionSpace: S
 
     def observe(agentId: Int): State
 
-    def reset: Unit
+    def reset(): Unit
 
-    def log: Unit
+    def log(): Unit
 
-    def logOnFile: Unit
+    def logOnFile(): Unit
 }

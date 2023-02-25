@@ -27,7 +27,7 @@ class DecentralizedAgent(
         logPos(result._2.asInstanceOf[MyState].agentPosition)
         dataset.insert(state, action, result._1, result._2)
         learner.improve()
-        epsilon.update
+        epsilon.update()
     }
 
     private def logPos(pos: (Double, Double)): Unit = {

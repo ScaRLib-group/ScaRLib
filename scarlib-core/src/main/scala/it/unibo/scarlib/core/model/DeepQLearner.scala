@@ -31,7 +31,7 @@ class DeepQLearner(
     private val policyNetwork = SimpleSequentialDQN(inputSize, hiddenSize, actionSpace.size)
     private val targetPolicy = DeepQLearner.policyFromNetwork(policyNetwork, actionSpace)
     private val behaviouralPolicy = DeepQLearner.policyFromNetwork(policyNetwork, actionSpace)
-    private val optimizer = TorchSupport.optimizerModule.RMSprop(policyNetwork.parameters(), learningRate)
+    private val optimizer = TorchSupport.optimizerModule().RMSprop(policyNetwork.parameters(), learningRate)
 
     val optimal: State => Action = targetPolicy
 
@@ -54,12 +54,12 @@ class DeepQLearner(
         if (memorySample.size == batchSize) {
             val states = memorySample.map(_.actualState).toSeq.map(state => state.toSeq().toPythonCopy).toPythonCopy
             val action = memorySample.map(_.action).toSeq.map(action => actionSpace.indexOf(action)).toPythonCopy
-            val rewards = TorchSupport.deepLearningLib.tensor(memorySample.map(_.reward).toSeq.toPythonCopy)
+            val rewards = TorchSupport.deepLearningLib().tensor(memorySample.map(_.reward).toSeq.toPythonCopy)
             val nextState = memorySample.map(_.nextState).toSeq.map(state => state.toSeq().toPythonCopy).toPythonCopy
-            val stateActionValue = policyNetwork(TorchSupport.deepLearningLib.tensor(states)).gather(1, TorchSupport.deepLearningLib.tensor(action).view(batchSize, 1))
-            val nextStateValues = targetNetwork(TorchSupport.deepLearningLib.tensor(nextState)).max(1).bracketAccess(0).detach()
+            val stateActionValue = policyNetwork(TorchSupport.deepLearningLib().tensor(states)).gather(1, TorchSupport.deepLearningLib().tensor(action).view(batchSize, 1))
+            val nextStateValues = targetNetwork(TorchSupport.deepLearningLib().tensor(nextState)).max(1).bracketAccess(0).detach()
             val expectedValue = (nextStateValues * gamma) + rewards
-            val criterion = TorchSupport.neuralNetworkModule.SmoothL1Loss()
+            val criterion = TorchSupport.neuralNetworkModule().SmoothL1Loss()
             val loss = criterion(stateActionValue, expectedValue.unsqueeze(1))
 //            TorchLiveLogger.logScalar("Loss", loss.item().as[Double], updates)
             optimizer.zero_grad()
@@ -75,7 +75,7 @@ class DeepQLearner(
 
     def snapshot(episode: Int, agentId: Int): Unit = {
         val timeMark = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date)
-        TorchSupport.deepLearningLib.save(targetNetwork.state_dict(), s"data/network-$episode-$timeMark-agent-$agentId")
+        TorchSupport.deepLearningLib().save(targetNetwork.state_dict(), s"data/network-$episode-$timeMark-agent-$agentId")
     }
 }
 
@@ -86,16 +86,16 @@ object DeepQLearner {
                                          encoding: NeuralNetworkEncoding[S],
                                          actionSpace: Seq[A]
                                        ): S => A = {
-        val model = SimpleSequentialDQN(encoding.elements, hiddenSize, actionSpace.size)
-        model.load_state_dict(TorchSupport.deepLearningLib.load(path))
+        val model = SimpleSequentialDQN(encoding.elements(), hiddenSize, actionSpace.size)
+        model.load_state_dict(TorchSupport.deepLearningLib().load(path))
         policyFromNetwork(model, actionSpace)
     }
 
     def policyFromNetwork[S <: State, A](network: py.Dynamic, actionSpace: Seq[A]): S => A = {
         state =>
             val netInput = state.toSeq()
-            py.`with`(TorchSupport.deepLearningLib.no_grad()) { _ =>
-                val tensor = TorchSupport.deepLearningLib.tensor(netInput.toPythonCopy).view(1, state.elements)
+            py.`with`(TorchSupport.deepLearningLib().no_grad()) { _ =>
+                val tensor = TorchSupport.deepLearningLib().tensor(netInput.toPythonCopy).view(1, state.elements())
                 val actionIndex = network(tensor).max(1).bracketAccess(1).item().as[Int]
                 actionSpace(actionIndex)
             }
