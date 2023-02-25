@@ -17,6 +17,7 @@ class DTDESystem(agents: Seq[DecentralizedAgent], environment: GeneralEnvironmen
     if (episodes > 0) {
       singleEpisode(episodeLength)
       environment.reset
+      agents.foreach(_.snapshot(episodes))
       learn(episodes - 1, episodeLength)
     } else {
       agents.foreach(_.logOnFile)

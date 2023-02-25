@@ -34,12 +34,14 @@ class DecentralizedAgent(
         posLogs.append(pos.toString + "\n")
     }
 
-    def logOnFile(): Unit ={
+    def logOnFile(): Unit = {
         val file = File(s"agent-${agentId}.txt")
         val bw = file.bufferedWriter(append = true)
         bw.write(posLogs.toString())
         bw.close()
     }
+
+    def snapshot(episode: Int): Unit = { learner.snapshot(episode, agentId) }
 
 }
 
