@@ -67,10 +67,10 @@ class DeepQLearner(
         }
     }
 
-    def snapshot(episode: Int): Unit = {
-        val timeMark = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date)
-        TorchSupport.deepLearningLib.save(targetNetwork.state_dict(), s"data/network-$episode-$timeMark")
-    }
+//    def snapshot(episode: Int): Unit = {
+//        val timeMark = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date)
+//        TorchSupport.deepLearningLib.save(targetNetwork.state_dict(), s"data/network-$episode-$timeMark")
+//    }
 }
 
 object DeepQLearner {

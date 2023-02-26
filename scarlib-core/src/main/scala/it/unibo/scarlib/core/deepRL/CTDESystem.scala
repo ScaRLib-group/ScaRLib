@@ -6,9 +6,10 @@ import scala.annotation.tailrec
 import scala.util.Random
 
 class CTDESystem(agents: Seq[IndipendentAgent], dataset: ReplayBuffer[State, Action], actionSpace: Seq[Action], environment: GeneralEnvironment):
-
+    var inputSize = (agents.length - 1) * 2 + 5 * 2
+    println("inputSize: " + inputSize)
     private val epsilon: Decay[Double] = ExponentialDecay(0.9, 0.1, 0.01)
-    private val learner: DeepQLearner = DeepQLearner(dataset, actionSpace, epsilon, 0.9, 0.0005, inputSize = 4)(Random(42)) //TODO migliora inputsize
+    private val learner: DeepQLearner = DeepQLearner(dataset, actionSpace, epsilon, 0.9, 0.0005, inputSize = inputSize)(Random(42)) //TODO migliora inputsize
 
     @tailrec
     final def learn(episodes: Int, episodeLength: Int): Unit =

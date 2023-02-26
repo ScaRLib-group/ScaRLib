@@ -75,9 +75,10 @@ class MyEnv(rewardFunction: RewardFunction, actionSpace: Seq[Action]) extends Ge
 }
 
 case class MyState(positions: List[(Double, Double)], agentPosition: (Double, Double), dustsPositions: List[(Double, Double)]) extends State:
-    override def elements: Int = 2 * 2
+    override def elements: Int = (positions.length + 5) * 2
 
-    override def toSeq(): Seq[Double] = positions.flatMap { case (l, r) => List(l, r) }
+    override def toSeq(): Seq[Double] =
+        positions.flatMap { case (l, r) => List(l, r) }.appendedAll(dustsPositions.flatMap { case (l, r) => List(l, r) }).appendedAll(Seq.fill((5-dustsPositions.length)*2)(0.0))
 
 object TrySimulation extends App:
 
@@ -111,7 +112,7 @@ object TrySimulation extends App:
                 r = action match {
                     case Actions.Clean =>
                         val cleanableDust = cs.dustsPositions.filter(euclideanDistance(cs.agentPosition, _) < 2.0)
-                        if cleanableDust.isEmpty then -1 else 10.0
+                        if cleanableDust.isEmpty then -1 else 25.0
                     case _ =>
                         val currentDistance = cs.dustsPositions.map(dust => euclideanDistance(dust, cs.agentPosition)).min
                         val dustPos = cs.dustsPositions.filter(euclideanDistance(_, cs.agentPosition) == currentDistance).head
@@ -151,7 +152,7 @@ object TrySimulation extends App:
         IndipendentAgent(environment, 2, dataset),
         IndipendentAgent(environment, 3, dataset)
     )
-    CTDESystem(agents, dataset, actionSpace, environment).learn(300, 300)
+    CTDESystem(agents, dataset, actionSpace, environment).learn(200, 300)
 
 def euclideanDistance(x: (Double, Double), y: (Double, Double)): Double = Math.sqrt(Math.pow((x._1 - y._1), 2) + Math.pow((x._2 - y._2), 2))
 def normalize(x: Double, min: Double, max: Double): Double = (x - min) / (max - min)
