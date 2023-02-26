@@ -1,9 +1,12 @@
 package it.unibo.alchemist
 
-import it.unibo.scarlib.core.model.{Action, GeneralEnvironment, RewardFunction, State}
+import it.unibo.scarlib.core.model.{Action, GeneralEnvironment, NoAction, RewardFunction, State}
+
 import language.existentials
 import java.io.File
 import it.unibo.alchemist.model.implementations.molecules.SimpleMolecule
+
+import _root_.scala.jdk.CollectionConverters._
 
 class AlchemistEnvironment(
                             envDefinition: String,
@@ -19,7 +22,8 @@ class AlchemistEnvironment(
   override def step(action: Action, agentId: Int): (Double, State) = {
     val actualState = observe(agentId)
     val node = engine.getEnvironment.getNodeByID(agentId)
-    node.setConcentration(new SimpleMolecule("action"), action) // TODO - node.put(action) va bene così?
+    node.setConcentration(new SimpleMolecule("action"), action)
+    engine.getEnvironment.getNodes.iterator().asScala.toList.filter(n => n.getId != agentId).foreach(n => n.setConcentration(new SimpleMolecule("action"), NoAction))
     alchemistUtil.incrementTime(dt, engine)
     val newState = observe(agentId)
     val r = rewardFunction.compute(actualState, action, newState)
@@ -27,7 +31,7 @@ class AlchemistEnvironment(
   }
 
   override def observe(agentId: Int): State = {
-    val state = engine.getEnvironment.getNodeByID(agentId).getConcentration(new SimpleMolecule("state")) //TODO - va bene come prendiamo lo state?
+    val state = engine.getEnvironment.getNodeByID(agentId).getConcentration(new SimpleMolecule("state"))
     state.asInstanceOf[State]
   }
 
