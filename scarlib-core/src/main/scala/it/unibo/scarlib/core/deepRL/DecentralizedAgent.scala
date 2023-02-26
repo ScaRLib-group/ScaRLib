@@ -13,7 +13,7 @@ class DecentralizedAgent(
 
     private val dataset: ReplayBuffer[State, Action] = ReplayBuffer[State, Action](datasetSize)
     private val epsilon: Decay[Double] = new ExponentialDecay(0.9, 0.1, 0.01)
-    private val learner: DeepQLearner = new DeepQLearner(dataset, actionSpace, epsilon, 0.9, 0.0005, inputSize = 4)(new Random(42)) //TODO migliora inputsize
+    private val learner: DeepQLearner = new DeepQLearner(dataset, actionSpace, epsilon, 0.9, 0.0005, inputSize = 6)(new Random(42)) // TODO migliora inputsize
     private val posLogs: StringBuilder = new StringBuilder()
 
     def step(): Unit = {

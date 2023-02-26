@@ -40,7 +40,7 @@ object Actions {
 }
 
 case class MyState(positions: List[(Double, Double)], agentPosition: (Double, Double)) extends State {
-    override def elements(): Int = 2 * 2
+    override def elements(): Int = 3 * 2
 
     override def toSeq(): Seq[Double] = positions.flatMap { case (l, r) => List(l, r) }
 }
