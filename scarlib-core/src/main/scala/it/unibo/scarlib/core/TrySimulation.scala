@@ -1,7 +1,5 @@
 package it.unibo.scarlib.core
 
-import it.unibo.scarlib.core.model.State
-
 /*
 import it.unibo.scarlib.core.deepRL.{CTDESystem, DTDESystem, DecentralizedAgent, IndipendentAgent}
 import it.unibo.scarlib.core.model.*
@@ -150,7 +148,9 @@ def normalize(x: Double, min: Double, max: Double): Double = (x - min) / (max - 
 
 
  */
-case class MyState(positions: List[(Double, Double)], agentPosition: (Double, Double), dustsPositions: List[(Double, Double)]) extends State {
-  override def elements(): Int = 2 * 2
-  override def toSeq(): Seq[Double] = positions.flatMap { case (l, r) => List(l, r) }
-}
+//case class MyState(positions: List[(Double, Double)], agentPosition: (Double, Double), dustsPositions: List[(Double, Double)]) extends State {
+//  override def elements(): Int = 2 * 2
+//  override def toSeq(): Seq[Double] = positions.flatMap { case (l, r) => List(l, r) }
+//
+//  override def equals(that: Any): Boolean = ???
+//}

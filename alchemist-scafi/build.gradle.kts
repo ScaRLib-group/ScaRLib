@@ -28,3 +28,14 @@ dependencies {
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
+
+tasks.register<JavaExec>("runTrySimulationAlchemistScafi") {
+    group = "try simulation"
+    mainClass.set("it.unibo.experiment.MySimulationExperiment")
+    classpath = sourceSets["main"].runtimeClasspath
+    jvmArgs(
+        //"-Djna.library.path=/Library/Frameworks/Python.framework/Versions/3.7/lib/",
+        "-Djna.library.path=/Users/davidedomini/opt/anaconda3/lib"
+        //"-Dscalapy.python.library=python3.11"
+    )
+}

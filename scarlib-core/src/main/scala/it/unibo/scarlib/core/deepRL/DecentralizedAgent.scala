@@ -1,10 +1,7 @@
 package it.unibo.scarlib.core.deepRL
 
-import it.unibo.scarlib.core.MyState
-import it.unibo.scarlib.core.model.{Action, Decay, DeepQLearner, ExponentialDecay, GeneralEnvironment, ReplayBuffer, State}
-import it.unibo.scarlib.core.neuralnetwork.NeuralNetworkEncoding
+import it.unibo.scarlib.core.model._
 
-import scala.collection.immutable.Seq
 import scala.reflect.io.File
 import scala.util.Random
 
@@ -24,7 +21,7 @@ class DecentralizedAgent(
         val policy = learner.behavioural
         val action = policy(state)
         val result: (Double, State) = environment.step(action, agentId)
-        logPos(result._2.asInstanceOf[MyState].agentPosition)
+        //logPos(result._2.asInstanceOf[MyState].agentPosition)
         dataset.insert(state, action, result._1, result._2)
         learner.improve()
         epsilon.update()

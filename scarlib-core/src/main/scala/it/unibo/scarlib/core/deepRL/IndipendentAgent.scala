@@ -1,6 +1,5 @@
 package it.unibo.scarlib.core.deepRL
 
-import it.unibo.scarlib.core.MyState
 import it.unibo.scarlib.core.model._
 
 import scala.reflect.io.File
@@ -15,7 +14,7 @@ class IndipendentAgent(environment: GeneralEnvironment, agentId: Int, dataset: R
         val state = environment.observe(agentId)
         val action = policy(state)
         val result: (Double, State) = environment.step(action, agentId)
-        logPos(result._2.asInstanceOf[MyState].agentPosition, true)
+        ///logPos(result._2.asInstanceOf[MyState].agentPosition, true)
         dataset.insert(state, action, result._1, result._2)
     }
     private def logPos(pos: (Double, Double), breakLine: Boolean = false): Unit = {
