@@ -17,10 +17,12 @@ class IndipendentAgent(environment: GeneralEnvironment, agentId: Int, dataset: R
         ///logPos(result._2.asInstanceOf[MyState].agentPosition, true)
         dataset.insert(state, action, result._1, result._2)
     }
+
     private def logPos(pos: (Double, Double), breakLine: Boolean = false): Unit = {
         posLogs.append(pos.toString)
         if (breakLine) { posLogs.append("\n") }
     }
+
     def logOnFile(): Unit = {
         val file = File(s"agent-${agentId}.txt")
         val bw = file.bufferedWriter(append = true)

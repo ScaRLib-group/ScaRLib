@@ -3,6 +3,8 @@ package it.unibo.alchemist
 import it.unibo.alchemist.model.implementations.nodes.SimpleNodeManager
 import it.unibo.alchemist.model.interfaces._
 import org.danilopianini.util.{ListSet, ListSets}
+import java.util
+import _root_.scala.jdk.CollectionConverters._
 
 abstract class AbstractReaction[T, P <: Position[P]](
     val environment: Environment[T, P],

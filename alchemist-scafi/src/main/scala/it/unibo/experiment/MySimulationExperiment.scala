@@ -4,7 +4,6 @@ import it.unibo.alchemist.AlchemistEnvironment
 import it.unibo.scarlib.core.deepRL.{CTDESystem, IndipendentAgent}
 import it.unibo.scarlib.core.model.{Action, CollectiveRewardFunction, ReplayBuffer, State}
 
-// TODO - prova di quello che poi deve implementare l'utente
 object MySimulationExperiment extends App {
 
     private val rewardFunction = new CollectiveRewardFunction {
@@ -33,11 +32,8 @@ object MySimulationExperiment extends App {
 
 object Actions {
     case object North extends Action
-
     case object South extends Action
-
     case object East extends Action
-
     case object West extends Action
 
     def toSeq(): Seq[Action] = Seq(North, South, East, West)

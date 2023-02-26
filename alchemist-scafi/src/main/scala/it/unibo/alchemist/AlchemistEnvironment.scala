@@ -5,7 +5,6 @@ import it.unibo.scarlib.core.model.{Action, GeneralEnvironment, NoAction, Reward
 import language.existentials
 import java.io.File
 import it.unibo.alchemist.model.implementations.molecules.SimpleMolecule
-
 import _root_.scala.jdk.CollectionConverters._
 
 class AlchemistEnvironment(

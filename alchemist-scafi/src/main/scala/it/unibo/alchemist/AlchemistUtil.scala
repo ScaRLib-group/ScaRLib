@@ -3,9 +3,7 @@ package it.unibo.alchemist
 import it.unibo.alchemist.boundary.interfaces.OutputMonitor
 import it.unibo.alchemist.core.implementations.Engine
 import it.unibo.alchemist.model.interfaces.Position
-import it.unibo.alchemist.model.interfaces.{Actionable, Environment, Position, Time}
-import it.unibo.alchemist.model.interfaces.{Actionable, Environment, Position, Time}
-import it.unibo.alchemist.core.implementations.Engine
+import it.unibo.alchemist.model.interfaces.{Actionable, Environment, Time}
 import it.unibo.alchemist.loader.LoadAlchemist
 
 import java.io.File
@@ -19,7 +17,7 @@ class AlchemistUtil[P <: Position[P]]() {
   def load(file: File): Engine[Any, P] = {
     val env = LoadAlchemist.from(file).getDefault[Any, P]().getEnvironment
     val eng = new Engine(env)
-    outputMonitor = Option(timeToPause(0, lock, eng)) //TODO - va bene così? Lo faccio partire ma lo pauso subito a 0
+    outputMonitor = Option(timeToPause(0, lock, eng)) // TODO - va bene così? Lo faccio partire ma lo pauso subito a 0
     eng.addOutputMonitor(outputMonitor.get)
     eng.play()
     new Thread(() => eng.run()).start()
