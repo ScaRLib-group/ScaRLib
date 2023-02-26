@@ -3,18 +3,6 @@ incarnation: scafi
 variables:
   actionSpace: &actionSpace { formula: it.unibo.experiment.Actions.toSeq(), language: scala }
 
-#environment:
-#  type: Continuous2DEnvironment
-#  parameters: []
-#  global-programs:
-#    - time-distribution:
-#        type: DiracComb
-#        parameters: [ 1.0 ]
-#      type: Event
-#      actions:
-#        - type: Actuator
-#          parameters: [*actionSpace]
-
 network-model:
   type: ClosestN
   parameters: [ 3 ]
@@ -23,25 +11,25 @@ _reactions:
   - program: &program
       - time-distribution:
           type: DiracComb
-          parameters: [ 1.1 ]
+          parameters: [ 1.0 ]
         type: Event
         actions:
           - type: RunScafiProgram
             parameters: [ it.unibo.experiment.ScafiAgent ]
       - program: send
-  - program: &actuator
-      - time-distribution:
-          type: DiracComb
-          parameters: [ 1.0 ]
-        type: Event
-        actions:
-          - type: it.unibo.experiment.Actuator
-            parameters: [ *actionSpace ]
-      - program: send
+#  - program: &actuator
+#      - time-distribution:
+#          type: DiracComb
+#          parameters: [ 1.0 ]
+#        type: Event
+#        actions:
+#          - type: it.unibo.experiment.Actuator
+#            parameters: [ *actionSpace ]
+#      - program: send
 
 deployments:
   type: Grid
   parameters: [ -1, -1, 1, 1, 1, 1, 0, 0 ]
   programs:
     - *program
-    - *actuator
+#    - *actuator
