@@ -28,7 +28,7 @@ object MyActuator extends Actuator[Double]:
     }
 
 class MyEnv(rewardFunction: RewardFunction, actionSpace: Seq[Action]) extends GeneralEnvironment(rewardFunction, actionSpace) {
-    private val _dustPositions = Seq.fill(5)((math.random * 200 - 100, math.random * 200 - 100)).toList
+    private val _dustPositions = Seq.fill(5)((math.random * 50 - 25, math.random * 50 - 25)).toList
     private var positions: Map[Int, (Double, Double)] = Map((1, (3, 5)), (2, (10, 2)), (3, (1, 18)))
     private var dustPositions: List[(Double, Double)] = _dustPositions
     private var logs = new StringBuilder()
@@ -103,6 +103,7 @@ object TrySimulation extends App:
     private val rewardFunction = new CollectiveRewardFunction {
         override def compute(currentState: State, action: Action, newState: State): Double =
             val cs = currentState.asInstanceOf[MyState]
+            val ns = newState.asInstanceOf[MyState]
             var r: Double = 0.0
             if cs.dustsPositions.isEmpty then
               r = 100.0
@@ -110,8 +111,18 @@ object TrySimulation extends App:
                 r = action match {
                     case Actions.Clean =>
                         val cleanableDust = cs.dustsPositions.filter(euclideanDistance(cs.agentPosition, _) < 2.0)
-                        if cleanableDust.isEmpty then -10.0 else 10.0
-                    case _ => -1.0
+                        if cleanableDust.isEmpty then -1 else 10.0
+                    case _ =>
+                        val currentDistance = cs.dustsPositions.map(dust => euclideanDistance(dust, cs.agentPosition)).min
+                        val dustPos = cs.dustsPositions.filter(euclideanDistance(_, cs.agentPosition) == currentDistance).head
+                        val maxDistance = cs.dustsPositions.map(dust => euclideanDistance(dust, cs.agentPosition)).max
+                        //val newDistance = ns.dustsPositions.map(dust => euclideanDistance(dust, ns.agentPosition)).min //TODO use the dust pos used in the currentDistance or it might cause weird decisions
+                        val newDistance = euclideanDistance(dustPos, ns.agentPosition)
+                        val normalizedDistance = normalize(newDistance, 0, maxDistance)
+                        if (newDistance < currentDistance)
+                            normalizedDistance
+                        else
+                            -1
                 }
             r
     }
@@ -140,7 +151,7 @@ object TrySimulation extends App:
         IndipendentAgent(environment, 2, dataset),
         IndipendentAgent(environment, 3, dataset)
     )
-    CTDESystem(agents, dataset, actionSpace, environment).learn(25, 300)
+    CTDESystem(agents, dataset, actionSpace, environment).learn(300, 300)
 
 def euclideanDistance(x: (Double, Double), y: (Double, Double)): Double = Math.sqrt(Math.pow((x._1 - y._1), 2) + Math.pow((x._2 - y._2), 2))
 def normalize(x: Double, min: Double, max: Double): Double = (x - min) / (max - min)
