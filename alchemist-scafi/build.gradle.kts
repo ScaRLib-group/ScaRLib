@@ -39,3 +39,9 @@ tasks.register<JavaExec>("runTrySimulationAlchemistScafi") {
         //"-Dscalapy.python.library=python3.11"
     )
 }
+
+tasks.register<JavaExec>("runCohesionAndCollision") {
+    group = "try simulation"
+    mainClass.set("it.unibo.experiment.cc.CohesionAndCollisionExperiment")
+    classpath = sourceSets["main"].runtimeClasspath
+}

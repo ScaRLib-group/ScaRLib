@@ -22,7 +22,7 @@ object MySimulationExperiment extends App {
     private def euclideanDistance(x: (Double, Double), y: (Double, Double)): Double = Math.sqrt(Math.pow((x._1 - y._1), 2) + Math.pow((x._2 - y._2), 2))
 
     val env = new AlchemistEnvironment(
-        "/home/gianluca/Programming/IdeaProjects/ScaRLib/alchemist-scafi/src/main/scala/it/unibo/experiment/simpleEnv.yaml",
+        "/Users/davidedomini/Desktop/ScaRLib/alchemist-scafi/src/main/scala/it/unibo/experiment/simpleEnv.yaml",
         rewardFunction,
         Actions.toSeq())
 
