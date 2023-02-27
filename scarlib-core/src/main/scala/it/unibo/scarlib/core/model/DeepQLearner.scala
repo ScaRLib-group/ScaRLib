@@ -82,11 +82,11 @@ class DeepQLearner(
 object DeepQLearner {
     def policyFromNetworkSnapshot[S <: State, A](
                                          path: String,
+                                         inputSize: Int,
                                          hiddenSize: Int,
-                                         encoding: NeuralNetworkEncoding[S],
                                          actionSpace: Seq[A]
                                        ): S => A = {
-        val model = SimpleSequentialDQN(encoding.elements(), hiddenSize, actionSpace.size)
+        val model = SimpleSequentialDQN(inputSize, hiddenSize, actionSpace.size)
         model.load_state_dict(TorchSupport.deepLearningLib().load(path))
         policyFromNetwork(model, actionSpace)
     }

@@ -34,5 +34,18 @@ class CTDESystem(agents: Seq[IndipendentAgent], dataset: ReplayBuffer[State, Act
 
   }
 
+  final def runTest(episodeLength: Int, policy: PolicyNN): Unit = {
+    val p: State => Action =
+      DeepQLearner.policyFromNetworkSnapshot(policy.path, policy.inputSize, policy.hiddenSize, actionSpace)
+    agents.foreach(_.notifyNewPolicy(p))
+    episode(episodeLength)
+
+    @tailrec
+    def episode(time: Int): Unit = {
+      agents.foreach(_.step())
+      episode(time -1)
+    }
+  }
+
 }
 
