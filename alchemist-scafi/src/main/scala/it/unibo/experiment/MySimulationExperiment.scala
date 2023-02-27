@@ -17,7 +17,10 @@ object MySimulationExperiment extends App {
 
     private def euclideanDistance(x: (Double, Double), y: (Double, Double)): Double = Math.sqrt(Math.pow((x._1 - y._1), 2) + Math.pow((x._2 - y._2), 2))
 
-    val env = new AlchemistEnvironment("C:\\Users\\filip\\Desktop\\Workspaces\\IdeaProjects\\ScaRLib\\alchemist-scafi\\src\\main\\scala\\it\\unibo\\experiment\\simpleEnv.yaml", rewardFunction, Actions.toSeq())
+    val env = new AlchemistEnvironment(
+        "/Users/davidedomini/Desktop/ScaRLib/alchemist-scafi/src/main/scala/it/unibo/experiment/simpleEnv.yaml",
+        rewardFunction,
+        Actions.toSeq())
 
     val datasetSize = 10000
     private val dataset: ReplayBuffer[State, Action] = ReplayBuffer[State, Action](datasetSize)

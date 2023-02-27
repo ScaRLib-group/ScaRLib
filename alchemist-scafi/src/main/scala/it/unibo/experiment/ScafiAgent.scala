@@ -6,12 +6,12 @@ import it.unibo.experiment.Actions.{East, North, South, West}
 import it.unibo.scafi.ScafiProgram
 import it.unibo.scafi.space.Point3D
 import it.unibo.scarlib.core.model.{Action, NoAction, State}
-
 import _root_.scala.jdk.CollectionConverters._
 
 class ScafiAgent extends ScafiProgram {
     override protected def computeState(): State = {
         makeActions()
+        println("heeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeere")
         val distances = excludingSelf
           .reifyField(nbrVector())
           .toList
@@ -19,6 +19,7 @@ class ScafiAgent extends ScafiProgram {
           .map(_._2)
           .map(point => (point.x, point.y))
           .take(3)
+        println("Distances: " + distances)
         MyState(distances, (currentPosition()._1, currentPosition()._2))
     }
 
@@ -27,12 +28,14 @@ class ScafiAgent extends ScafiProgram {
       alchemistEnvironment.getNodes.iterator().asScala.toList.foreach(
         agent => {
             val action = agent.getConcentration(new SimpleMolecule("action"))
-            action match {
+            if (action != null){
+              action match {
                 case NoAction => // do nothing
                 case North => alchemistEnvironment.moveNodeToPosition(agent, alchemistEnvironment.getPosition(agent).plus(Array(0.0, dt)))
                 case South => alchemistEnvironment.moveNodeToPosition(agent, alchemistEnvironment.getPosition(agent).plus(Array(0.0, -dt)))
                 case West => alchemistEnvironment.moveNodeToPosition(agent, alchemistEnvironment.getPosition(agent).plus(Array(-dt, 0.0)))
                 case East => alchemistEnvironment.moveNodeToPosition(agent, alchemistEnvironment.getPosition(agent).plus(Array(dt, 0.0)))
+              }
             }
         }
       )
