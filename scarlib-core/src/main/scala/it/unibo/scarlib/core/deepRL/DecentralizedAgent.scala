@@ -9,7 +9,8 @@ class DecentralizedAgent(
                           agentId: Int,
                           environment: GeneralEnvironment,
                           datasetSize: Int,
-                          actionSpace: Seq[Action]){
+                          actionSpace: Seq[Action],
+                          agentMode: AgentMode = AgentMode.Training) {
 
     private val dataset: ReplayBuffer[State, Action] = ReplayBuffer[State, Action](datasetSize)
     private val epsilon: Decay[Double] = new ExponentialDecay(0.9, 0.1, 0.01)
@@ -18,13 +19,20 @@ class DecentralizedAgent(
 
     def step(): Unit = {
         val state = environment.observe(agentId)
-        val policy = learner.behavioural
+        val policy = getPolicy()
         val action = policy(state)
         val result: (Double, State) = environment.step(action, agentId)
         //logPos(result._2.asInstanceOf[MyState].agentPosition)
         dataset.insert(state, action, result._1, result._2)
         learner.improve()
         epsilon.update()
+    }
+
+    private def getPolicy(): State => Action = {
+      agentMode match {
+        case AgentMode.Training => learner.behavioural
+        case AgentMode.Testing => ??? // TODO -load policy from snapshot
+      }
     }
 
     private def logPos(pos: (Double, Double)): Unit = {

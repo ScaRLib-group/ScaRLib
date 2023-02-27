@@ -1,7 +1,7 @@
 package it.unibo.scarlib.core.deepRL
 
 import scala.annotation.tailrec
-import it.unibo.scarlib.core.model.GeneralEnvironment
+import it.unibo.scarlib.core.model.{GeneralEnvironment, PolicyNN}
 
 class DTDESystem(agents: Seq[DecentralizedAgent], environment: GeneralEnvironment){
   @tailrec
@@ -21,6 +21,18 @@ class DTDESystem(agents: Seq[DecentralizedAgent], environment: GeneralEnvironmen
       learn(episodes - 1, episodeLength)
     } else {
       agents.foreach(_.logOnFile())
+    }
+  }
+
+  final def runTest(episodeLength: Int, policy: PolicyNN): Unit = {
+
+    // TODO - load policy from snapshot
+    episode(episodeLength)
+
+    @tailrec
+    def episode(time: Int): Unit = {
+      agents.foreach(_.step())
+      episode(time - 1)
     }
   }
 }
