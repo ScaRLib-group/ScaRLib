@@ -7,7 +7,7 @@ import scala.util.Random
 
 class CTDESystem(agents: Seq[IndipendentAgent], dataset: ReplayBuffer[State, Action], actionSpace: Seq[Action], environment: GeneralEnvironment){
   private val epsilon: Decay[Double] = new ExponentialDecay(0.9, 0.1, 0.01)
-  private val learner: DeepQLearner = new DeepQLearner(dataset, actionSpace, epsilon, 0.9, 0.0005, inputSize = 4)(new Random(42)) //TODO migliora inputsize
+  private val learner: DeepQLearner = new DeepQLearner(dataset, actionSpace, epsilon, 0.9, 0.0005, inputSize = 6)(new Random(42)) //TODO migliora inputsize
 
   @tailrec
   final def learn(episodes: Int, episodeLength: Int): Unit = {

@@ -1,9 +1,14 @@
 package it.unibo.alchemist
 
+import it.unibo.alchemist.core.implementations.Engine
+import it.unibo.alchemist.core.interfaces.Status
 import it.unibo.scarlib.core.model.{Action, GeneralEnvironment, NoAction, RewardFunction, State}
+
 import language.existentials
 import java.io.File
 import it.unibo.alchemist.model.implementations.molecules.SimpleMolecule
+
+import java.util.concurrent.TimeUnit
 import _root_.scala.jdk.CollectionConverters._
 
 class AlchemistEnvironment(
@@ -15,7 +20,8 @@ class AlchemistEnvironment(
   private def dt = 1.0 // TODO - settarlo con un senso
   private val file = new File(envDefinition)
   private val alchemistUtil = new AlchemistUtil()
-  private var engine = alchemistUtil.load(file)
+  private var engine: Engine[Any, Nothing] = _
+  this.reset()
 
   override def step(action: Action, agentId: Int): (Double, State) = {
     val actualState = observe(agentId)
@@ -29,11 +35,18 @@ class AlchemistEnvironment(
   }
 
   override def observe(agentId: Int): State = {
+    println(engine.getEnvironment.getSimulation.getTime)
     val state = engine.getEnvironment.getNodeByID(agentId).getConcentration(new SimpleMolecule("state"))
     state.asInstanceOf[State]
   }
 
-  override def reset(): Unit = { engine = alchemistUtil.load(file) }
+  override def reset(): Unit = {
+    if(engine != null) {
+      engine.terminate()
+      engine.waitFor(Status.TERMINATED, Long.MaxValue, TimeUnit.SECONDS)
+    }
+    engine = alchemistUtil.load(file)
+  }
 
   override def log(): Unit = {}
 

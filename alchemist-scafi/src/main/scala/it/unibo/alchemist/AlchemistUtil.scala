@@ -12,11 +12,12 @@ import java.util.concurrent.Semaphore
 class AlchemistUtil[P <: Position[P]]() {
 
   private var outputMonitor: Option[OutputMonitor[Any, P]] = Option.empty
-  private val lock = new Semaphore(0)
+  private var lock = new Semaphore(0)
 
   def load(file: File): Engine[Any, P] = {
     val env = LoadAlchemist.from(file).getDefault[Any, P]().getEnvironment
     val eng = new Engine(env)
+    this.lock = new Semaphore(0)
     outputMonitor = Option(timeToPause(1, lock, eng)) // TODO - va bene così? Lo faccio partire ma lo pauso subito
     eng.addOutputMonitor(outputMonitor.get)
     eng.play()

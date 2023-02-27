@@ -75,7 +75,7 @@ class DeepQLearner(
 
     def snapshot(episode: Int, agentId: Int): Unit = {
         val timeMark = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date)
-        TorchSupport.deepLearningLib().save(targetNetwork.state_dict(), s"data/network-$episode-$timeMark-agent-$agentId")
+        TorchSupport.deepLearningLib().save(targetNetwork.state_dict(), "./data"/*s"data/network-$episode-$timeMark-agent-$agentId"*/)
     }
 }
 
