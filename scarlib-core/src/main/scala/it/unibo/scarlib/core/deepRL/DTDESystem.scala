@@ -25,8 +25,7 @@ class DTDESystem(agents: Seq[DecentralizedAgent], environment: GeneralEnvironmen
   }
 
   final def runTest(episodeLength: Int, policy: PolicyNN): Unit = {
-
-    // TODO - load policy from snapshot
+    agents.foreach(_.setTestPolicy(policy))
     episode(episodeLength)
 
     @tailrec
