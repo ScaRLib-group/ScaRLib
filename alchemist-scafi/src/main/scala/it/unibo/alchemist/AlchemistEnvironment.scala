@@ -2,12 +2,10 @@ package it.unibo.alchemist
 
 import it.unibo.alchemist.core.implementations.Engine
 import it.unibo.alchemist.core.interfaces.Status
-import it.unibo.scarlib.core.model.{Action, GeneralEnvironment, NoAction, RewardFunction, State}
-
-import language.existentials
-import java.io.File
 import it.unibo.alchemist.model.implementations.molecules.SimpleMolecule
+import it.unibo.scarlib.core.model._
 
+import java.io.File
 import java.util.concurrent.TimeUnit
 import _root_.scala.jdk.CollectionConverters._
 
@@ -35,9 +33,13 @@ class AlchemistEnvironment(
   }
 
   override def observe(agentId: Int): State = {
-    println(engine.getEnvironment.getSimulation.getTime)
-    val state = engine.getEnvironment.getNodeByID(agentId).getConcentration(new SimpleMolecule("state"))
-    state.asInstanceOf[State]
+      //    println(engine.getEnvironment.getSimulation.getTime)
+      val state = engine.getEnvironment.getNodeByID(agentId).getConcentration(new SimpleMolecule("state"))
+      if (state == null) {
+          new EmptyState()
+      } else {
+          state.asInstanceOf[State]
+      }
   }
 
   override def reset(): Unit = {

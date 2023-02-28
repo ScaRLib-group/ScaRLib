@@ -29,10 +29,10 @@ object MySimulationExperiment extends App {
     val datasetSize = 10000
     private val dataset: ReplayBuffer[State, Action] = ReplayBuffer[State, Action](datasetSize)
     private val agents: Seq[IndipendentAgent] = Seq(
-        new IndipendentAgent(env, 0, dataset),
-        new IndipendentAgent(env, 1, dataset),
-        new IndipendentAgent(env, 2, dataset),
-        new IndipendentAgent(env, 3, dataset)
+        new IndipendentAgent(env, 0, dataset, Actions.toSeq()),
+        new IndipendentAgent(env, 1, dataset, Actions.toSeq()),
+        new IndipendentAgent(env, 2, dataset, Actions.toSeq()),
+        new IndipendentAgent(env, 3, dataset, Actions.toSeq())
     )
     new CTDESystem(agents, dataset, Actions.toSeq(), env).learn(1000, 50)
 }
@@ -53,4 +53,6 @@ case class MyState(positions: List[(Double, Double)], agentPosition: (Double, Do
         val fill = List.fill(elements())(0.0)
         (positions.flatMap { case (l, r) => List(l, r) } ++ fill).take(elements())
     }
+
+    override def isEmpty(): Boolean = false
 }

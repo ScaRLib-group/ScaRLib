@@ -1,17 +1,17 @@
 package it.unibo.experiment
 
 import it.unibo.alchemist.model.implementations.molecules.SimpleMolecule
-import it.unibo.alchemist.model.implementations.timedistributions.DiracComb
 import it.unibo.experiment.Actions.{East, North, South, West}
 import it.unibo.scafi.ScafiProgram
 import it.unibo.scafi.space.Point3D
-import it.unibo.scarlib.core.model.{Action, NoAction, State}
+import it.unibo.scarlib.core.model.{NoAction, State}
+
 import _root_.scala.jdk.CollectionConverters._
 
 class ScafiAgent extends ScafiProgram {
     override protected def computeState(): State = {
         makeActions()
-        println("heeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeere")
+        //        println("heeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeere")
         val distances = excludingSelf
           .reifyField(nbrVector())
           .toList
@@ -19,7 +19,7 @@ class ScafiAgent extends ScafiProgram {
           .map(_._2)
           .map(point => (point.x, point.y))
           .take(3)
-        println("Distances: " + distances)
+        //        println("Distances: " + distances)
         MyState(distances, (currentPosition()._1, currentPosition()._2))
     }
 

@@ -25,6 +25,8 @@ case class CCState(positions: List[(Double, Double)], agentPosition: (Double, Do
     val fill = List.fill(elements())(0.0)
     (positions.flatMap { case (l, r) => List(l, r) } ++ fill).take(elements())
   }
+
+  override def isEmpty(): Boolean = false
 }
 
 class CCRewardFunction() extends RewardFunction {
@@ -36,12 +38,16 @@ class CCRewardFunction() extends RewardFunction {
     ticks += 1
     val s = newState.asInstanceOf[CCState]
     val distances = computeDistancesFromNeighborhood(s)
-    val cohesion = cohesionFactor(distances)
-    val collision = collisionFactor(distances)
-    val t = (ticks / 25.0).floor.toInt
-    TorchLiveLogger.logScalar(s"Cohesion reward - agent${s.agentId}", cohesion, t)
-    TorchLiveLogger.logScalar(s"Collision reward - agent${s.agentId}", collision, t)
-    cohesion + collision
+    if (distances.nonEmpty) {
+      val cohesion = cohesionFactor(distances)
+      val collision = collisionFactor(distances)
+      val t = (ticks / 25.0).floor.toInt
+      TorchLiveLogger.logScalar(s"Cohesion reward - agent${s.agentId}", cohesion, t)
+      TorchLiveLogger.logScalar(s"Collision reward - agent${s.agentId}", collision, t)
+      cohesion + collision
+    } else {
+      0.0
+    }
   }
 
   private def cohesionFactor(distances: Seq[Double]): Double = {
@@ -68,38 +74,38 @@ object CohesionAndCollisionExperiment extends App {
   private val rewardFunction = new CCRewardFunction()
 
   val env = new AlchemistEnvironment(
-    "???.yaml",
+    "C:\\Users\\filip\\Desktop\\Workspaces\\IdeaProjects\\ScaRLib\\alchemist-scafi\\src\\main\\scala\\it\\unibo\\experiment\\cc\\CohesionAndCollisionSim.yaml",
     rewardFunction,
     CCActions.toSeq())
 
   val datasetSize = 10000
   private val dataset: ReplayBuffer[State, Action] = ReplayBuffer[State, Action](datasetSize)
   private val agents: Seq[IndipendentAgent] = Seq(
-    new IndipendentAgent(env, 0, dataset),
-    new IndipendentAgent(env, 1, dataset),
-    new IndipendentAgent(env, 2, dataset),
-    new IndipendentAgent(env, 3, dataset),
-    new IndipendentAgent(env, 4, dataset),
-    new IndipendentAgent(env, 5, dataset),
-    new IndipendentAgent(env, 6, dataset),
-    new IndipendentAgent(env, 7, dataset),
-    new IndipendentAgent(env, 8, dataset),
-    new IndipendentAgent(env, 9, dataset),
-    new IndipendentAgent(env, 10, dataset),
-    new IndipendentAgent(env, 11, dataset),
-    new IndipendentAgent(env, 12, dataset),
-    new IndipendentAgent(env, 13, dataset),
-    new IndipendentAgent(env, 14, dataset),
-    new IndipendentAgent(env, 15, dataset),
-    new IndipendentAgent(env, 16, dataset),
-    new IndipendentAgent(env, 17, dataset),
-    new IndipendentAgent(env, 18, dataset),
-    new IndipendentAgent(env, 19, dataset),
-    new IndipendentAgent(env, 20, dataset),
-    new IndipendentAgent(env, 21, dataset),
-    new IndipendentAgent(env, 22, dataset),
-    new IndipendentAgent(env, 23, dataset),
-    new IndipendentAgent(env, 24, dataset)
+    new IndipendentAgent(env, 0, dataset, CCActions.toSeq()),
+    new IndipendentAgent(env, 1, dataset, CCActions.toSeq()),
+    new IndipendentAgent(env, 2, dataset, CCActions.toSeq()),
+    new IndipendentAgent(env, 3, dataset, CCActions.toSeq()),
+    new IndipendentAgent(env, 4, dataset, CCActions.toSeq()),
+    new IndipendentAgent(env, 5, dataset, CCActions.toSeq()),
+    new IndipendentAgent(env, 6, dataset, CCActions.toSeq()),
+    new IndipendentAgent(env, 7, dataset, CCActions.toSeq()),
+    new IndipendentAgent(env, 8, dataset, CCActions.toSeq()),
+    new IndipendentAgent(env, 9, dataset, CCActions.toSeq()),
+    new IndipendentAgent(env, 10, dataset, CCActions.toSeq()),
+    new IndipendentAgent(env, 11, dataset, CCActions.toSeq()),
+    new IndipendentAgent(env, 12, dataset, CCActions.toSeq()),
+    new IndipendentAgent(env, 13, dataset, CCActions.toSeq()),
+    new IndipendentAgent(env, 14, dataset, CCActions.toSeq()),
+    new IndipendentAgent(env, 15, dataset, CCActions.toSeq()),
+    new IndipendentAgent(env, 16, dataset, CCActions.toSeq()),
+    new IndipendentAgent(env, 17, dataset, CCActions.toSeq()),
+    new IndipendentAgent(env, 18, dataset, CCActions.toSeq()),
+    new IndipendentAgent(env, 19, dataset, CCActions.toSeq()),
+    new IndipendentAgent(env, 20, dataset, CCActions.toSeq()),
+    new IndipendentAgent(env, 21, dataset, CCActions.toSeq()),
+    new IndipendentAgent(env, 22, dataset, CCActions.toSeq()),
+    new IndipendentAgent(env, 23, dataset, CCActions.toSeq()),
+    new IndipendentAgent(env, 24, dataset, CCActions.toSeq())
   )
 
   new CTDESystem(agents, dataset, CCActions.toSeq(), env).learn(2000, 100)

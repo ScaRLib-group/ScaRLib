@@ -1,18 +1,19 @@
 package it.unibo.scarlib.core.model
 
-import it.unibo.scarlib.core.neuralnetwork.{DeepLearningSupport, NeuralNetworkEncoding, SimpleSequentialDQN, TorchSupport}
+import it.unibo.scarlib.core.neuralnetwork.{SimpleSequentialDQN, TorchSupport}
 import it.unibo.scarlib.core.util.TorchLiveLogger
 import me.shadaj.scalapy.py
-import scala.util.Random
-import java.text.SimpleDateFormat
-import java.util.Date
 import me.shadaj.scalapy.py.{PyQuote, SeqConverters}
 
+import java.text.SimpleDateFormat
+import java.util.Date
+import scala.util.Random
+
 class DeepQLearner(
-                   memory: ReplayBuffer[State, Action],
-                   actionSpace: Seq[Action],
-                   var epsilon: Decay[Double],
-                   gamma: Double,
+                    memory: ReplayBuffer[State, Action],
+                    actionSpace: Seq[Action],
+                    var epsilon: Decay[Double],
+                    gamma: Double,
                    learningRate: Double,
                    batchSize: Int = 32,
                    val updateEach: Int = 100,
@@ -72,7 +73,7 @@ class DeepQLearner(
 
     def snapshot(episode: Int, agentId: Int): Unit = {
         val timeMark = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date)
-        TorchSupport.deepLearningLib().save(targetNetwork.state_dict(), s"/Users/davidedomini/Desktop/ScaRLib/data/network-$episode-$timeMark-agent-$agentId")
+        TorchSupport.deepLearningLib().save(targetNetwork.state_dict(), s"C:/Users/filip/Desktop/Workspaces/IdeaProjects/ScaRLib/data/network-$episode-$timeMark-agent-$agentId")
     }
 }
 

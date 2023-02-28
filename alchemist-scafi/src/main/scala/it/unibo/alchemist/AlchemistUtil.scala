@@ -2,27 +2,29 @@ package it.unibo.alchemist
 
 import it.unibo.alchemist.boundary.interfaces.OutputMonitor
 import it.unibo.alchemist.core.implementations.Engine
-import it.unibo.alchemist.model.interfaces.Position
-import it.unibo.alchemist.model.interfaces.{Actionable, Environment, Time}
 import it.unibo.alchemist.loader.LoadAlchemist
+import it.unibo.alchemist.model.interfaces.{Actionable, Environment, Position, Time}
 
 import java.io.File
-import java.util.concurrent.Semaphore
+import java.util.concurrent.{Executors, Semaphore}
 
 class AlchemistUtil[P <: Position[P]]() {
 
   private var outputMonitor: Option[OutputMonitor[Any, P]] = Option.empty
   private var lock = new Semaphore(0)
+    private val executor = Executors.newSingleThreadExecutor()
 
   def load(file: File): Engine[Any, P] = {
-    val env = LoadAlchemist.from(file).getDefault[Any, P]().getEnvironment
-    val eng = new Engine(env)
-    this.lock = new Semaphore(0)
-    outputMonitor = Option(timeToPause(1, lock, eng)) // TODO - va bene così? Lo faccio partire ma lo pauso subito
-    eng.addOutputMonitor(outputMonitor.get)
-    eng.play()
-    new Thread(() => eng.run()).start()
-    eng
+      val env = LoadAlchemist.from(file).getDefault[Any, P]().getEnvironment
+      val eng = new Engine(env)
+      this.lock = new Semaphore(0)
+      outputMonitor = Option(timeToPause(1, lock, eng)) // TODO - va bene così? Lo faccio partire ma lo pauso subito
+      eng.addOutputMonitor(outputMonitor.get)
+      eng.play()
+      executor.submit(new Runnable {
+          override def run(): Unit = eng.run()
+      })
+      eng
   }
 
   def incrementTime(dt: Double, engine: Engine[Any, P]): Unit = {
