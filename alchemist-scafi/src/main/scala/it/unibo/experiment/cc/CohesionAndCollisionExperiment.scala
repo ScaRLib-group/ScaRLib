@@ -80,33 +80,11 @@ object CohesionAndCollisionExperiment extends App {
 
   val datasetSize = 10000
   private val dataset: ReplayBuffer[State, Action] = ReplayBuffer[State, Action](datasetSize)
-  private val agents: Seq[IndipendentAgent] = Seq(
-    new IndipendentAgent(env, 0, dataset, CCActions.toSeq()),
-    new IndipendentAgent(env, 1, dataset, CCActions.toSeq()),
-    new IndipendentAgent(env, 2, dataset, CCActions.toSeq()),
-    new IndipendentAgent(env, 3, dataset, CCActions.toSeq()),
-    new IndipendentAgent(env, 4, dataset, CCActions.toSeq()),
-    new IndipendentAgent(env, 5, dataset, CCActions.toSeq()),
-    new IndipendentAgent(env, 6, dataset, CCActions.toSeq()),
-    new IndipendentAgent(env, 7, dataset, CCActions.toSeq()),
-    new IndipendentAgent(env, 8, dataset, CCActions.toSeq()),
-    new IndipendentAgent(env, 9, dataset, CCActions.toSeq()),
-    new IndipendentAgent(env, 10, dataset, CCActions.toSeq()),
-    new IndipendentAgent(env, 11, dataset, CCActions.toSeq()),
-    new IndipendentAgent(env, 12, dataset, CCActions.toSeq()),
-    new IndipendentAgent(env, 13, dataset, CCActions.toSeq()),
-    new IndipendentAgent(env, 14, dataset, CCActions.toSeq()),
-    new IndipendentAgent(env, 15, dataset, CCActions.toSeq()),
-    new IndipendentAgent(env, 16, dataset, CCActions.toSeq()),
-    new IndipendentAgent(env, 17, dataset, CCActions.toSeq()),
-    new IndipendentAgent(env, 18, dataset, CCActions.toSeq()),
-    new IndipendentAgent(env, 19, dataset, CCActions.toSeq()),
-    new IndipendentAgent(env, 20, dataset, CCActions.toSeq()),
-    new IndipendentAgent(env, 21, dataset, CCActions.toSeq()),
-    new IndipendentAgent(env, 22, dataset, CCActions.toSeq()),
-    new IndipendentAgent(env, 23, dataset, CCActions.toSeq()),
-    new IndipendentAgent(env, 24, dataset, CCActions.toSeq())
-  )
+
+  private var agents: Seq[IndipendentAgent] = Seq.empty
+  for (n <- 0 to 99) {
+    agents = agents :+ new IndipendentAgent(env, n, dataset, CCActions.toSeq())
+  }
 
   new CTDESystem(agents, dataset, CCActions.toSeq(), env).learn(2000, 100)
 
