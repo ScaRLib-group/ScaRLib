@@ -21,6 +21,6 @@ _reactions:
 deployments:
   type: Grid
   #parameters: [ -1, -1, 1, 1, 1, 1, 0, 0 ]
-  parameters: [-5, -5, 5, 5, 1, 1, 1, 1] # more agents... (100)
+  parameters: [-5, -5, 5, 5, 2, 1, 1, 1] # more agents... (50)
   programs:
     - *program

@@ -31,7 +31,7 @@ case class CCState(positions: List[(Double, Double)], agentPosition: (Double, Do
 
 class CCRewardFunction() extends RewardFunction {
 
-  private val targetDistance = 0.2
+  private val targetDistance = 0.35
   private var ticks: Int = 0
 
   override def compute(currentState: State, action: Action, newState: State): Double = {
@@ -41,7 +41,7 @@ class CCRewardFunction() extends RewardFunction {
     if (distances.nonEmpty) {
       val cohesion = cohesionFactor(distances)
       val collision = collisionFactor(distances)
-      val t = (ticks / 25.0).floor.toInt
+      val t = (ticks / 50.0).floor.toInt
       TorchLiveLogger.logScalar(s"Cohesion reward - agent${s.agentId}", cohesion, t)
       TorchLiveLogger.logScalar(s"Collision reward - agent${s.agentId}", collision, t)
       cohesion + collision
@@ -82,7 +82,7 @@ object CohesionAndCollisionExperiment extends App {
   private val dataset: ReplayBuffer[State, Action] = ReplayBuffer[State, Action](datasetSize)
 
   private var agents: Seq[IndipendentAgent] = Seq.empty
-  for (n <- 0 to 99) {
+  for (n <- 0 to 49) {
     agents = agents :+ new IndipendentAgent(env, n, dataset, CCActions.toSeq())
   }
 
