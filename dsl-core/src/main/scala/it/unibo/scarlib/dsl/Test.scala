@@ -1,5 +1,61 @@
-//package it.unibo.scarlib.dsl
-//import DSL.*
+package it.unibo.scarlib.dsl
+import DSL.*
+import it.unibo.scarlib.core.model.{Action, GeneralEnvironment, ReplayBuffer, RewardFunction, State}
+
+class TestEnv(rewardFunction: RewardFunction, actionSpace: Seq[Action])
+  extends GeneralEnvironment(rewardFunction, actionSpace) {
+
+  override def step(action: Action, agentId: Int): (Double, State) = ???
+  override def observe(agentId: Int): State = ???
+  override def reset(): Unit = ???
+  override def log(): Unit = ???
+  override def logOnFile(): Unit = ???
+}
+
+class TestRF extends RewardFunction {
+  override def compute(currentState: State, action: Action, newState: State): Double = ???
+}
+
+object TestActions {
+  case object North extends Action
+  case object South extends Action
+
+  def toSeq: Seq[Action] = Seq(North, South)
+}
+
+object Test extends App {
+
+  val system = learningSystem {
+
+    rewardFunction {
+      new TestRF()
+    }
+
+    actions {
+      TestActions.toSeq
+    }
+
+    dataset {
+      ReplayBuffer[State, Action](10000)
+    }
+
+    agents {
+      50
+    }
+
+    environment {
+      "it.unibo.scarlib.dsl.TestEnv"
+    }
+
+  }
+
+  println(system)
+
+  system.learn(1000, 100)
+}
+
+
+
 //import AlchemistEnvironmentConverter.toAlchemistEnv
 //import it.unibo.scarlib.core.model.SimpleRF
 //import it.unibo.scarlib.core.model.Action
