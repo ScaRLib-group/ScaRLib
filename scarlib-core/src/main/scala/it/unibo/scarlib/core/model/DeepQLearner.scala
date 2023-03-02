@@ -50,12 +50,12 @@ class DeepQLearner(
     def improve(): Unit = if (this.mode == AgentMode.Training) {
         val memorySample = memory.subsample(batchSize)
         if (memorySample.size == batchSize) {
-            val states = memorySample.map(_.actualState).toSeq.map(state => state.toSeq().toPythonCopy).toPythonCopy
-            val action = memorySample.map(_.action).toSeq.map(action => actionSpace.indexOf(action)).toPythonCopy
-            val rewards = TorchSupport.deepLearningLib().tensor(memorySample.map(_.reward).toSeq.toPythonCopy)
-            val nextState = memorySample.map(_.nextState).toSeq.map(state => state.toSeq().toPythonCopy).toPythonCopy
-            val stateActionValue = policyNetwork(TorchSupport.deepLearningLib().tensor(states)).gather(1, TorchSupport.deepLearningLib().tensor(action).view(batchSize, 1))
-            val nextStateValues = targetNetwork(TorchSupport.deepLearningLib().tensor(nextState)).max(1).bracketAccess(0).detach()
+            val states = memorySample.map(_.actualState).map(state => state.toSeq().toPythonCopy).toPythonCopy
+            val action = memorySample.map(_.action).map(action => actionSpace.indexOf(action)).toPythonCopy
+            val rewards = TorchSupport.deepLearningLib().tensor(memorySample.map(_.reward).toPythonCopy).cuda()
+            val nextState = memorySample.map(_.nextState).map(state => state.toSeq().toPythonCopy).toPythonCopy
+            val stateActionValue = policyNetwork(TorchSupport.deepLearningLib().tensor(states).cuda()).gather(1, TorchSupport.deepLearningLib().tensor(action).cuda().view(batchSize, 1))
+            val nextStateValues = targetNetwork(TorchSupport.deepLearningLib().tensor(nextState).cuda()).max(1).bracketAccess(0).detach()
             val expectedValue = (nextStateValues * gamma) + rewards
             val criterion = TorchSupport.neuralNetworkModule().SmoothL1Loss()
             val loss = criterion(stateActionValue, expectedValue.unsqueeze(1))
@@ -93,7 +93,7 @@ object DeepQLearner {
         state =>
             val netInput = state.toSeq()
             py.`with`(TorchSupport.deepLearningLib().no_grad()) { _ =>
-                val tensor = TorchSupport.deepLearningLib().tensor(netInput.toPythonCopy).view(1, state.elements())
+                val tensor = TorchSupport.deepLearningLib().tensor(netInput.toPythonCopy).cuda().view(1, state.elements())
                 val actionIndex = network(tensor).max(1).bracketAccess(1).item().as[Int]
                 actionSpace(actionIndex)
             }
