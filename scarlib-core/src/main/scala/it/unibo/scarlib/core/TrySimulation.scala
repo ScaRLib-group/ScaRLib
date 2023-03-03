@@ -2,6 +2,7 @@ package it.unibo.scarlib.core
 
 import it.unibo.scarlib.core.deepRL.{CTDESystem, DTDESystem, DecentralizedAgent, IndipendentAgent}
 import it.unibo.scarlib.core.model.*
+import it.unibo.scarlib.core.util.TorchLiveLogger
 
 import scala.collection.mutable.Map
 import scala.reflect.io.File
@@ -32,6 +33,7 @@ class MyEnv(rewardFunction: RewardFunction, actionSpace: Seq[Action]) extends Ge
     private var positions: Map[Int, (Double, Double)] = Map((1, (3, 5)), (2, (10, 2)), (3, (1, 18)))
     private var dustPositions: List[(Double, Double)] = _dustPositions
     private var logs = new StringBuilder()
+    private var step: Int = 0
 
     override def step(action: Action, agentId: Int): (Double, State) =
         val currentState = observe(agentId)
@@ -46,11 +48,12 @@ class MyEnv(rewardFunction: RewardFunction, actionSpace: Seq[Action]) extends Ge
         if (action == Actions.Clean) then
             val cleanableDust = dustPositions.filter(euclideanDistance(_, newAgentPos) < 2.0)
             dustPositions = dustPositions.filter(!cleanableDust.contains(_))
-            //dustPositions.filter(euclideanDistance(_, newAgentPos) < 2.0).foreach(dustPos => dustPositions = dustPositions.filter(_ != dustPos))
         positions.put(agentId, newAgentPos)
         val otherPos = positions.filter((index, pos) => index != agentId).values.toList
         val newState: State = MyState(otherPos, newAgentPos, dustPositions)
         val reward: Double = rewardFunction.compute(currentState, action, newState)
+        TorchLiveLogger.logScalar(s"Reward-agent-${agentId}", reward, step)
+        step += 1
         (reward, newState)
 
     override def observe(agentId: Int): State =
@@ -111,19 +114,11 @@ object TrySimulation extends App:
             else
                 r = action match {
                     case Actions.Clean =>
-                        val cleanableDust = cs.dustsPositions.filter(euclideanDistance(cs.agentPosition, _) < 2.0)
-                        if cleanableDust.isEmpty then -1 else 25.0
-                    case _ =>
-                        val currentDistance = cs.dustsPositions.map(dust => euclideanDistance(dust, cs.agentPosition)).min
-                        val dustPos = cs.dustsPositions.filter(euclideanDistance(_, cs.agentPosition) == currentDistance).head
-                        val maxDistance = cs.dustsPositions.map(dust => euclideanDistance(dust, cs.agentPosition)).max
-                        //val newDistance = ns.dustsPositions.map(dust => euclideanDistance(dust, ns.agentPosition)).min //TODO use the dust pos used in the currentDistance or it might cause weird decisions
-                        val newDistance = euclideanDistance(dustPos, ns.agentPosition)
-                        val normalizedDistance = normalize(newDistance, 0, maxDistance)
-                        if (newDistance < currentDistance)
-                            normalizedDistance
+                        if(cs.dustsPositions.length > ns.dustsPositions.length)
+                            1
                         else
                             -1
+                    case _ => 0
                 }
             r
     }

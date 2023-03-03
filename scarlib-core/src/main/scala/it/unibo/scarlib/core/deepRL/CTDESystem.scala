@@ -26,6 +26,7 @@ class CTDESystem(agents: Seq[IndipendentAgent], dataset: ReplayBuffer[State, Act
             singleEpisode(episodeLength)
             epsilon.update
             environment.reset
+            learner.snapshot(episodes, 0)
             learn(episodes - 1, episodeLength)
         else
             agents.foreach(_.logOnFile)

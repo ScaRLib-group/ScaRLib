@@ -6,6 +6,8 @@ import me.shadaj.scalapy.py
 import me.shadaj.scalapy.py.{PyQuote, SeqConverters}
 
 import scala.util.Random
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class DeepQLearner(
                    memory: ReplayBuffer[State, Action],
@@ -55,7 +57,7 @@ class DeepQLearner(
             val expectedValue = (nextStateValues * gamma) + rewards
             val criterion = TorchSupport.neuralNetworkModule.SmoothL1Loss()
             val loss = criterion(stateActionValue, expectedValue.unsqueeze(1))
-            //            TorchLiveLogger.logScalar("Loss", loss.item().as[Double], updates)
+            TorchLiveLogger.logScalar("Loss", loss.item().as[Double], updates)
             optimizer.zero_grad()
             loss.backward()
             py"[param.grad.data.clamp_(-1, 1) for param in ${policyNetwork.parameters()}]"
@@ -67,10 +69,10 @@ class DeepQLearner(
         }
     }
 
-//    def snapshot(episode: Int): Unit = {
-//        val timeMark = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date)
-//        TorchSupport.deepLearningLib.save(targetNetwork.state_dict(), s"data/network-$episode-$timeMark")
-//    }
+      def snapshot(episode: Int, agentId: Int): Unit = {
+          val timeMark = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date)
+          TorchSupport.deepLearningLib().save(targetNetwork.state_dict(), s"C:/Users/filip/Desktop/Workspaces/IdeaProjects/ScaRLib/data/network-$episode-$timeMark-agent-$agentId")
+      }
 }
 
 object DeepQLearner {
