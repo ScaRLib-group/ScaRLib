@@ -15,8 +15,8 @@ class DeepQLearner(
                    var epsilon: Decay[Double],
                    gamma: Double,
                    learningRate: Double,
-                   batchSize: Int = 32,
-                   val updateEach: Int = 100,
+                   batchSize: Int = 16,
+                   val updateEach: Int = 1000,
                    val hiddenSize: Int = 32,
                    val _agentMode: AgentMode = AgentMode.Training,
                    val inputSize: Int
@@ -52,6 +52,7 @@ class DeepQLearner(
             val action = memorySample.map(_.action).map(action => actionSpace.indexOf(action)).toPythonCopy
             val rewards = TorchSupport.deepLearningLib.tensor(memorySample.map(_.reward).toPythonCopy).cuda()
             val nextState = memorySample.map(_.nextState).map(state => state.toSeq().toPythonCopy).toPythonCopy
+            memorySample.head.nextState.elements
             val stateActionValue = policyNetwork(TorchSupport.deepLearningLib.tensor(states).cuda()).gather(1, TorchSupport.deepLearningLib.tensor(action).cuda().view(batchSize, 1))
             val nextStateValues = targetNetwork(TorchSupport.deepLearningLib.tensor(nextState).cuda()).max(1).bracketAccess(0).detach()
             val expectedValue = (nextStateValues * gamma) + rewards
@@ -71,7 +72,7 @@ class DeepQLearner(
 
       def snapshot(episode: Int, agentId: Int): Unit = {
           val timeMark = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date)
-          TorchSupport.deepLearningLib().save(targetNetwork.state_dict(), s"C:/Users/filip/Desktop/Workspaces/IdeaProjects/ScaRLib/data/network-$episode-$timeMark-agent-$agentId")
+          //TorchSupport.deepLearningLib().save(targetNetwork.state_dict(), s"C:/Users/filip/Desktop/Workspaces/IdeaProjects/ScaRLib/data/network-$episode-$timeMark-agent-$agentId")
       }
 }
 
