@@ -35,3 +35,16 @@ dependencies {
     testImplementation("org.scalatestplus:junit-4-13_3:3.2.15.0")
     testImplementation("junit:junit:4.13.2")
 }
+
+publishing.publications {
+    withType<MavenPublication> {
+        pom {
+            developers {
+                developer {
+                    name.set("Gianluca Aguzzi")
+                    email.set("gianluca.aguzzi@unibo.it")
+                }
+            }
+        }
+    }
+}
