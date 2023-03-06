@@ -79,10 +79,9 @@ class ShowEach(each: Int) extends OutputStrategy {
       // get current awt window and close it
       val windows = java.awt.Window.getWindows
       windows.foreach(_.dispose())
-      simulation
       SingleRunGUI.make[T, P](simulation, WindowConstants.DO_NOTHING_ON_CLOSE)
     }
+    episodes += 1
   }
 
-  episodes += 1
 }
