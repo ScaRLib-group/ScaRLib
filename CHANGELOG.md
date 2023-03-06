@@ -1,3 +1,10 @@
+## [1.4.0](https://github.com/davidedomini/ScaRLib/compare/1.3.0...1.4.0) (2023-03-06)
+
+
+### Features
+
+* update publish ([7602a3e](https://github.com/davidedomini/ScaRLib/commit/7602a3e0531e6b0095bd7b819d60e480b2aa59c2))
+
 ## [1.3.0](https://github.com/davidedomini/ScaRLib/compare/1.2.0...1.3.0) (2023-03-06)
 
 
