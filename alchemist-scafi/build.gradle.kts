@@ -3,13 +3,7 @@ plugins {
     scala
 }
 
-group = "it.unibo.scarlib"
-
-/*
-scala {
-    zincVersion.set("1.6.1")
-}
-*/
+group = "io.github.davidedomini"
 
 repositories {
     mavenCentral()
@@ -29,19 +23,15 @@ tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
 
-tasks.register<JavaExec>("runTrySimulationAlchemistScafi") {
-    group = "try simulation"
-    mainClass.set("it.unibo.experiment.MySimulationExperiment")
-    classpath = sourceSets["main"].runtimeClasspath
-    jvmArgs(
-        //"-Djna.library.path=/Library/Frameworks/Python.framework/Versions/3.7/lib/",
-        "-Djna.library.path=/Users/davidedomini/opt/anaconda3/lib"
-        //"-Dscalapy.python.library=python3.11"
-    )
-}
-
-tasks.register<JavaExec>("runCohesionAndCollision") {
-    group = "try simulation"
-    mainClass.set("it.unibo.experiment.cc.CohesionAndCollisionExperiment")
-    classpath = sourceSets["main"].runtimeClasspath
+publishing.publications {
+    withType<MavenPublication> {
+        pom {
+            developers {
+                developer {
+                    name.set("Gianluca Aguzzi")
+                    email.set("gianluca.aguzzi@unibo.it")
+                }
+            }
+        }
+    }
 }
