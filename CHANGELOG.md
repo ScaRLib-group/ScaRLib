@@ -1,3 +1,11 @@
+## [1.3.0](https://github.com/davidedomini/ScaRLib/compare/1.2.0...1.3.0) (2023-03-06)
+
+
+### Features
+
+* add sourcejar generation ([df095c4](https://github.com/davidedomini/ScaRLib/commit/df095c407f2912703edbf3a52465fea4035e2904))
+* add sourcejar generation ([aa89188](https://github.com/davidedomini/ScaRLib/commit/aa8918845251fa480d670c6c10e76fdbc79c1e70))
+
 ## [1.2.0](https://github.com/davidedomini/ScaRLib/compare/1.1.0...1.2.0) (2023-03-06)
 
 
