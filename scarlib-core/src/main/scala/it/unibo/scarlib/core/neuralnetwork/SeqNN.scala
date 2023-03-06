@@ -12,8 +12,6 @@ object SeqNN extends DQN {
       nn().ReLU().cuda(),
       nn().Linear(hidden, hidden).cuda(),
       nn().ReLU().cuda(),
-      nn().Linear(hidden, hidden).cuda(),
-      nn().ReLU().cuda(),
       nn().Linear(hidden, output).cuda()
     ).cuda()
 }
