@@ -2,6 +2,7 @@ plugins {
     java
     id ("org.danilopianini.publish-on-central") version "3.3.2"
     id("org.danilopianini.git-sensitive-semantic-versioning-gradle-plugin") version "1.1.4"
+    signing
 }
 
 group = "io.github.davidedomini"
@@ -13,6 +14,10 @@ repositories {
 allprojects {
     apply(plugin = "org.danilopianini.publish-on-central")
     apply(plugin = "org.danilopianini.git-sensitive-semantic-versioning-gradle-plugin")
+    gitSemVer {
+        buildMetadataSeparator.set("-")
+        maxVersionLength.set(20)
+    }
 }
 
 dependencies {
@@ -24,6 +29,11 @@ tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
 
+val sourceJar by tasks.registering(Jar::class) {
+    from(sourceSets.named("main").get().allSource)
+    archiveClassifier.set("sources")
+}
+
 publishOnCentral {
     projectUrl.set("https://github.com/davidedomini/ScaRLib")
     scmConnection.set("git:git@github.com:davidedomini/ScaRLib")
@@ -33,6 +43,8 @@ publishOnCentral {
 publishing {
     publications {
         withType<MavenPublication> {
+            //artifact(javadocJar) TODO - set
+            artifact(sourceJar)
             pom {
                 developers {
                     developer {
