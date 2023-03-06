@@ -1,21 +1,17 @@
 package it.unibo.scarlib.core.model
 
-import it.unibo.scarlib.core.neuralnetwork.NeuralNetworkEncoding
+trait State {
+    def elements(): Int
 
+    def toSeq(): Seq[Double]
 
-trait State:
-    implicit val encoding: NeuralNetworkEncoding[State]
+    def isEmpty(): Boolean
+}
 
-class TestState(distances: List[(Double, Double)], directionToLeader: (Double, Double)) extends State:
-    override implicit val encoding: NeuralNetworkEncoding[State] = new NeuralNetworkEncoding[TestState] {
-        override def elements: Int = (5 + 1) * 2
+class EmptyState extends State {
+    override def elements(): Int = 0
 
-        override def toSeq(elem: TestState): Seq[Double] =
-            elem.getDistances.flatMap { case (l, r) =>
-                List(l, r)
-            } ++ List(elem.getDirectionToLeader._1, elem.getDirectionToLeader._2)
-    }.asInstanceOf[NeuralNetworkEncoding[State]]
+    override def toSeq(): Seq[Double] = Seq()
 
-    def getDistances: List[(Double, Double)] = distances
-
-    def getDirectionToLeader: (Double, Double) = directionToLeader
+    override def isEmpty(): Boolean = true
+}

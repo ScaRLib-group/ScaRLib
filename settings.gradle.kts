@@ -13,3 +13,4 @@ gitHooks {
 
 include("scarlib-core")
 include("dsl-core")
+include("alchemist-scafi")

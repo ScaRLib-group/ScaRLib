@@ -1,6 +1,5 @@
 package it.unibo.scarlib.core.model
 
-trait Action:
-    val name: String
+trait Action
 
-    def toString: String
+case object NoAction extends Action

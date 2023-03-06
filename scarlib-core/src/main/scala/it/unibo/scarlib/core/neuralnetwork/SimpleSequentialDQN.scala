@@ -1,14 +1,15 @@
 package it.unibo.scarlib.core.neuralnetwork
 
-import me.shadaj.scalapy.py
 import it.unibo.scarlib.core.neuralnetwork.TorchSupport.{neuralNetworkModule => nn}
+import me.shadaj.scalapy.py
 
-object SimpleSequentialDQN extends DQN:
+object SimpleSequentialDQN extends DQN {
   def apply(input: Int, hidden: Int, output: Int): py.Dynamic =
-    nn.Sequential(
-      nn.Linear(input, hidden),
-      nn.ReLU(),
-      nn.Linear(hidden, hidden),
-      nn.ReLU(),
-      nn.Linear(hidden, output)
-    )
+    nn().Sequential(
+        nn().Linear(input, hidden).cuda(),
+        nn().ReLU().cuda(),
+        nn().Linear(hidden, hidden).cuda(),
+        nn().ReLU().cuda(),
+        nn().Linear(hidden, output).cuda()
+    ).cuda()
+}
