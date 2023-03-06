@@ -1,3 +1,15 @@
+## [1.1.0](https://github.com/davidedomini/ScaRLib/compare/1.0.0...1.1.0) (2023-03-06)
+
+
+### Features
+
+* implement new nn ([79dea6a](https://github.com/davidedomini/ScaRLib/commit/79dea6a6269895296c07ab6dab1e0cda1f053c04))
+
+
+### General maintenance
+
+* update developers list ([bab79d6](https://github.com/davidedomini/ScaRLib/commit/bab79d6f7a0aafda809477edfcfa4f8828afe72b))
+
 ## 1.0.0 (2023-03-06)
 
 
