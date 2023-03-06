@@ -43,7 +43,7 @@ publishOnCentral {
 publishing {
     publications {
         withType<MavenPublication> {
-            //artifact(javadocJar) TODO - set
+            //artifact(javadocJar) TODO
             artifact(sourceJar)
             pom {
                 developers {
