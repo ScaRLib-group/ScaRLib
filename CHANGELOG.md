@@ -1,3 +1,16 @@
+## [1.2.0](https://github.com/davidedomini/ScaRLib/compare/1.1.0...1.2.0) (2023-03-06)
+
+
+### Features
+
+* update sequential nn ([38a77ac](https://github.com/davidedomini/ScaRLib/commit/38a77ace69796f6b6c144802b3324485cc994cd2))
+* update sequential nn ([fef603f](https://github.com/davidedomini/ScaRLib/commit/fef603f5734bca7cc67bd0dabda11115e6bc88a9))
+
+
+### General maintenance
+
+* merge ([e8c6229](https://github.com/davidedomini/ScaRLib/commit/e8c6229febda20d0335a792c88802ca093c2f0eb))
+
 ## [1.1.0](https://github.com/davidedomini/ScaRLib/compare/1.0.0...1.1.0) (2023-03-06)
 
 
