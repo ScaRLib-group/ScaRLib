@@ -22,7 +22,6 @@ sourceSets {
     }
 }
 
-
 repositories {
     mavenCentral()
 }
@@ -31,6 +30,16 @@ dependencies {
     implementation("org.scala-lang:scala3-library_3:3.2.2")
     testImplementation("org.scalatest:scalatest_3:3.2.15")
     testImplementation("org.scalatestplus:junit-4-13_3:3.2.15.0")
+    implementation("org.scala-lang:scala-reflect:2.13.10")
     testImplementation("junit:junit:4.13.2")
     implementation(project(":scarlib-core"))
+}
+
+tasks.register<JavaExec>("runDSLTest") {
+    group = "try dsl"
+    mainClass.set("it.unibo.scarlib.dsl.Test")
+    classpath = sourceSets["main"].runtimeClasspath
+    jvmArgs(
+        "-Djna.library.path=/Users/davidedomini/opt/anaconda3/lib"
+    )
 }
