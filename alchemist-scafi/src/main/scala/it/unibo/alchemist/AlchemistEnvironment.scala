@@ -13,9 +13,9 @@ class AlchemistEnvironment(
                             envDefinition: String,
                             rewardFunction: RewardFunction,
                             actionSpace: Seq[Action]
-                          ) extends GeneralEnvironment(rewardFunction, actionSpace){
+                          ) extends Environment(rewardFunction, actionSpace){
 
-  private def dt = 1.0 // TODO - settarlo con un senso
+  private def dt = 1.0 
   private val file = new File(envDefinition)
   private val alchemistUtil = new AlchemistUtil()
   private var engine: Engine[Any, Nothing] = _
@@ -33,7 +33,6 @@ class AlchemistEnvironment(
   }
 
   override def observe(agentId: Int): State = {
-      //    println(engine.getEnvironment.getSimulation.getTime)
       val state = engine.getEnvironment.getNodeByID(agentId).getConcentration(new SimpleMolecule("state"))
       if (state == null) {
           new EmptyState()

@@ -1,9 +1,9 @@
 package it.unibo.scarlib.core.deepRL
 
 import scala.annotation.tailrec
-import it.unibo.scarlib.core.model.{GeneralEnvironment, PolicyNN}
+import it.unibo.scarlib.core.model.{Environment, PolicyNN}
 
-class DTDESystem(agents: Seq[DecentralizedAgent], environment: GeneralEnvironment){
+class DTDESystem(agents: Seq[DecentralizedAgent], environment: Environment){
   @tailrec
   final def learn(episodes: Int, episodeLength: Int): Unit = {
     @tailrec

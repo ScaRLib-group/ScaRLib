@@ -18,7 +18,7 @@ class AlchemistUtil[P <: Position[P]]() {
       val env = LoadAlchemist.from(file).getDefault[Any, P]().getEnvironment
       val eng = new Engine(env)
       this.lock = new Semaphore(0)
-      outputMonitor = Option(timeToPause(1, lock, eng)) // TODO - va bene così? Lo faccio partire ma lo pauso subito
+      outputMonitor = Option(timeToPause(1, lock, eng))
       eng.addOutputMonitor(outputMonitor.get)
       eng.play()
       executor.submit(new Runnable {

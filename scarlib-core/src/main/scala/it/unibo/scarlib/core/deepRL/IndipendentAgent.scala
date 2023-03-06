@@ -5,7 +5,7 @@ import it.unibo.scarlib.core.model._
 import scala.reflect.io.File
 import scala.util.Random
 
-class IndipendentAgent(environment: GeneralEnvironment, agentId: Int, dataset: ReplayBuffer[State, Action], val actionSpace: Seq[Action]) {
+class IndipendentAgent(environment: Environment, agentId: Int, dataset: ReplayBuffer[State, Action], val actionSpace: Seq[Action]) {
     private var policy: State => Action = _
     private val posLogs: StringBuilder = new StringBuilder()
 

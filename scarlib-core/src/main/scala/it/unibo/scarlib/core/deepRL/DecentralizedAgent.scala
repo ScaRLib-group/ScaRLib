@@ -7,7 +7,7 @@ import scala.util.Random
 
 class DecentralizedAgent(
                           agentId: Int,
-                          environment: GeneralEnvironment,
+                          environment: Environment,
                           datasetSize: Int,
                           actionSpace: Seq[Action],
                           agentMode: AgentMode = AgentMode.Training) {
