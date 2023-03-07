@@ -6,7 +6,7 @@ import it.unibo.alchemist.core.interfaces.{Simulation, Status}
 import it.unibo.alchemist.model.implementations.molecules.SimpleMolecule
 import it.unibo.alchemist.model.interfaces.{Position, Position2D}
 import it.unibo.scarlib.core.model._
-import it.unibo.scarlib.core.util.TorchLiveLogger
+import it.unibo.scarlib.core.util.{AgentGlobalStore, TorchLiveLogger}
 
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -26,13 +26,10 @@ class AlchemistEnvironment(
   private var engine: Engine[Any, Nothing] = _
   this.reset()
   private var agentIds = Set.empty[Int]
-  private var reward = 0.0
   private var ticks = 0
   override def step(action: Action, agentId: Int): (Double, State) = {
     if (agentIds.contains(agentId)) {
       alchemistUtil.incrementTime(dt, engine)
-      TorchLiveLogger.logScalar("total-reward", reward / agentIds.size, ticks)
-      reward = 0.0
       agentIds = Set.empty
       ticks += 1
     } else {
@@ -49,7 +46,6 @@ class AlchemistEnvironment(
       .foreach(n => n.setConcentration(new SimpleMolecule("action"), NoAction))*/
     val newState = observe(agentId)
     val r = rewardFunction.compute(actualState, action, newState)
-    reward += r
     (r, newState)
   }
 
@@ -72,9 +68,15 @@ class AlchemistEnvironment(
     outputStrategy.output(engine)
   }
 
-  override def log(): Unit = {}
+  override def log(): Unit = {
+    AgentGlobalStore.averageAllNumeric(AgentGlobalStore()).foreach { case (k, v) =>
+      TorchLiveLogger.logScalar(k, v, ticks)
+    }
+    AgentGlobalStore().clearAll()
+  }
 
-  override def logOnFile(): Unit = {}
+  override def logOnFile(): Unit =
+    println("Log on file")
 
 }
 

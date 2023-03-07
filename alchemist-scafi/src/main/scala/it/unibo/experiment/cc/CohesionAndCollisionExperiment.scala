@@ -1,11 +1,13 @@
 package it.unibo.experiment.cc
 
-import it.unibo.alchemist.{After, AlchemistEnvironment, ShowEach}
+import ch.qos.logback.classic.Level
+import it.unibo.alchemist.loader.m2m.{JVMConstructor, SimulationModel}
+import it.unibo.alchemist.{AlchemistEnvironment, ShowEach}
 import it.unibo.scafi.space.Point3D
 import it.unibo.scarlib.core.deepRL.{CTDESystem, IndipendentAgent}
 import it.unibo.scarlib.core.model.{Action, ReplayBuffer, RewardFunction, State}
-import it.unibo.scarlib.core.util.TorchLiveLogger
-import org.apache.log4j.LogManager
+import it.unibo.scarlib.core.util.{AgentGlobalStore, TorchLiveLogger}
+import org.slf4j.LoggerFactory
 
 object CCActions {
   final case object North extends Action
@@ -39,19 +41,24 @@ class CCRewardFunction() extends RewardFunction {
   override def compute(currentState: State, action: Action, newState: State): Double = {
     ticks += 1
     if (currentState.isEmpty()) {
-      return 0
-    }
-    val s = newState.asInstanceOf[CCState]
-    val distances = computeDistancesFromNeighborhood(s)
-    if (distances.nonEmpty) {
-      val cohesion = cohesionFactor(distances)
-      val collision = collisionFactor(distances)
-      val t = (ticks / 50.0).floor.toInt
-      TorchLiveLogger.logScalar(s"Cohesion reward - agent${s.agentId}", cohesion, t)
-      TorchLiveLogger.logScalar(s"Collision reward - agent${s.agentId}", collision, t)
-      cohesion + collision
-    } else {
       0.0
+    } else {
+      val s = newState.asInstanceOf[CCState]
+      val distances = computeDistancesFromNeighborhood(s)
+      if (distances.isEmpty) {
+        0.0
+      } else {
+        val cohesion = cohesionFactor(distances)
+        val collision = collisionFactor(distances)
+        val t = (ticks / 50.0).floor.toInt
+        AgentGlobalStore().put(s.agentId, "cohesion", cohesion)
+        AgentGlobalStore().put(s.agentId, "collision", collision)
+        AgentGlobalStore().put(s.agentId, "reward", collision + cohesion)
+
+        //TorchLiveLogger.logScalar(s"Cohesion reward", cohesion, t)
+        //TorchLiveLogger.logScalar(s"Collision reward", collision, t)
+        cohesion + collision
+      }
     }
   }
 
@@ -74,14 +81,14 @@ class CCRewardFunction() extends RewardFunction {
 object CohesionAndCollisionExperiment extends App {
 
   private val rewardFunction = new CCRewardFunction()
-
-  LogManager.shutdown()
+  LoggerFactory.getLogger(classOf[SimulationModel]).asInstanceOf[ch.qos.logback.classic.Logger].setLevel(Level.OFF)
+  LoggerFactory.getLogger(classOf[JVMConstructor]).asInstanceOf[ch.qos.logback.classic.Logger].setLevel(Level.OFF)
 
   val env = new AlchemistEnvironment(
     "/home/gianluca/Programming/IdeaProjects/ScaRLib/alchemist-scafi/src/main/scala/it/unibo/experiment/cc/CohesionAndCollisionSim.yaml",
     rewardFunction,
-    CCActions.toSeq(),
-    new ShowEach(20)
+    CCActions.toSeq()
+    //new ShowEach(20)
   )
   val datasetSize = 10000
   private val dataset: ReplayBuffer[State, Action] = ReplayBuffer[State, Action](datasetSize)

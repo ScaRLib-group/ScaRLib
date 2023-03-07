@@ -1,6 +1,5 @@
 package it.unibo.experiment
 
-import it.unibo.alchemist.boundary.interfaces
 import it.unibo.alchemist.AlchemistEnvironment
 import it.unibo.scarlib.core.deepRL.{CTDESystem, IndipendentAgent}
 import it.unibo.scarlib.core.model.{Action, CollectiveRewardFunction, ReplayBuffer, State}
