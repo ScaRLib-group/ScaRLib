@@ -1,3 +1,10 @@
+## [1.5.0](https://github.com/davidedomini/ScaRLib/compare/1.4.0...1.5.0) (2023-03-07)
+
+
+### Features
+
+* update jar generation ([ce40bae](https://github.com/davidedomini/ScaRLib/commit/ce40bae25af4aff59b96f141406d798fd2f860ab))
+
 ## [1.4.0](https://github.com/davidedomini/ScaRLib/compare/1.3.0...1.4.0) (2023-03-06)
 
 
