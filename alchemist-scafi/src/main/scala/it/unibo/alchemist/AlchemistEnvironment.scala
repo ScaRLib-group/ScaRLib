@@ -66,6 +66,7 @@ class AlchemistEnvironment(
     }
     engine = alchemistUtil.load(file)
     outputStrategy.output(engine)
+    alchemistUtil.incrementTime(dt, engine)
   }
 
   override def log(): Unit = {
