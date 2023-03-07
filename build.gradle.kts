@@ -23,7 +23,7 @@ allprojects {
 
     val sourceJar by tasks.registering(Jar::class) {
         from(sourceSets.named("main").get().allSource)
-        archiveClassifier.set("sources")
+        archiveClassifier.set("sources-${project.name}")
     }
 
     publishOnCentral {
