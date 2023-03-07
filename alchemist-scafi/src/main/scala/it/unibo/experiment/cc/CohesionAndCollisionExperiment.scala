@@ -4,7 +4,7 @@ import ch.qos.logback.classic.Level
 import it.unibo.alchemist.loader.m2m.{JVMConstructor, SimulationModel}
 import it.unibo.alchemist.{AlchemistEnvironment, ShowEach}
 import it.unibo.scafi.space.Point3D
-import it.unibo.scarlib.core.deepRL.{CTDESystem, IndipendentAgent}
+import it.unibo.scarlib.core.deepRL.{CTDESystem, DTDESystem, DecentralizedAgent, IndipendentAgent}
 import it.unibo.scarlib.core.model.{Action, ReplayBuffer, RewardFunction, State}
 import it.unibo.scarlib.core.util.{AgentGlobalStore, TorchLiveLogger}
 import org.slf4j.LoggerFactory
@@ -87,16 +87,15 @@ object CohesionAndCollisionExperiment extends App {
   val env = new AlchemistEnvironment(
     "/home/gianluca/Programming/IdeaProjects/ScaRLib/alchemist-scafi/src/main/scala/it/unibo/experiment/cc/CohesionAndCollisionSim.yaml",
     rewardFunction,
-    CCActions.toSeq()
-    //new ShowEach(20)
+    CCActions.toSeq(),
+    new ShowEach(20)
   )
   val datasetSize = 10000
   private val dataset: ReplayBuffer[State, Action] = ReplayBuffer[State, Action](datasetSize)
 
-  private var agents: Seq[IndipendentAgent] = Seq.empty
+  private var agents: Seq[DecentralizedAgent] = Seq.empty
   for (n <- 0 to 49)
-    agents = agents :+ new IndipendentAgent(env, n, dataset, CCActions.toSeq())
-
-  new CTDESystem(agents, dataset, CCActions.toSeq(), env).learn(100, 200)
+    agents = agents :+ new DecentralizedAgent(n, env, 10000, CCActions.toSeq())
+  new DTDESystem(agents, env).learn(100, 200)
 
 }
