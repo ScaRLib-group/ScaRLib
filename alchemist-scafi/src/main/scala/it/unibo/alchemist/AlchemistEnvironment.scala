@@ -29,6 +29,7 @@ class AlchemistEnvironment(
   private var ticks = 0
   override def step(action: Action, agentId: Int): (Double, State) = {
     if (agentIds.contains(agentId)) {
+      engine.play()
       alchemistUtil.incrementTime(dt, engine)
       agentIds = Set.empty
       ticks += 1
@@ -66,7 +67,6 @@ class AlchemistEnvironment(
     }
     engine = alchemistUtil.load(file)
     outputStrategy.output(engine)
-    alchemistUtil.incrementTime(dt, engine)
   }
 
   override def log(): Unit = {

@@ -13,7 +13,7 @@ class CTDESystem(
 ) {
   private val epsilon: Decay[Double] = new ExponentialDecay(0.9, 0.1, 0.01)
   private val learner: DeepQLearner =
-    new DeepQLearner(dataset, actionSpace, epsilon, 0.99, 0.0005, hiddenSize = 64, inputSize = 6)(
+    new DeepQLearner(dataset, actionSpace, epsilon, 0.90, 0.0005, hiddenSize = 64, inputSize = 10)(
       new Random(42)
     ) //TODO migliora inputsize
 

@@ -5,8 +5,17 @@ variables:
 
 network-model:
   type: ClosestN
-  parameters: [ 3 ]
+  parameters: [ 5 ]
 
+environment:
+  type: Continuous2DEnvironment
+  parameters: []
+  global-programs:
+    - time-distribution:
+        type: DiracComb
+        parameters: [ 0.1,  1.0 ]
+      type: CollectiveAction
+      parameters: [ ]
 _reactions:
   - program: &program
       - time-distribution:
@@ -15,12 +24,18 @@ _reactions:
         type: Event
         actions:
           - type: RunScafiProgram
-            parameters: [ it.unibo.experiment.cc.CCScafiAgent ]
+            parameters: [ it.unibo.experiment.cc.CCScafiAgent, 1.1 ]
       - program: send
-
+  - move: &move
+      - time-distribution:
+          type: DiracComb
+          parameters: [ 0.1,  1.0 ]
+        type: Event
+        actions: { type: MoveToTarget, parameters: ["destination", 1] }
 deployments:
   type: Grid
   #parameters: [ -1, -1, 1, 1, 1, 1, 0, 0 ]
   parameters: [-5, -5, 5, 5, 2, 1, 1, 1] # more agents... (50)
   programs:
     - *program
+    #- *move
