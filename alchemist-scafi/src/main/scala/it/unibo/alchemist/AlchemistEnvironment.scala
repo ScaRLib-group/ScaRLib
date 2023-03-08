@@ -9,6 +9,7 @@ import it.unibo.scarlib.core.model._
 import it.unibo.scarlib.core.util.{AgentGlobalStore, TorchLiveLogger}
 
 import java.io.File
+import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
 import javax.swing.WindowConstants
 import _root_.scala.concurrent.{Future, Promise}

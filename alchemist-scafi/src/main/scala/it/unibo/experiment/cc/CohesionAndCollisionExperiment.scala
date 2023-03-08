@@ -81,7 +81,7 @@ object CohesionAndCollisionExperiment extends App {
   LoggerFactory.getLogger(classOf[JVMConstructor]).asInstanceOf[ch.qos.logback.classic.Logger].setLevel(Level.OFF)
 
   val env = new AlchemistEnvironment(
-    "./alchemist-scafi/src/main/scala/it/unibo/experiment/cc/CohesionAndCollisionSim.yaml",
+    "./src/main/scala/it/unibo/experiment/cc/CohesionAndCollisionSim.yaml",
     rewardFunction,
     CCActions.toSeq(),
     new ShowEach(100)

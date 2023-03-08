@@ -79,7 +79,7 @@ class DeepQLearner(
       .deepLearningLib()
       .save(
         targetNetwork.state_dict(),
-        s"./data/network-$episode-$timeMark-agent-$agentId"
+        s"../data/network-$episode-$timeMark-agent-$agentId"
       )
   }
 }
