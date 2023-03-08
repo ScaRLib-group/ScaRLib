@@ -4,7 +4,7 @@ import ch.qos.logback.classic.Level
 import it.unibo.alchemist.loader.m2m.{JVMConstructor, SimulationModel}
 import it.unibo.alchemist.{AlchemistEnvironment, ShowEach}
 import it.unibo.scafi.space.Point3D
-import it.unibo.scarlib.core.deepRL.{CTDESystem, DTDESystem, DecentralizedAgent, IndipendentAgent}
+import it.unibo.scarlib.core.deepRL.{CTDESystem, IndipendentAgent}
 import it.unibo.scarlib.core.model.{Action, ReplayBuffer, RewardFunction, State}
 import it.unibo.scarlib.core.util.AgentGlobalStore
 import org.slf4j.LoggerFactory
@@ -81,7 +81,7 @@ object CohesionAndCollisionExperiment extends App {
   LoggerFactory.getLogger(classOf[JVMConstructor]).asInstanceOf[ch.qos.logback.classic.Logger].setLevel(Level.OFF)
 
   val env = new AlchemistEnvironment(
-    "/home/gianluca/Programming/IdeaProjects/ScaRLib/alchemist-scafi/src/main/scala/it/unibo/experiment/cc/CohesionAndCollisionSim.yaml",
+    "./alchemist-scafi/src/main/scala/it/unibo/experiment/cc/CohesionAndCollisionSim.yaml",
     rewardFunction,
     CCActions.toSeq(),
     new ShowEach(100)
