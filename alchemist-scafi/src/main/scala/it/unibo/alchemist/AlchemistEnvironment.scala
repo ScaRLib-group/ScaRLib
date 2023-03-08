@@ -1,18 +1,18 @@
 package it.unibo.alchemist
 
-import it.unibo.alchemist.boundary.swingui.impl.{AlchemistSwingUI, SingleRunGUI, SingleRunSwingUI}
+import it.unibo.alchemist.boundary.swingui.impl.SingleRunGUI
 import it.unibo.alchemist.core.implementations.Engine
 import it.unibo.alchemist.core.interfaces.{Simulation, Status}
 import it.unibo.alchemist.model.implementations.molecules.SimpleMolecule
-import it.unibo.alchemist.model.interfaces.{Position, Position2D}
+import it.unibo.alchemist.model.interfaces.Position2D
 import it.unibo.scarlib.core.model._
 import it.unibo.scarlib.core.util.{AgentGlobalStore, TorchLiveLogger}
 
 import java.io.File
 import java.util.concurrent.TimeUnit
 import javax.swing.WindowConstants
-import _root_.scala.jdk.CollectionConverters._
-
+import _root_.scala.concurrent.{Future, Promise}
+import _root_.scala.util.Success
 class AlchemistEnvironment(
     envDefinition: String,
     rewardFunction: RewardFunction,
@@ -25,29 +25,28 @@ class AlchemistEnvironment(
   private val alchemistUtil = new AlchemistUtil()
   private var engine: Engine[Any, Nothing] = _
   this.reset()
-  private var agentIds = Set.empty[Int]
+  private var agentPromises = Map.empty[Int, Promise[(Double, State)]]
+  private var oldState = Map.empty[Int, State]
   private var ticks = 0
-  override def step(action: Action, agentId: Int): (Double, State) = {
-    if (agentIds.contains(agentId)) {
-      engine.play()
-      alchemistUtil.incrementTime(dt, engine)
-      agentIds = Set.empty
-      ticks += 1
-    } else {
-      agentIds += agentId
-    }
+  override def step(action: Action, agentId: Int): Future[(Double, State)] = {
+    agentPromises = agentPromises + (agentId -> Promise[(Double, State)]())
     val actualState = observe(agentId)
+    oldState = oldState + (agentId -> actualState)
     val node = engine.getEnvironment.getNodeByID(agentId)
     node.setConcentration(new SimpleMolecule("action"), action)
-    /* engine.getEnvironment.getNodes
-      .iterator()
-      .asScala
-      .toList
-      .filter(n => n.getId != agentId)
-      .foreach(n => n.setConcentration(new SimpleMolecule("action"), NoAction))*/
-    val newState = observe(agentId)
-    val r = rewardFunction.compute(actualState, action, newState)
-    (r, newState)
+    val result =
+      agentPromises(agentId).future
+    if (agentPromises.size == engine.getEnvironment.getNodeCount) {
+      alchemistUtil.incrementTime(dt, engine)
+      for ((id, promise) <- agentPromises) {
+        val newState = observe(id)
+        val r = rewardFunction.compute(oldState(id), action, newState)
+        promise.complete(Success(r, newState))
+      }
+      agentPromises = Map.empty
+      ticks += 1
+    }
+    result
   }
 
   override def observe(agentId: Int): State = {
@@ -70,9 +69,13 @@ class AlchemistEnvironment(
   }
 
   override def log(): Unit = {
-    AgentGlobalStore.averageAllNumeric(AgentGlobalStore()).foreach { case (k, v) =>
+    AgentGlobalStore.sumAllNumeric(AgentGlobalStore()).foreach { case (k, v) =>
       TorchLiveLogger.logScalar(k, v, ticks)
     }
+    /*println("Average")
+    AgentGlobalStore.averageAllNumeric(AgentGlobalStore()).foreach { case (k, v) =>
+      println(k, v)
+    }*/
     AgentGlobalStore().clearAll()
   }
 

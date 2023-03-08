@@ -34,10 +34,18 @@ object AgentGlobalStore {
       .map { case (who, data) =>
         who -> data.map { case (tag, value) => tag -> value.doubleValue() }
       }
-      .values
-      .reduce { (a, b) =>
-        a.map { case (tag, value) => tag -> (value + b(tag)) }
+      .flatMap { case (id, data) => data.map { case (key, value) => (id, key) -> value } }
+      .groupMap(_._1._2)(_._2)
+      .map { case (key, values) => key -> values.sum / values.size }
+  }
+
+  def sumAllNumeric(store: AgentGlobalStore): Map[String, Double] = {
+    val filtered = store.filterByType[Number]
+    val flatten = filtered
+      .map { case (who, data) =>
+        who -> data.map { case (tag, value) => tag -> value.doubleValue() }
       }
-      .map { case (tag, value) => tag -> (value / filtered.size) }
+      .flatMap { case (id, data) => data.map { case (key, value) => (id, key) -> value } }
+    flatten.groupMapReduce(_._1._2)(_._2)(_ + _)
   }
 }

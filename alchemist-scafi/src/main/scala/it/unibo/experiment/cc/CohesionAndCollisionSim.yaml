@@ -26,12 +26,7 @@ _reactions:
           - type: RunScafiProgram
             parameters: [ it.unibo.experiment.cc.CCScafiAgent, 1.1 ]
       - program: send
-  - move: &move
-      - time-distribution:
-          type: DiracComb
-          parameters: [ 0.1,  1.0 ]
-        type: Event
-        actions: { type: MoveToTarget, parameters: ["destination", 1] }
+
 deployments:
   type: Grid
   #parameters: [ -1, -1, 1, 1, 1, 1, 0, 0 ]

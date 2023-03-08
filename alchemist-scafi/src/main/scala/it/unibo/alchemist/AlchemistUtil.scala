@@ -25,15 +25,18 @@ class AlchemistUtil[P <: Position[P]]() {
       override def run(): Unit = eng.run()
     })
     lock.acquire()
+    eng.removeOutputMonitor(outputMonitor.get)
     eng
   }
 
   def incrementTime(dt: Double, engine: Engine[Any, P]): Unit = {
-    lock.acquire()
     val t = engine.getTime
+    outputMonitor.foreach(outputMonitor => engine.removeOutputMonitor(outputMonitor))
     engine.removeOutputMonitor(outputMonitor.get)
     outputMonitor = Option(timeToPause(t.toDouble + dt, lock, engine))
     engine.addOutputMonitor(outputMonitor.get)
+    engine.play()
+    lock.acquire()
     //engine.play()
   }
 
@@ -46,8 +49,8 @@ class AlchemistUtil[P <: Position[P]]() {
           step: Long
       ): Unit = {
         if (time.toDouble >= stopWhen) {
-          lock.release()
           engine.pause()
+          lock.release()
         }
       }
 

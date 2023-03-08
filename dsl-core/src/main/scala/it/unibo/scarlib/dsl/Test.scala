@@ -3,10 +3,12 @@ package it.unibo.scarlib.dsl
 import it.unibo.scarlib.core.model.*
 import it.unibo.scarlib.dsl.DSL.*
 
-class TestEnv(rewardFunction: RewardFunction, actionSpace: Seq[Action])
-  extends GeneralEnvironment(rewardFunction, actionSpace) {
+import scala.concurrent.Future
 
-  override def step(action: Action, agentId: Int): (Double, State) = ???
+class TestEnv(rewardFunction: RewardFunction, actionSpace: Seq[Action])
+    extends GeneralEnvironment(rewardFunction, actionSpace) {
+
+  override def step(action: Action, agentId: Int): Future[(Double, State)] = ???
 
   override def observe(agentId: Int): State = ???
 
@@ -59,8 +61,6 @@ object Test extends App {
 
   system.learn(1000, 100)
 }
-
-
 
 //import AlchemistEnvironmentConverter.toAlchemistEnv
 //import it.unibo.scarlib.core.model.SimpleRF

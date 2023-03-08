@@ -50,13 +50,9 @@ class CCRewardFunction() extends RewardFunction {
       } else {
         val cohesion = cohesionFactor(distances)
         val collision = collisionFactor(distances)
-        val t = (ticks / 50.0).floor.toInt
         AgentGlobalStore().put(s.agentId, "cohesion", cohesion)
         AgentGlobalStore().put(s.agentId, "collision", collision)
         AgentGlobalStore().put(s.agentId, "reward", collision + cohesion)
-
-        //TorchLiveLogger.logScalar(s"Cohesion reward", cohesion, t)
-        //TorchLiveLogger.logScalar(s"Collision reward", collision, t)
         cohesion + collision
       }
     }
@@ -88,14 +84,20 @@ object CohesionAndCollisionExperiment extends App {
     "/home/gianluca/Programming/IdeaProjects/ScaRLib/alchemist-scafi/src/main/scala/it/unibo/experiment/cc/CohesionAndCollisionSim.yaml",
     rewardFunction,
     CCActions.toSeq(),
-    new ShowEach(20)
+    new ShowEach(100)
   )
   val datasetSize = 10000
+
   private val dataset: ReplayBuffer[State, Action] = ReplayBuffer[State, Action](datasetSize)
 
   private var agents: Seq[IndipendentAgent] = Seq.empty
   for (n <- 0 to 49)
     agents = agents :+ new IndipendentAgent(env, n, dataset, CCActions.toSeq())
-  new CTDESystem(agents, dataset, CCActions.toSeq(), env).learn(100, 100)
+  new CTDESystem(agents, dataset, CCActions.toSeq(), env).learn(1000, 100)
 
+  /*private var agents: Seq[DecentralizedAgent] = Seq.empty
+  for (n <- 0 to 49)
+    agents = agents :+ new DecentralizedAgent(n, env, 10000, CCActions.toSeq())
+
+  new DTDESystem(agents, env).learn(1000, 100)*/
 }
