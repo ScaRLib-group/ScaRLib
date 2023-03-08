@@ -38,7 +38,19 @@ _reactions:
 deployments:
   type: Grid
   #parameters: [ -1, -1, 1, 1, 1, 1, 0, 0 ]
-  parameters: [-5, -5, 5, 5, 2, 1, 1, 1] # more agents... (50)
+  parameters: [-10, -10, 10, 10, 2, 1, 1, 1] # more agents... (50)
   programs:
     - *program
     #- *move
+
+export:
+  - type: CSVExporter
+    parameters:
+      fileNameRoot: "simulation"
+      exportPath: "data-csv"
+      interval: 1
+    data:
+      - time
+      - molecule: distances
+        value-filter: onlyfinite
+        aggregators: [ min, max, mean ]

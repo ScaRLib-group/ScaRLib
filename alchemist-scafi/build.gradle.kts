@@ -43,8 +43,20 @@ tasks.register<JavaExec>("runTrySimulationAlchemistScafi") {
     )
 }
 
-tasks.register<JavaExec>("runCohesionAndCollision") {
+tasks.register<JavaExec>("runCohesionAndCollisionEval") {
     group = "try simulation"
-    mainClass.set("it.unibo.experiment.cc.CohesionAndCollisionExperiment")
+    mainClass.set("it.unibo.experiment.cc.CohesionAndCollisionEval")
+    classpath = sourceSets["main"].runtimeClasspath
+}
+
+tasks.register<JavaExec>("runCohesionAndCollisionTraining") {
+    group = "try simulation"
+    mainClass.set("it.unibo.experiment.cc.CohesionAndCollisionTraining")
+    classpath = sourceSets["main"].runtimeClasspath
+}
+
+tasks.register<JavaExec>("runFollowLeaderExperiment") {
+    group = "try simulation"
+    mainClass.set("it.unibo.experiment.follow.FollowLeaderExperiment")
     classpath = sourceSets["main"].runtimeClasspath
 }

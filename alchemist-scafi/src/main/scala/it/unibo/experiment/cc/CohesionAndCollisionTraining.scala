@@ -5,7 +5,7 @@ import it.unibo.alchemist.loader.m2m.{JVMConstructor, SimulationModel}
 import it.unibo.alchemist.{AlchemistEnvironment, ShowEach}
 import it.unibo.scafi.space.Point3D
 import it.unibo.scarlib.core.deepRL.{CTDESystem, IndipendentAgent}
-import it.unibo.scarlib.core.model.{Action, ReplayBuffer, RewardFunction, State}
+import it.unibo.scarlib.core.model.{Action, DeepQLearner, PolicyNN, ReplayBuffer, RewardFunction, State}
 import it.unibo.scarlib.core.util.AgentGlobalStore
 import org.slf4j.LoggerFactory
 
@@ -74,7 +74,7 @@ class CCRewardFunction() extends RewardFunction {
     state.positions.map(p => Point3D.Zero.distance(Point3D(p._1, p._2, 0)))
 }
 
-object CohesionAndCollisionExperiment extends App {
+object CohesionAndCollisionTraining extends App {
 
   private val rewardFunction = new CCRewardFunction()
   LoggerFactory.getLogger(classOf[SimulationModel]).asInstanceOf[ch.qos.logback.classic.Logger].setLevel(Level.OFF)
@@ -84,7 +84,8 @@ object CohesionAndCollisionExperiment extends App {
     "./src/main/scala/it/unibo/experiment/cc/CohesionAndCollisionSim.yaml",
     rewardFunction,
     CCActions.toSeq(),
-    new ShowEach(100)
+    //new ShowEach(100)
+    randomSeed = Some(10)
   )
   val datasetSize = 10000
 
@@ -93,11 +94,42 @@ object CohesionAndCollisionExperiment extends App {
   private var agents: Seq[IndipendentAgent] = Seq.empty
   for (n <- 0 to 49)
     agents = agents :+ new IndipendentAgent(env, n, dataset, CCActions.toSeq())
-  new CTDESystem(agents, dataset, CCActions.toSeq(), env).learn(1000, 100)
+
+  val where = s"../data/network"
+  //new CTDESystem(agents, dataset, CCActions.toSeq(), env).learn(1000, 100)
+  new CTDESystem(agents, dataset, CCActions.toSeq(), env)
+    .runTest(100, PolicyNN.apply(where, 10, 64))
 
   /*private var agents: Seq[DecentralizedAgent] = Seq.empty
   for (n <- 0 to 49)
     agents = agents :+ new DecentralizedAgent(n, env, 10000, CCActions.toSeq())
 
   new DTDESystem(agents, env).learn(1000, 100)*/
+}
+
+object CohesionAndCollisionEval extends App {
+
+  private val rewardFunction = new CCRewardFunction()
+  LoggerFactory.getLogger(classOf[SimulationModel]).asInstanceOf[ch.qos.logback.classic.Logger].setLevel(Level.OFF)
+  LoggerFactory.getLogger(classOf[JVMConstructor]).asInstanceOf[ch.qos.logback.classic.Logger].setLevel(Level.OFF)
+  (0 to 16).foreach { case seed =>
+    val env = new AlchemistEnvironment(
+      "./src/main/scala/it/unibo/experiment/cc/CohesionAndCollisionEval.yaml",
+      rewardFunction,
+      CCActions.toSeq(),
+      //new ShowEach(100),
+      randomSeed = Some(seed)
+    )
+    val datasetSize = 10000
+    println(s"agents: ${env.currentNodeCount}")
+    val dataset: ReplayBuffer[State, Action] = ReplayBuffer[State, Action](datasetSize)
+    var agents: Seq[IndipendentAgent] = Seq.empty
+    for (n <- 0 until env.currentNodeCount)
+      agents = agents :+ new IndipendentAgent(env, n, dataset, CCActions.toSeq())
+
+    val where = s"../data/network"
+    //new CTDESystem(agents, dataset, CCActions.toSeq(), env).learn(1000, 100)
+    new CTDESystem(agents, dataset, CCActions.toSeq(), env)
+      .runTest(100, PolicyNN.apply(where, 10, 64))
+  }
 }

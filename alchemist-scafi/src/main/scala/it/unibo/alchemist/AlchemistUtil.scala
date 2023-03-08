@@ -3,6 +3,7 @@ package it.unibo.alchemist
 import it.unibo.alchemist.boundary.interfaces.OutputMonitor
 import it.unibo.alchemist.core.implementations.Engine
 import it.unibo.alchemist.loader.LoadAlchemist
+import it.unibo.alchemist.loader.`export`.exporters.GlobalExporter
 import it.unibo.alchemist.model.interfaces.{Actionable, Environment, Position, Time}
 
 import java.io.File
@@ -14,9 +15,18 @@ class AlchemistUtil[P <: Position[P]]() {
   private var lock = new Semaphore(0)
   private val executor = Executors.newSingleThreadExecutor()
 
-  def load(file: File): Engine[Any, P] = {
-    val env = LoadAlchemist.from(file).getDefault[Any, P]().getEnvironment
+  def load(file: File, seed: Option[Int] = None): Engine[Any, P] = {
+    val (env, exporters) = seed match {
+      case Some(seed) =>
+        val loader = LoadAlchemist.from(file).getWith[Any, P](java.util.Map.of("seed", seed)) // .getEnvironment
+        val env = loader.getEnvironment
+        val exporters = loader.getExporters
+        val globalExporter = new GlobalExporter(exporters)
+        (env, Some(globalExporter))
+      case None => (LoadAlchemist.from(file).getDefault[Any, P]().getEnvironment, None)
+    }
     val eng = new Engine(env)
+    exporters.foreach(eng.addOutputMonitor(_))
     this.lock = new Semaphore(0)
     outputMonitor = Option(timeToPause(1, lock, eng)) // TODO - va bene così? Lo faccio partire ma lo pauso subito
     eng.addOutputMonitor(outputMonitor.get)
@@ -58,5 +68,4 @@ class AlchemistUtil[P <: Position[P]]() {
 
       override def initialized(environment: Environment[Any, P]): Unit = {}
     }
-
 }

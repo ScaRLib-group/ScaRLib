@@ -18,7 +18,8 @@ class AlchemistEnvironment(
     envDefinition: String,
     rewardFunction: RewardFunction,
     actionSpace: Seq[Action],
-    outputStrategy: OutputStrategy = NoOutput
+    outputStrategy: OutputStrategy = NoOutput,
+    randomSeed: Option[Int] = None
 ) extends GeneralEnvironment(rewardFunction, actionSpace) {
 
   private def dt = 1.0 // TODO - settarlo con un senso
@@ -65,10 +66,11 @@ class AlchemistEnvironment(
       engine.terminate()
       engine.waitFor(Status.TERMINATED, Long.MaxValue, TimeUnit.SECONDS)
     }
-    engine = alchemistUtil.load(file)
+    engine = alchemistUtil.load(file, randomSeed)
     outputStrategy.output(engine)
   }
 
+  def currentNodeCount: Int = engine.getEnvironment.getNodeCount
   override def log(): Unit = {
     AgentGlobalStore.sumAllNumeric(AgentGlobalStore()).foreach { case (k, v) =>
       TorchLiveLogger.logScalar(k, v, ticks)

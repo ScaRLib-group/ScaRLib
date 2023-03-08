@@ -11,11 +11,12 @@ class CTDESystem(
     agents: Seq[IndipendentAgent],
     dataset: ReplayBuffer[State, Action],
     actionSpace: Seq[Action],
-    environment: GeneralEnvironment
+    environment: GeneralEnvironment,
+    inputSize: Int = 10
 ) {
   private val epsilon: Decay[Double] = new ExponentialDecay(0.9, 0.1, 0.01)
   private val learner: DeepQLearner =
-    new DeepQLearner(dataset, actionSpace, epsilon, 0.90, 0.0005, hiddenSize = 64, inputSize = 10)(
+    new DeepQLearner(dataset, actionSpace, epsilon, 0.90, 0.0005, hiddenSize = 64, inputSize = inputSize)(
       new Random(42)
     ) //TODO migliora inputsize
 
@@ -53,8 +54,10 @@ class CTDESystem(
 
     @tailrec
     def episode(time: Int): Unit = {
-      agents.foreach(_.step())
-      episode(time - 1)
+      if (time > 0) {
+        Await.ready(Future.sequence(agents.map(_.step())), scala.concurrent.duration.Duration.Inf)
+        episode(time - 1)
+      }
     }
   }
 
