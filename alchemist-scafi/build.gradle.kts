@@ -54,18 +54,4 @@ tasks.register<JavaExec>("runFollowLeaderExperiment") {
     group = "try simulation"
     mainClass.set("it.unibo.experiment.follow.FollowLeaderExperiment")
     classpath = sourceSets["main"].runtimeClasspath
-
-/*
->>>>>>> 41757eb (build: update build gradle)
-publishing.publications {
-    withType<MavenPublication> {
-        pom {
-            developers {
-                developer {
-                    name.set("Gianluca Aguzzi")
-                    email.set("gianluca.aguzzi@unibo.it")
-                }
-            }
-        }
-    }
-}*/
+}
