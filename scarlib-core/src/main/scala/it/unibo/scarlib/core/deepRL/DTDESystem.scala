@@ -4,6 +4,7 @@ import scala.annotation.tailrec
 import it.unibo.scarlib.core.model.{GeneralEnvironment, PolicyNN}
 
 class DTDESystem(agents: Seq[DecentralizedAgent], environment: GeneralEnvironment) {
+
   @tailrec
   final def learn(episodes: Int, episodeLength: Int): Unit = {
     @tailrec

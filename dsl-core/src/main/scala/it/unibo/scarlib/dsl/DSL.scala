@@ -2,7 +2,6 @@ package it.unibo.scarlib.dsl
 
 import it.unibo.scarlib.core.deepRL.{CTDESystem, IndipendentAgent}
 import it.unibo.scarlib.core.model.*
-
 import scala.collection.mutable
 import scala.collection.mutable.Seq as MSeq
 import scala.reflect.runtime.universe as ru
@@ -56,26 +55,10 @@ object DSL {
 
         nAgents = init
 
-
-    /*def actions(init: MSeq[Action] ?=> Unit)(using env: GeneralEnvironment)=
-      given seq: MSeq[Action] = MSeq.empty
-      init
-      actionSpace = seq
-      //env.setActions(set)*/
-
-    /*def action(init: Unit ?=> Action)(using seq: MSeq[Action]) =
-      given unit: Unit = ()
-      seq :+ init*/
-
-
 }
 
 
 /*
-import it.unibo.scarlib.core.model.{Action, Environment, RewardFunction}
-
-import scala.collection.mutable.Set as MSet
-import scala.collection.mutable.Map as MMap
 
 object DSL:
   def environment(init: Environment ?=> Unit) =
@@ -109,4 +92,5 @@ object DSL:
   //  env.setAgent(agent)
 
   def agent(agent: String)(using env: Environment) =
-    env.setAgent(agent)*/
+    env.setAgent(agent) */
+

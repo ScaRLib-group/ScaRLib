@@ -30,7 +30,7 @@ class DeepQLearner(
   private val targetPolicy = DeepQLearner.policyFromNetwork(policyNetwork, actionSpace)
   private val behaviouralPolicy = DeepQLearner.policyFromNetwork(policyNetwork, actionSpace)
   private val optimizer = TorchSupport.optimizerModule().RMSprop(policyNetwork.parameters(), learningRate)
-
+  
   val optimal: State => Action = targetPolicy
 
   val behavioural: State => Action =
@@ -41,9 +41,10 @@ class DeepQLearner(
         behaviouralPolicy(state)
       }
 
+
   //override def mode: AgentMode = _agentMode
   def mode: AgentMode = _agentMode
-
+  
   def record(state: State, action: Action, reward: Double, nextState: State): Unit =
     memory.insert(state, action, reward, nextState)
 
@@ -76,6 +77,7 @@ class DeepQLearner(
       }
     }
   }
+
 
   def snapshot(episode: Int, agentId: Int): Unit = {
     val timeMark = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date)

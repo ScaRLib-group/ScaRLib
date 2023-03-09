@@ -23,10 +23,12 @@ class AlchemistEnvironment(
 ) extends GeneralEnvironment(rewardFunction, actionSpace) {
 
   private def dt = 1.0 // TODO - settarlo con un senso
+
   private val file = new File(envDefinition)
   private val alchemistUtil = new AlchemistUtil()
   private var engine: Engine[Any, Nothing] = _
   this.reset()
+
   private var agentPromises = Map.empty[Int, Promise[(Double, State)]]
   private var oldState = Map.empty[Int, State]
   private var ticks = 0
@@ -119,3 +121,4 @@ class After(ticks: Int) extends OutputStrategy {
     episodes += 1
   }
 }
+

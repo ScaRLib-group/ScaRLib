@@ -68,4 +68,5 @@ class AlchemistUtil[P <: Position[P]]() {
 
       override def initialized(environment: Environment[Any, P]): Unit = {}
     }
+
 }
