@@ -2,7 +2,7 @@ plugins {
     scala
 }
 
-group = "it.unibo.scarlib"
+group = "io.github.davidedomini"
 
 scala {
     zincVersion.set("1.6.1")
@@ -33,13 +33,4 @@ dependencies {
     implementation("org.scala-lang:scala-reflect:2.13.10")
     testImplementation("junit:junit:4.13.2")
     implementation(project(":scarlib-core"))
-}
-
-tasks.register<JavaExec>("runDSLTest") {
-    group = "try dsl"
-    mainClass.set("it.unibo.scarlib.dsl.Test")
-    classpath = sourceSets["main"].runtimeClasspath
-    jvmArgs(
-        "-Djna.library.path=/Users/davidedomini/opt/anaconda3/lib"
-    )
 }
