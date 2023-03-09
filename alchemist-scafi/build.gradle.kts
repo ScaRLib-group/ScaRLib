@@ -55,6 +55,8 @@ tasks.register<JavaExec>("runFollowLeaderExperiment") {
     mainClass.set("it.unibo.experiment.follow.FollowLeaderExperiment")
     classpath = sourceSets["main"].runtimeClasspath
 
+/*
+>>>>>>> 41757eb (build: update build gradle)
 publishing.publications {
     withType<MavenPublication> {
         pom {
@@ -66,4 +68,4 @@ publishing.publications {
             }
         }
     }
-}
+}*/

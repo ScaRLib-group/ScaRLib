@@ -1,7 +1,7 @@
 plugins {
     java
-    id ("org.danilopianini.publish-on-central") version "3.3.2"
-    id("org.danilopianini.git-sensitive-semantic-versioning-gradle-plugin") version "1.1.4"
+    //id ("org.danilopianini.publish-on-central") version "3.3.2"
+    //id("org.danilopianini.git-sensitive-semantic-versioning-gradle-plugin") version "1.1.4"
 }
 
 group = "io.github.davidedomini"
@@ -10,10 +10,10 @@ repositories {
     mavenCentral()
 }
 
-allprojects {
+/*allprojects {
     apply(plugin = "org.danilopianini.publish-on-central")
     apply(plugin = "org.danilopianini.git-sensitive-semantic-versioning-gradle-plugin")
-}
+}*/
 
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
@@ -23,7 +23,7 @@ dependencies {
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
-
+/*
 publishOnCentral {
     projectUrl.set("https://github.com/davidedomini/ScaRLib")
     scmConnection.set("git:git@github.com:davidedomini/ScaRLib")
@@ -57,4 +57,4 @@ if(System.getenv("CI") == true.toString()) {
         val signingPassword: String? by project
         useInMemoryPgpKeys(signingKey, signingPassword)
     }
-}
+}*/
