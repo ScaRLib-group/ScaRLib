@@ -7,11 +7,11 @@ import scala.util.Random
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 class DecentralizedAgent(
-    agentId: Int,
-    environment: GeneralEnvironment,
-    datasetSize: Int,
-    actionSpace: Seq[Action],
-    agentMode: AgentMode = AgentMode.Training
+                          agentId: Int,
+                          environment: Environment,
+                          datasetSize: Int,
+                          actionSpace: Seq[Action],
+                          agentMode: AgentMode = AgentMode.Training
 ) {
 
   private val dataset: ReplayBuffer[State, Action] = ReplayBuffer[State, Action](datasetSize)

@@ -9,11 +9,11 @@ import scala.concurrent.{Await, Future}
 import scala.util.Random
 
 class CTDESystem(
-    agents: Seq[IndipendentAgent],
-    dataset: ReplayBuffer[State, Action],
-    actionSpace: Seq[Action],
-    environment: GeneralEnvironment,
-    inputSize: Int = 10
+                  agents: Seq[IndipendentAgent],
+                  dataset: ReplayBuffer[State, Action],
+                  actionSpace: Seq[Action],
+                  environment: Environment,
+                  inputSize: Int = 10
 )(implicit context: ExecutionContext) {
   private val epsilon: Decay[Double] = new ExponentialDecay(0.9, 0.1, 0.01)
   private val learner: DeepQLearner =

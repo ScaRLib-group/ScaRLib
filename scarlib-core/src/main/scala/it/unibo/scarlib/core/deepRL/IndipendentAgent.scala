@@ -7,10 +7,10 @@ import scala.util.Random
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 class IndipendentAgent(
-    environment: GeneralEnvironment,
-    agentId: Int,
-    dataset: ReplayBuffer[State, Action],
-    val actionSpace: Seq[Action]
+                        environment: Environment,
+                        agentId: Int,
+                        dataset: ReplayBuffer[State, Action],
+                        val actionSpace: Seq[Action]
 ) {
   private var policy: State => Action = _
   private val posLogs: StringBuilder = new StringBuilder()

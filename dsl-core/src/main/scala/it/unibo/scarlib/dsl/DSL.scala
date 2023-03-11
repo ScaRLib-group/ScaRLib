@@ -5,11 +5,12 @@ import it.unibo.scarlib.core.model.*
 import scala.collection.mutable
 import scala.collection.mutable.Seq as MSeq
 import scala.reflect.runtime.universe as ru
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object DSL {
 
     private var rf: Option[RewardFunction] = Option.empty
-    private var env: Option[GeneralEnvironment] = Option.empty
+    private var env: Option[Environment] = Option.empty
     private var ds: Option[ReplayBuffer[State, Action]] = Option.empty
     private var actionSpace: Seq[Action] = Seq.empty
     private var nAgents: Int = 0
@@ -33,7 +34,7 @@ object DSL {
         val classMirror = runtimeMirror.reflectClass(classSymbol)
         val constructor = classSymbol.typeSignature.members.filter(_.isConstructor).toList.head.asMethod
         val constructorMirror = classMirror.reflectConstructor(constructor).apply(rf.get, actionSpace)
-        env = Option(constructorMirror.asInstanceOf[GeneralEnvironment])
+        env = Option(constructorMirror.asInstanceOf[Environment])
 
     def rewardFunction(init: Unit ?=> RewardFunction) =
         given unit: Unit = ()

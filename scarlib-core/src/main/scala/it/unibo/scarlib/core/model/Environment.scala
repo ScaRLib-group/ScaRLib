@@ -1,13 +1,15 @@
 package it.unibo.scarlib.core.model
 
-abstract class Environment(rewardFunction: RewardFunction, actionSpace: Seq[Action]){
-    def step(action: Action, agentId: Int): (Double, State)
+import scala.concurrent.Future
 
-    def observe(agentId: Int): State
+abstract class Environment(rewardFunction: RewardFunction, actionSpace: Seq[Action]) {
+  def step(action: Action, agentId: Int): Future[(Double, State)]
 
-    def reset(): Unit
+  def observe(agentId: Int): State
 
-    def log(): Unit
+  def reset(): Unit
 
-    def logOnFile(): Unit
+  def log(): Unit
+
+  def logOnFile(): Unit
 }

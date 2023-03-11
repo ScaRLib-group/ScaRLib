@@ -20,7 +20,7 @@ class AlchemistEnvironment(
     actionSpace: Seq[Action],
     outputStrategy: OutputStrategy = NoOutput,
     randomSeed: Option[Int] = None
-) extends GeneralEnvironment(rewardFunction, actionSpace) {
+) extends Environment(rewardFunction, actionSpace) {
 
   private def dt = 1.0 // TODO - settarlo con un senso
 

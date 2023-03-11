@@ -6,7 +6,7 @@ import it.unibo.scarlib.dsl.DSL.*
 import scala.concurrent.Future
 
 class TestEnv(rewardFunction: RewardFunction, actionSpace: Seq[Action])
-    extends GeneralEnvironment(rewardFunction, actionSpace) {
+    extends Environment(rewardFunction, actionSpace) {
 
   override def step(action: Action, agentId: Int): Future[(Double, State)] = ???
 
