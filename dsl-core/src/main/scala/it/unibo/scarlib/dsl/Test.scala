@@ -1,5 +1,6 @@
 package it.unibo.scarlib.dsl
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import it.unibo.scarlib.core.model.*
 import it.unibo.scarlib.dsl.DSL.*
 

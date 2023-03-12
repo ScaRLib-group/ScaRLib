@@ -2,10 +2,11 @@ package it.unibo.scarlib.dsl
 
 import it.unibo.scarlib.core.deepRL.{CTDESystem, IndipendentAgent}
 import it.unibo.scarlib.core.model.*
+
 import scala.collection.mutable
 import scala.collection.mutable.Seq as MSeq
+import scala.concurrent.ExecutionContext
 import scala.reflect.runtime.universe as ru
-import scala.concurrent.ExecutionContext.Implicits.global
 
 object DSL {
 
@@ -15,7 +16,7 @@ object DSL {
     private var actionSpace: Seq[Action] = Seq.empty
     private var nAgents: Int = 0
 
-    def learningSystem(init: Unit ?=> Unit): CTDESystem =
+    def learningSystem(init: Unit ?=> Unit)(using context: ExecutionContext): CTDESystem =
         given unit: Unit = ()
 
         init
