@@ -21,8 +21,8 @@ class DeepQLearner(
     val _agentMode: AgentMode = AgentMode.Training,
     val inputSize: Int
 )(implicit random: Random)
-//extends Agent
 {
+
   private var updates = 0
   private val device = AutodiffDevice()
   private val targetNetwork = SimpleSequentialDQN(inputSize, hiddenSize, actionSpace.size)
@@ -41,8 +41,6 @@ class DeepQLearner(
         behaviouralPolicy(state)
       }
 
-
-  //override def mode: AgentMode = _agentMode
   def mode: AgentMode = _agentMode
   
   def record(state: State, action: Action, reward: Double, nextState: State): Unit =
@@ -69,7 +67,6 @@ class DeepQLearner(
         .neuralNetworkModule()
         .utils
         .clip_grad_value_(policyNetwork.parameters(), 1.0)
-      //py"[param.grad.data.clamp_(-1, 1) for param in ${policyNetwork.parameters()}]"
       optimizer.step()
       updates += 1
       if (updates % updateEach == 0) {
@@ -77,7 +74,6 @@ class DeepQLearner(
       }
     }
   }
-
 
   def snapshot(episode: Int, agentId: Int): Unit = {
     val timeMark = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date)
