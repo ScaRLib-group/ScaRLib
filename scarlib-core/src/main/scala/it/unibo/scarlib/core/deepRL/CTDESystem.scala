@@ -10,17 +10,15 @@ import scala.util.Random
 
 class CTDESystem(
                   agents: Seq[IndipendentAgent],
+                  environment: Environment,
                   dataset: ReplayBuffer[State, Action],
                   actionSpace: Seq[Action],
-                  environment: Environment,
                   learningConfiguration: LearningConfiguration
-                  //inputSize: Int = 10
 )(implicit context: ExecutionContext) {
+
   private val epsilon: Decay[Double] = learningConfiguration.epsilon
   private val learner: DeepQLearner =
     new DeepQLearner(dataset, actionSpace, learningConfiguration)(new Random(42))
-    //new DeepQLearner(dataset, actionSpace, epsilon, 0.90, 0.0005, hiddenSize = 64, inputSize = inputSize)(new Random(42)) //TODO migliora inputsize
-
 
   @tailrec
   final def learn(episodes: Int, episodeLength: Int): Unit = {
