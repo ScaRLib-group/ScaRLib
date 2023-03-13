@@ -11,8 +11,9 @@ import scala.util.Random
 
 class DeepQLearner(memory: ReplayBuffer[State, Action],
                    actionSpace: Seq[Action],
-                   learningConfiguration: LearningConfiguration)(implicit random: Random) {
+                   learningConfiguration: LearningConfiguration) {
 
+  private val random = learningConfiguration.random
   private val learningRate = learningConfiguration.learningRate
   private val epsilon = learningConfiguration.epsilon
   private val batchSize = learningConfiguration.batchSize

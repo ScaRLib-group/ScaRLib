@@ -16,7 +16,7 @@ class CTDESystem(
 
   private val epsilon: Decay[Double] = learningConfiguration.epsilon
   private val learner: DeepQLearner =
-    new DeepQLearner(dataset, actionSpace, learningConfiguration)(new Random(42))
+    new DeepQLearner(dataset, actionSpace, learningConfiguration)
 
   @tailrec
   final def learn(episodes: Int, episodeLength: Int): Unit = {

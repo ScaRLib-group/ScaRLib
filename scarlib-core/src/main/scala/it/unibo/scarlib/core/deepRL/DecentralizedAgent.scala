@@ -17,7 +17,7 @@ class DecentralizedAgent(
 
   private val dataset: ReplayBuffer[State, Action] = ReplayBuffer[State, Action](datasetSize)
   private val epsilon: Decay[Double] = learningConfiguration.epsilon
-  private val learner: DeepQLearner = new DeepQLearner(dataset, actionSpace, learningConfiguration)(new Random(42))
+  private val learner: DeepQLearner = new DeepQLearner(dataset, actionSpace, learningConfiguration)
   private val posLogs: StringBuilder = new StringBuilder()
   private var testPolicy: State => Action = _
 
