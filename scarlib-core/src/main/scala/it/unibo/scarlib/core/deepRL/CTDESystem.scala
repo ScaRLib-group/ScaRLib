@@ -13,13 +13,13 @@ class CTDESystem(
                   dataset: ReplayBuffer[State, Action],
                   actionSpace: Seq[Action],
                   environment: Environment,
-                  inputSize: Int = 10
+                  learningConfiguration: LearningConfiguration
+                  //inputSize: Int = 10
 )(implicit context: ExecutionContext) {
-  private val epsilon: Decay[Double] = new ExponentialDecay(0.9, 0.1, 0.01)
+  private val epsilon: Decay[Double] = learningConfiguration.epsilon
   private val learner: DeepQLearner =
-    new DeepQLearner(dataset, actionSpace, epsilon, 0.90, 0.0005, hiddenSize = 64, inputSize = inputSize)(
-      new Random(42)
-    ) //TODO migliora inputsize
+    new DeepQLearner(dataset, actionSpace, learningConfiguration)(new Random(42))
+    //new DeepQLearner(dataset, actionSpace, epsilon, 0.90, 0.0005, hiddenSize = 64, inputSize = inputSize)(new Random(42)) //TODO migliora inputsize
 
 
   @tailrec

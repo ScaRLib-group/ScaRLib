@@ -9,24 +9,19 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import scala.util.Random
 
-class DeepQLearner(
-    memory: ReplayBuffer[State, Action],
-    actionSpace: Seq[Action],
-    var epsilon: Decay[Double],
-    gamma: Double,
-    learningRate: Double,
-    batchSize: Int = 32,
-    val updateEach: Int = 100,
-    val hiddenSize: Int = 32,
-    val _agentMode: AgentMode = AgentMode.Training,
-    val inputSize: Int
-)(implicit random: Random)
-{
+class DeepQLearner(memory: ReplayBuffer[State, Action],
+                   actionSpace: Seq[Action],
+                   learningConfiguration: LearningConfiguration)(implicit random: Random) {
 
+  private val learningRate = learningConfiguration.learningRate
+  private val epsilon = learningConfiguration.epsilon
+  private val batchSize = learningConfiguration.batchSize
+  private val gamma = learningConfiguration.gamma
+  private val updateEach = learningConfiguration.updateEach
   private var updates = 0
   private val device = AutodiffDevice()
-  private val targetNetwork = SimpleSequentialDQN(inputSize, hiddenSize, actionSpace.size)
-  private val policyNetwork = SimpleSequentialDQN(inputSize, hiddenSize, actionSpace.size)
+  private val targetNetwork = learningConfiguration.dqnFactory.createNN().asInstanceOf[py.Dynamic]
+  private val policyNetwork = learningConfiguration.dqnFactory.createNN().asInstanceOf[py.Dynamic]
   private val targetPolicy = DeepQLearner.policyFromNetwork(policyNetwork, actionSpace)
   private val behaviouralPolicy = DeepQLearner.policyFromNetwork(policyNetwork, actionSpace)
   private val optimizer = TorchSupport.optimizerModule().RMSprop(policyNetwork.parameters(), learningRate)
@@ -40,13 +35,11 @@ class DeepQLearner(
       } else {
         behaviouralPolicy(state)
       }
-
-  def mode: AgentMode = _agentMode
   
   def record(state: State, action: Action, reward: Double, nextState: State): Unit =
     memory.insert(state, action, reward, nextState)
 
-  def improve(): Unit = if (this.mode == AgentMode.Training) {
+  def improve(): Unit = { //if (this.mode == AgentMode.Training) {
     val memorySample = memory.subsample(batchSize)
     if (memorySample.size == batchSize) {
       val states = memorySample.map(_.actualState).map(state => state.toSeq().toPythonCopy).toPythonCopy

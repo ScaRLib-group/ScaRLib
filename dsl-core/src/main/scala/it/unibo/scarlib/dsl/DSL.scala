@@ -14,6 +14,7 @@ object DSL {
     private var env: Option[Environment] = Option.empty
     private var ds: Option[ReplayBuffer[State, Action]] = Option.empty
     private var actionSpace: Seq[Action] = Seq.empty
+    private var lc: Option[LearningConfiguration] = Option.empty
     private var nAgents: Int = 0
 
     def learningSystem(init: Unit ?=> Unit)(using context: ExecutionContext): CTDESystem =
@@ -24,7 +25,7 @@ object DSL {
         for (n <- 0 to nAgents) {
             agentsSeq = agentsSeq :+ new IndipendentAgent(env.get, n, ds.get, actionSpace)
         }
-        new CTDESystem(agentsSeq, ds.get, actionSpace, env.get)
+        new CTDESystem(agentsSeq, ds.get, actionSpace, env.get, lc.get)
 
     def environment(init: Unit ?=> String) =
         given unit: Unit = ()
@@ -56,6 +57,10 @@ object DSL {
         given unit: Unit = ()
 
         nAgents = init
+
+    def learningConfiguration(init: Unit ?=> LearningConfiguration) =
+        given unit: Unit = ()
+        lc = Option(init)
 
 }
 

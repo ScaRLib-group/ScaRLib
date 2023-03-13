@@ -9,16 +9,15 @@ import scala.concurrent.Future
 class DecentralizedAgent(
                           agentId: Int,
                           environment: Environment,
-                          datasetSize: Int,
                           actionSpace: Seq[Action],
-                          agentMode: AgentMode = AgentMode.Training
+                          datasetSize: Int,
+                          agentMode: AgentMode = AgentMode.Training,
+                          learningConfiguration: LearningConfiguration
 ) {
 
   private val dataset: ReplayBuffer[State, Action] = ReplayBuffer[State, Action](datasetSize)
-  private val epsilon: Decay[Double] = new ExponentialDecay(0.9, 0.1, 0.01)
-  private val learner: DeepQLearner = new DeepQLearner(dataset, actionSpace, epsilon, 0.9, 0.0005, inputSize = 10)(
-    new Random(42)
-  ) // TODO migliora inputsize
+  private val epsilon: Decay[Double] = learningConfiguration.epsilon
+  private val learner: DeepQLearner = new DeepQLearner(dataset, actionSpace, learningConfiguration)(new Random(42))
   private val posLogs: StringBuilder = new StringBuilder()
   private var testPolicy: State => Action = _
 
