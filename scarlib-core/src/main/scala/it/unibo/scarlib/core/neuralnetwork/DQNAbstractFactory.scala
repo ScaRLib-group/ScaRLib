@@ -1,5 +1,5 @@
 package it.unibo.scarlib.core.neuralnetwork
 
-abstract class DQNFactory {
+abstract class DQNAbstractFactory {
   def createNN(): DQN
 }
