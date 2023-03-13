@@ -1,9 +1,7 @@
 package it.unibo.scarlib.core.deepRL
 
 import it.unibo.scarlib.core.model._
-
 import scala.annotation.tailrec
-
 import scala.concurrent.ExecutionContext
 import scala.concurrent.{Await, Future}
 import scala.util.Random
