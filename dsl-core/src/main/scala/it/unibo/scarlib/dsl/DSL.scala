@@ -23,9 +23,9 @@ object DSL {
         init
         var agentsSeq: Seq[IndependentAgent] = Seq.empty
         for (n <- 0 to nAgents) {
-            agentsSeq = agentsSeq :+ new IndependentAgent(env.get, n, ds.get, actionSpace)
+            agentsSeq = agentsSeq :+ new IndependentAgent(n, env.get, actionSpace, ds.get)
         }
-        new CTDESystem(agentsSeq, ds.get, actionSpace, env.get, lc.get)
+        new CTDESystem(agentsSeq, env.get, ds.get, actionSpace, lc.get)
 
     def environment(init: Unit ?=> String) =
         given unit: Unit = ()
