@@ -17,7 +17,7 @@ object DSL {
     private var lc: Option[LearningConfiguration] = Option.empty
     private var nAgents: Int = 0
 
-    def learningSystem(init: Unit ?=> Unit)(using context: ExecutionContext): CTDESystem =
+    def CTDELearningSystem(init: Unit ?=> Unit)(using context: ExecutionContext): CTDESystem =
         given unit: Unit = ()
 
         init

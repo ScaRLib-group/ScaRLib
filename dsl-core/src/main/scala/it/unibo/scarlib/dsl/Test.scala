@@ -34,7 +34,7 @@ object TestActions {
 
 object Test extends App {
 
-  val system = learningSystem {
+  val system = CTDELearningSystem {
 
     rewardFunction {
       new TestRF()
