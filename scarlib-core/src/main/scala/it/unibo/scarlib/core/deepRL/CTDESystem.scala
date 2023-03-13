@@ -9,7 +9,7 @@ import scala.concurrent.{Await, Future}
 import scala.util.Random
 
 class CTDESystem(
-                  agents: Seq[IndipendentAgent],
+                  agents: Seq[IndependentAgent],
                   environment: Environment,
                   dataset: ReplayBuffer[State, Action],
                   actionSpace: Seq[Action],

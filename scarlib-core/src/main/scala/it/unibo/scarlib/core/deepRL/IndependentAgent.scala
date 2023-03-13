@@ -1,12 +1,12 @@
 package it.unibo.scarlib.core.deepRL
 
 import it.unibo.scarlib.core.model._
-
 import scala.reflect.io.File
 import scala.util.Random
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-class IndipendentAgent(
+
+class IndependentAgent(
                         agentId: Int,
                         environment: Environment,
                         actionSpace: Seq[Action],
@@ -29,7 +29,6 @@ class IndipendentAgent(
           dataset.insert(state, action, result._1, result._2)
         }
         .map(_ => ())
-      ///logPos(result._2.asInstanceOf[MyState].agentPosition, true)
 
     } else {
       environment.step(Random.shuffle(actionSpace).head, agentId)

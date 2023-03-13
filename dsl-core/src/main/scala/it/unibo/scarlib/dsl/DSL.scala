@@ -1,6 +1,6 @@
 package it.unibo.scarlib.dsl
 
-import it.unibo.scarlib.core.deepRL.{CTDESystem, IndipendentAgent}
+import it.unibo.scarlib.core.deepRL.{CTDESystem, IndependentAgent}
 import it.unibo.scarlib.core.model.*
 
 import scala.collection.mutable
@@ -21,9 +21,9 @@ object DSL {
         given unit: Unit = ()
 
         init
-        var agentsSeq: Seq[IndipendentAgent] = Seq.empty
+        var agentsSeq: Seq[IndependentAgent] = Seq.empty
         for (n <- 0 to nAgents) {
-            agentsSeq = agentsSeq :+ new IndipendentAgent(env.get, n, ds.get, actionSpace)
+            agentsSeq = agentsSeq :+ new IndependentAgent(env.get, n, ds.get, actionSpace)
         }
         new CTDESystem(agentsSeq, ds.get, actionSpace, env.get, lc.get)
 
