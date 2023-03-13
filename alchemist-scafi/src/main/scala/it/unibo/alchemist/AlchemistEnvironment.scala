@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit
 import javax.swing.WindowConstants
 import _root_.scala.concurrent.{Future, Promise}
 import _root_.scala.util.Success
+
 class AlchemistEnvironment(
     envDefinition: String,
     rewardFunction: RewardFunction,
@@ -22,7 +23,7 @@ class AlchemistEnvironment(
     randomSeed: Option[Int] = None
 ) extends Environment(rewardFunction, actionSpace) {
 
-  private def dt = 1.0 // TODO - settarlo con un senso
+  private def dt = 1.0
 
   private val file = new File(envDefinition)
   private val alchemistUtil = new AlchemistUtil()
