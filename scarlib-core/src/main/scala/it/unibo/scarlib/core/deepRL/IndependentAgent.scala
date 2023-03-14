@@ -11,11 +11,11 @@ class IndependentAgent(
                         environment: Environment,
                         actionSpace: Seq[Action],
                         dataset: ReplayBuffer[State, Action],
-
 ) {
   private var policy: State => Action = _
   private val posLogs: StringBuilder = new StringBuilder()
   private var oldState: State = _
+
   def notifyNewPolicy(newPolicy: State => Action): Unit =
     policy = newPolicy
 
