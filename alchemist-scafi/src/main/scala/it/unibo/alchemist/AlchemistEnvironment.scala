@@ -7,7 +7,6 @@ import it.unibo.alchemist.model.implementations.molecules.SimpleMolecule
 import it.unibo.alchemist.model.interfaces.Position2D
 import it.unibo.scarlib.core.model._
 import it.unibo.scarlib.core.util.{AgentGlobalStore, TorchLiveLogger}
-
 import java.io.File
 import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
@@ -16,23 +15,22 @@ import _root_.scala.concurrent.{Future, Promise}
 import _root_.scala.util.Success
 
 class AlchemistEnvironment(
-    envDefinition: String,
     rewardFunction: RewardFunction,
     actionSpace: Seq[Action],
+    envDefinition: String,
     outputStrategy: OutputStrategy = NoOutput,
     randomSeed: Option[Int] = None
 ) extends Environment(rewardFunction, actionSpace) {
 
-  private def dt = 1.0
-
+  private val dt = 1.0
   private val file = new File(envDefinition)
   private val alchemistUtil = new AlchemistUtil()
   private var engine: Engine[Any, Nothing] = _
   this.reset()
-
   private var agentPromises = Map.empty[Int, Promise[(Double, State)]]
   private var oldState = Map.empty[Int, State]
   private var ticks = 0
+
   override def step(action: Action, agentId: Int): Future[(Double, State)] = {
     agentPromises = agentPromises + (agentId -> Promise[(Double, State)]())
     val actualState = observe(agentId)
@@ -55,7 +53,6 @@ class AlchemistEnvironment(
   }
 
   override def observe(agentId: Int): State = {
-    //    println(engine.getEnvironment.getSimulation.getTime)
     val state = engine.getEnvironment.getNodeByID(agentId).getConcentration(new SimpleMolecule("state"))
     if (state == null) {
       new EmptyState()
@@ -74,19 +71,15 @@ class AlchemistEnvironment(
   }
 
   def currentNodeCount: Int = engine.getEnvironment.getNodeCount
+
   override def log(): Unit = {
     AgentGlobalStore.sumAllNumeric(AgentGlobalStore()).foreach { case (k, v) =>
       TorchLiveLogger.logScalar(k, v, ticks)
     }
-    /*println("Average")
-    AgentGlobalStore.averageAllNumeric(AgentGlobalStore()).foreach { case (k, v) =>
-      println(k, v)
-    }*/
     AgentGlobalStore().clearAll()
   }
 
-  override def logOnFile(): Unit =
-    println("Log on file")
+  override def logOnFile(): Unit = {}
 
 }
 
@@ -99,9 +92,11 @@ sealed trait OutputStrategy {
     SingleRunGUI.make[T, P](simulation, WindowConstants.DO_NOTHING_ON_CLOSE)
   }
 }
+
 object NoOutput extends OutputStrategy {
   override def output[T, P <: Position2D[P]](simulation: Simulation[T, P]): Unit = {}
 }
+
 class ShowEach(each: Int) extends OutputStrategy {
   private var episodes = 0
   override def output[T, P <: Position2D[P]](simulation: Simulation[T, P]): Unit = {
@@ -112,6 +107,7 @@ class ShowEach(each: Int) extends OutputStrategy {
     episodes += 1
   }
 }
+
 class After(ticks: Int) extends OutputStrategy {
   private var episodes = 0
   override def output[T, P <: Position2D[P]](simulation: Simulation[T, P]): Unit = {
@@ -122,4 +118,3 @@ class After(ticks: Int) extends OutputStrategy {
     episodes += 1
   }
 }
-
