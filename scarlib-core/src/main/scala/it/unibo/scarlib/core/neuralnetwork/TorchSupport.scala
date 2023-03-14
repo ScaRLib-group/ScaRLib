@@ -3,6 +3,7 @@ package it.unibo.scarlib.core.neuralnetwork
 import me.shadaj.scalapy.py
 
 object TorchSupport extends DeepLearningSupport[py.Module] {
+
   override def deepLearningLib(): py.Module = py.module("torch")
 
   override def neuralNetworkModule(): py.Module = py.module("torch.nn")

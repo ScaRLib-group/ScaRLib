@@ -9,6 +9,5 @@ object TorchLiveLogger {
     def logScalar(tag: String, value: Double, tick: Int): Unit = writer.add_scalar(tag, value, tick)
 
     def logAny(tag: String, value: py.Dynamic, tick: Int): Unit = writer.add_scalar(tag, value, tick)
-
 }
 

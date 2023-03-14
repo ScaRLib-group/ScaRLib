@@ -23,6 +23,7 @@ dependencies {
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
+
 /*
 publishOnCentral {
     projectUrl.set("https://github.com/davidedomini/ScaRLib")
@@ -57,4 +58,5 @@ if(System.getenv("CI") == true.toString()) {
         val signingPassword: String? by project
         useInMemoryPgpKeys(signingKey, signingPassword)
     }
+<<<<<<< HEAD
 }*/

@@ -5,14 +5,17 @@ import it.unibo.scarlib.core.model.State
 
 abstract class ScafiProgram
   extends AggregateProgram
-  with FieldUtils
   with StandardSensors
-  with BlockG
   with ScafiAlchemistSupport
-  with CustomSpawn {
+  {
 
-  override def main(): Unit = { node.put("state", computeState()) }
+  override def main(): Unit = {
+    makeActions()
+    node.put("state", computeState())
+  }
 
   protected def computeState(): State
+
+  protected def makeActions(): State
 
 }

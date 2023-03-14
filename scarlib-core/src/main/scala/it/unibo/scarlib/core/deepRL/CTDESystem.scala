@@ -1,13 +1,22 @@
 package it.unibo.scarlib.core.deepRL
 
 import it.unibo.scarlib.core.model._
-
 import scala.annotation.tailrec
+import scala.concurrent.ExecutionContext
+import scala.concurrent.{Await, Future}
 import scala.util.Random
 
-class CTDESystem(agents: Seq[IndipendentAgent], dataset: ReplayBuffer[State, Action], actionSpace: Seq[Action], environment: Environment){
-  private val epsilon: Decay[Double] = new ExponentialDecay(0.9, 0.1, 0.01)
-  private val learner: DeepQLearner = new DeepQLearner(dataset, actionSpace, epsilon, 0.9, 0.0005, inputSize = 6)(new Random(42)) //TODO migliora inputsize
+class CTDESystem(
+                  agents: Seq[IndependentAgent],
+                  environment: Environment,
+                  dataset: ReplayBuffer[State, Action],
+                  actionSpace: Seq[Action],
+                  learningConfiguration: LearningConfiguration
+)(implicit context: ExecutionContext) {
+
+  private val epsilon: Decay[Double] = learningConfiguration.epsilon
+  private val learner: DeepQLearner =
+    new DeepQLearner(dataset, actionSpace, learningConfiguration)
 
   @tailrec
   final def learn(episodes: Int, episodeLength: Int): Unit = {
@@ -15,13 +24,14 @@ class CTDESystem(agents: Seq[IndipendentAgent], dataset: ReplayBuffer[State, Act
     def singleEpisode(time: Int): Unit =
       if (time > 0) {
         agents.foreach(_.notifyNewPolicy(learner.behavioural))
-        agents.foreach(_.step())
+        Await.ready(Future.sequence(agents.map(_.step())), scala.concurrent.duration.Duration.Inf)
         environment.log()
         learner.improve()
         singleEpisode(time - 1)
       }
 
     if (episodes > 0) {
+      println("Episode: " + episodes)
       singleEpisode(episodeLength)
       epsilon.update()
       environment.reset()
@@ -42,10 +52,11 @@ class CTDESystem(agents: Seq[IndipendentAgent], dataset: ReplayBuffer[State, Act
 
     @tailrec
     def episode(time: Int): Unit = {
-      agents.foreach(_.step())
-      episode(time -1)
+      if (time > 0) {
+        Await.ready(Future.sequence(agents.map(_.step())), scala.concurrent.duration.Duration.Inf)
+        episode(time - 1)
+      }
     }
   }
 
 }
-
