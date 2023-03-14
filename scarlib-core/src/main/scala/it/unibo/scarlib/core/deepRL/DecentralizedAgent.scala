@@ -3,7 +3,6 @@ package it.unibo.scarlib.core.deepRL
 import it.unibo.scarlib.core.model._
 
 import scala.reflect.io.File
-import scala.util.Random
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 class DecentralizedAgent(
@@ -13,7 +12,7 @@ class DecentralizedAgent(
                           datasetSize: Int,
                           agentMode: AgentMode = AgentMode.Training,
                           learningConfiguration: LearningConfiguration
-) {
+) extends Agent {
 
   private val dataset: ReplayBuffer[State, Action] = ReplayBuffer[State, Action](datasetSize)
   private val epsilon: Decay[Double] = learningConfiguration.epsilon
@@ -21,7 +20,7 @@ class DecentralizedAgent(
   private val posLogs: StringBuilder = new StringBuilder()
   private var testPolicy: State => Action = _
 
-  def step(): Future[Unit] = {
+  override def step(): Future[Unit] = {
     val state = environment.observe(agentId)
     val policy = getPolicy
     val action = policy(state)
@@ -41,7 +40,7 @@ class DecentralizedAgent(
   def snapshot(episode: Int): Unit = learner.snapshot(episode, agentId)
 
   def setTestPolicy(p: PolicyNN): Unit =
-    testPolicy = DeepQLearner.policyFromNetworkSnapshot(p.path, p.inputSize, p.hiddenSize, actionSpace)
+    testPolicy = DeepQLearner.policyFromNetworkSnapshot(p.path + s"-$agentId", p.inputSize, p.hiddenSize, actionSpace)
 
   private def getPolicy: State => Action = {
     agentMode match {

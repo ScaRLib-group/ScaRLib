@@ -11,15 +11,12 @@ class IndependentAgent(
                         environment: Environment,
                         actionSpace: Seq[Action],
                         dataset: ReplayBuffer[State, Action],
-) {
+) extends Agent {
   private var policy: State => Action = _
   private val posLogs: StringBuilder = new StringBuilder()
   private var oldState: State = _
 
-  def notifyNewPolicy(newPolicy: State => Action): Unit =
-    policy = newPolicy
-
-  def step(): Future[Unit] = {
+  override def step(): Future[Unit] = {
     val state = environment.observe(agentId)
     if (!state.isEmpty()) {
       val action = policy(state)
@@ -35,6 +32,9 @@ class IndependentAgent(
       Future {}
     }
   }
+
+  def notifyNewPolicy(newPolicy: State => Action): Unit =
+    policy = newPolicy
 
   private def logPos(pos: (Double, Double), breakLine: Boolean = false): Unit = {
     posLogs.append(pos.toString)
