@@ -40,7 +40,7 @@ class DeepQLearner(memory: ReplayBuffer[State, Action],
   def record(state: State, action: Action, reward: Double, nextState: State): Unit =
     memory.insert(state, action, reward, nextState)
 
-  def improve(): Unit = { //if (this.mode == AgentMode.Training) {
+  def improve(): Unit = {
     val memorySample = memory.subsample(batchSize)
     if (memorySample.size == batchSize) {
       val states = memorySample.map(_.actualState).map(state => state.toSeq().toPythonCopy).toPythonCopy
