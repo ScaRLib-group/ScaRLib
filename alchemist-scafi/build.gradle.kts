@@ -25,34 +25,3 @@ dependencies {
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
-
-
-tasks.register<JavaExec>("runTrySimulationAlchemistScafi") {
-    group = "try simulation"
-    mainClass.set("it.unibo.experiment.MySimulationExperiment")
-    classpath = sourceSets["main"].runtimeClasspath
-    jvmArgs(
-        "-Djna.library.path=/Users/davidedomini/opt/anaconda3/lib"
-    )
-}
-
-tasks.register<JavaExec>("runCohesionAndCollisionEval") {
-    group = "try simulation"
-    mainClass.set("it.unibo.experiment.cc.CohesionAndCollisionEval")
-    classpath = sourceSets["main"].runtimeClasspath
-}
-
-tasks.register<JavaExec>("runCohesionAndCollisionTraining") {
-    group = "try simulation"
-    mainClass.set("it.unibo.experiment.cc.CohesionAndCollisionTraining")
-    classpath = sourceSets["main"].runtimeClasspath
-    jvmArgs(
-        "-Djna.library.path=/Users/davidedomini/opt/anaconda3/lib"
-    )
-}
-
-tasks.register<JavaExec>("runFollowLeaderExperiment") {
-    group = "try simulation"
-    mainClass.set("it.unibo.experiment.follow.FollowLeaderExperiment")
-    classpath = sourceSets["main"].runtimeClasspath
-}
