@@ -1,11 +1,13 @@
 package it.unibo.scarlib.dsl
+import scala.reflect.runtime.universe as ru
 
-import it.unibo.scarlib.core.deepRL.{CTDESystem, IndipendentAgent}
+import it.unibo.scarlib.core.deepRL.{CTDESystem, IndependentAgent}
 import it.unibo.scarlib.core.model.*
 
 import scala.collection.mutable
 import scala.collection.mutable.Seq as MSeq
-import scala.reflect.runtime.universe as ru
+import scala.concurrent.ExecutionContext
+
 
 object DSL {
 
@@ -13,16 +15,18 @@ object DSL {
     private var env: Option[Environment] = Option.empty
     private var ds: Option[ReplayBuffer[State, Action]] = Option.empty
     private var actionSpace: Seq[Action] = Seq.empty
+    private var lc: Option[LearningConfiguration] = Option.empty
     private var nAgents: Int = 0
 
-    def learningSystem(init: Unit ?=> Unit): CTDESystem =
+    def CTDELearningSystem(init: Unit ?=> Unit)(using context: ExecutionContext): CTDESystem =
         given unit: Unit = ()
+
         init
-        var agentsSeq: Seq[IndipendentAgent] = Seq.empty
+        var agentsSeq: Seq[IndependentAgent] = Seq.empty
         for (n <- 0 to nAgents) {
-            agentsSeq = agentsSeq :+ new IndipendentAgent(env.get, n, ds.get, actionSpace)
+            agentsSeq = agentsSeq :+ new IndependentAgent(n, env.get, actionSpace, ds.get)
         }
-        new CTDESystem(agentsSeq, ds.get, actionSpace, env.get)
+        new CTDESystem(agentsSeq, env.get, ds.get, actionSpace, lc.get)
 
     def environment(init: Unit ?=> String) =
         given unit: Unit = ()
@@ -37,20 +41,27 @@ object DSL {
 
     def rewardFunction(init: Unit ?=> RewardFunction) =
         given unit: Unit = ()
+
         rf = Option(init)
 
     def actions(init: Unit ?=> Seq[Action]) =
         given unit: Unit = ()
+
         actionSpace = init
 
     def dataset(init: Unit ?=> ReplayBuffer[State, Action]) =
         given unit: Unit = ()
+
         ds = Option(init)
 
     def agents(init: Unit ?=> Int) =
         given unit: Unit = ()
+
         nAgents = init
 
-
+    def learningConfiguration(init: Unit ?=> LearningConfiguration) =
+        given unit: Unit = ()
+        lc = Option(init)
 
 }
+

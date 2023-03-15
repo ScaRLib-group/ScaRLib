@@ -16,13 +16,13 @@ trait ReplayBuffer[State, Action]{
   def size(): Int
 }
 
-
 object ReplayBuffer{
   def apply[S, A](size: Int): ReplayBuffer[S, A] = {
     new BoundedQueue[S, A](size)
   }
 
   private class BoundedQueue[State, Action](bufferSize: Int) extends ReplayBuffer[State, Action]{
+
     private var queue: Seq[Experience[State, Action]] = Seq.empty
 
     override def reset(): Unit = Seq.empty

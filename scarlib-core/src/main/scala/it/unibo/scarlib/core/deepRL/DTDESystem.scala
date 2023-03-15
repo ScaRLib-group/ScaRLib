@@ -2,6 +2,7 @@ package it.unibo.scarlib.core.deepRL
 
 import scala.annotation.tailrec
 import it.unibo.scarlib.core.model.{Environment, PolicyNN}
+import scala.concurrent.{ExecutionContext, Future}
 
 class DTDESystem(agents: Seq[DecentralizedAgent], environment: Environment){
   @tailrec
@@ -10,6 +11,7 @@ class DTDESystem(agents: Seq[DecentralizedAgent], environment: Environment){
     def singleEpisode(time: Int): Unit = {
       if (time > 0) {
         agents.foreach(_.step())
+        environment.log()
         singleEpisode(time - 1)
       }
     }
@@ -35,4 +37,3 @@ class DTDESystem(agents: Seq[DecentralizedAgent], environment: Environment){
     }
   }
 }
-
