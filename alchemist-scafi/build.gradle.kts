@@ -22,7 +22,7 @@ dependencies {
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
-
+/*
 publishing.publications {
     withType<MavenPublication> {
         pom {
@@ -34,4 +34,4 @@ publishing.publications {
             }
         }
     }
-}
+}*/
