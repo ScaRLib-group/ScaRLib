@@ -1,3 +1,27 @@
+## [1.6.0](https://github.com/ScaRLib-group/ScaRLib/compare/1.5.0...1.6.0) (2023-03-15)
+
+
+### Features
+
+* complete alchemist-scafi integration ([ea4f222](https://github.com/ScaRLib-group/ScaRLib/commit/ea4f2228a3fd398f15e37797fdec1b888b517389))
+
+
+### General maintenance
+
+* resolve rebase conflicts ([b9d25c7](https://github.com/ScaRLib-group/ScaRLib/commit/b9d25c73b4d7107f9a215bb5ca2f4c4ca0487ea4))
+
+
+### Dependency updates
+
+* **deps:** update dependency it.unibo.alchemist:alchemist to v25.14.6 ([d5e6249](https://github.com/ScaRLib-group/ScaRLib/commit/d5e624987d9d985733297120bd60f087bad6a2dd))
+* **deps:** update dependency it.unibo.alchemist:alchemist to v25.7.2 ([877ed23](https://github.com/ScaRLib-group/ScaRLib/commit/877ed2355cc8a9b28ea66f97cc986c85e8541094))
+* **deps:** update dependency it.unibo.alchemist:alchemist-incarnation-protelis to v25.14.6 ([60520f3](https://github.com/ScaRLib-group/ScaRLib/commit/60520f37347f47e26978f2ae54eaaf4cce553fd2))
+* **deps:** update dependency it.unibo.alchemist:alchemist-incarnation-protelis to v25.7.2 ([bb2a29a](https://github.com/ScaRLib-group/ScaRLib/commit/bb2a29a9666bb1308d3ddb29abc33413f731c4a3))
+* **deps:** update dependency it.unibo.alchemist:alchemist-incarnation-scafi to v25.14.6 ([b02ac2d](https://github.com/ScaRLib-group/ScaRLib/commit/b02ac2d3c33e763c4e7f01eccc888bfcb62311ee))
+* **deps:** update dependency it.unibo.alchemist:alchemist-incarnation-scafi to v25.7.2 ([15c1499](https://github.com/ScaRLib-group/ScaRLib/commit/15c14993d85595b9f6cea0316be225871318bc98))
+* **deps:** update dependency org.scala-lang:scala-library to v2.13.10 ([4e943e4](https://github.com/ScaRLib-group/ScaRLib/commit/4e943e477f543f54c6b9a25d5f71d4b7e75ae52e))
+* **deps:** update node.js to 18.15 ([c3c0121](https://github.com/ScaRLib-group/ScaRLib/commit/c3c01211a6739d59e59f78142a77c53611886ca5))
+
 ## [1.5.0](https://github.com/davidedomini/ScaRLib/compare/1.4.0...1.5.0) (2023-03-07)
 
 
