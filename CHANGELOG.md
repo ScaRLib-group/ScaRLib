@@ -1,3 +1,10 @@
+## [1.6.2](https://github.com/ScaRLib-group/ScaRLib/compare/1.6.1...1.6.2) (2023-03-16)
+
+
+### Bug Fixes
+
+* **DQNFactory:** fix generic factory ([88777c6](https://github.com/ScaRLib-group/ScaRLib/commit/88777c66f946da50c6210fe34dd2770c2370f5c9))
+
 ## [1.6.1](https://github.com/ScaRLib-group/ScaRLib/compare/1.6.0...1.6.1) (2023-03-16)
 
 
