@@ -1,3 +1,10 @@
+## [1.6.1](https://github.com/ScaRLib-group/ScaRLib/compare/1.6.0...1.6.1) (2023-03-16)
+
+
+### Bug Fixes
+
+* **DQNAbstractFactory:** implement createNN as a generic method ([f2c42ba](https://github.com/ScaRLib-group/ScaRLib/commit/f2c42ba646396ba576b91fa890915bde75af2689))
+
 ## [1.6.0](https://github.com/ScaRLib-group/ScaRLib/compare/1.5.0...1.6.0) (2023-03-15)
 
 
