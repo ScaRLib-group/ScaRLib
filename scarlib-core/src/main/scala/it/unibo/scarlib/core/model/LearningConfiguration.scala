@@ -11,5 +11,5 @@ case class LearningConfiguration(
     batchSize: Int = 32,
     updateEach: Int = 100,
     random: Random = new Random(1),
-    dqnFactory: DQNAbstractFactory
+    dqnFactory: DQNAbstractFactory[_]
     )
