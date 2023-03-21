@@ -1,3 +1,10 @@
+## [1.6.3](https://github.com/ScaRLib-group/ScaRLib/compare/1.6.2...1.6.3) (2023-03-21)
+
+
+### Bug Fixes
+
+* **core:** make snapshot path configurable by the user ([89c1805](https://github.com/ScaRLib-group/ScaRLib/commit/89c18051429e905bc862cc24b3d22e6531602b6b))
+
 ## [1.6.2](https://github.com/ScaRLib-group/ScaRLib/compare/1.6.1...1.6.2) (2023-03-16)
 
 
