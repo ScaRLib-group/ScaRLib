@@ -75,7 +75,7 @@ class DeepQLearner(memory: ReplayBuffer[State, Action],
       .deepLearningLib()
       .save(
         targetNetwork.state_dict(),
-        s"../data/network-$episode-$timeMark-agent-$agentId"
+        s"${learningConfiguration.snapshotPath}-$episode-$timeMark-agent-$agentId"
       )
   }
 }
