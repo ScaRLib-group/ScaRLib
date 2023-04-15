@@ -1,5 +1,3 @@
-// Load this configuration that provide all the base for working with conventional commits
-// It's only for educational purposes, we can our own personalized configuration to start with.
 const config = require('semantic-release-preconfigured-conventional-commits')
 
 // Commands necessary to the release phase release
@@ -8,7 +6,9 @@ const publishCommands = `
 git tag -a -f \${nextRelease.version} \${nextRelease.version} -F CHANGELOG.md || exit 2
 git push --force origin \${nextRelease.version} || exit 3
 ./gradlew clean build
-./gradlew uploadAllPublicationsToMavenCentralNexus closeStagingRepositoryOnMavenCentral
+./gradlew uploadAllPublicationsToMavenCentralNexus 
+./gradlew closeStagingRepositoryOnMavenCentral
+./gradlew releaseStagingRepositoryOnMavenCentral
 `
 // Only release on branch main
 const releaseBranches = ["main"]
