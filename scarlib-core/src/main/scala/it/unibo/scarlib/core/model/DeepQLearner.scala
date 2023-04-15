@@ -9,9 +9,11 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import scala.util.Random
 
-class DeepQLearner(memory: ReplayBuffer[State, Action],
-                   actionSpace: Seq[Action],
-                   learningConfiguration: LearningConfiguration) {
+class DeepQLearner(
+    memory: ReplayBuffer[State, Action],
+    actionSpace: Seq[Action],
+    learningConfiguration: LearningConfiguration
+) {
 
   private val random = learningConfiguration.random
   private val learningRate = learningConfiguration.learningRate
@@ -26,7 +28,7 @@ class DeepQLearner(memory: ReplayBuffer[State, Action],
   private val targetPolicy = DeepQLearner.policyFromNetwork(policyNetwork, actionSpace)
   private val behaviouralPolicy = DeepQLearner.policyFromNetwork(policyNetwork, actionSpace)
   private val optimizer = TorchSupport.optimizerModule().RMSprop(policyNetwork.parameters(), learningRate)
-  
+
   val optimal: State => Action = targetPolicy
 
   val behavioural: State => Action =
@@ -36,7 +38,7 @@ class DeepQLearner(memory: ReplayBuffer[State, Action],
       } else {
         behaviouralPolicy(state)
       }
-  
+
   def record(state: State, action: Action, reward: Double, nextState: State): Unit =
     memory.insert(state, action, reward, nextState)
 
@@ -88,7 +90,7 @@ object DeepQLearner {
       actionSpace: Seq[A]
   ): S => A = {
     val model = SimpleSequentialDQN(inputSize, hiddenSize, actionSpace.size)
-    model.load_state_dict(TorchSupport.deepLearningLib().load(path))
+    model.load_state_dict(TorchSupport.deepLearningLib().load(path, map_location = AutodiffDevice()))
     policyFromNetwork(model, actionSpace)
   }
 
