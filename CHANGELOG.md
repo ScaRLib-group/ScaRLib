@@ -1,3 +1,10 @@
+## [1.6.4](https://github.com/ScaRLib-group/ScaRLib/compare/1.6.3...1.6.4) (2023-04-15)
+
+
+### Bug Fixes
+
+* **DeepQLearning:** correctly load the model ([dccce57](https://github.com/ScaRLib-group/ScaRLib/commit/dccce57e19d962400a3f47594846f89b0e483091))
+
 ## [1.6.3](https://github.com/ScaRLib-group/ScaRLib/compare/1.6.2...1.6.3) (2023-03-21)
 
 
