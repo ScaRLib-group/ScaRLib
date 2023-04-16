@@ -16,6 +16,9 @@ allprojects {
 
     apply(plugin = "org.danilopianini.publish-on-central")
     apply(plugin = "org.danilopianini.git-sensitive-semantic-versioning-gradle-plugin")
+    apply(plugin = "java")
+    apply(plugin = "scala")
+
     gitSemVer {
         buildMetadataSeparator.set("-")
         maxVersionLength.set(20)
@@ -24,6 +27,13 @@ allprojects {
     val sourceJar by tasks.registering(Jar::class) {
         from(sourceSets.named("main").get().allSource)
         archiveClassifier.set("sources-${project.name}")
+    }
+
+    val scaladocJar by tasks.registering(Jar::class) {
+        dependsOn("scaladoc")
+        val destinationDirectory = tasks.named<ScalaDoc>("scaladoc").get().destinationDir
+        from(destinationDirectory)
+        archiveClassifier.set("docs-${project.name}")
     }
 
     publishOnCentral {
@@ -35,8 +45,8 @@ allprojects {
     publishing {
         publications {
             withType<MavenPublication> {
-                //artifact(javadocJar) TODO
                 artifact(sourceJar)
+                artifact(scaladocJar)
                 pom {
                     developers {
                         developer {
@@ -63,7 +73,6 @@ allprojects {
         }
     }
 }
-
 
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
