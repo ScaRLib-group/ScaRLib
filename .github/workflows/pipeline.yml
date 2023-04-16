@@ -4,12 +4,14 @@ name: CI
   push:
     
 jobs:
-  simple-test:
-    name: Simple test with scalatest
+  test:
+    name: Test with scalatest
     strategy:
       matrix:
         os:
           - ubuntu-latest
+          - macos-latest
+          - windows-latest
         java-version:
           - 17
         jdk-distribution:
@@ -31,7 +33,7 @@ jobs:
       
   release:
     needs:
-      - simple-test
+      - test
     runs-on: ubuntu-latest
     if: >-
       !github.event.repository.fork
@@ -70,7 +72,7 @@ jobs:
   success:
     runs-on: ubuntu-latest
     needs:
-      - simple-test
+      - test
       - release
     if: >-
       always() && (
