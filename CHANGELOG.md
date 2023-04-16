@@ -1,3 +1,26 @@
+## [1.6.5](https://github.com/ScaRLib-group/ScaRLib/compare/1.6.4...1.6.5) (2023-04-16)
+
+
+### Documentation
+
+* add scaladoc ([0bfa1be](https://github.com/ScaRLib-group/ScaRLib/commit/0bfa1be8c002b4c37faea0b3a7a77bf0658f7590))
+
+
+### Build and continuous integration
+
+* update pipeline ([dc66105](https://github.com/ScaRLib-group/ScaRLib/commit/dc66105a6eaefe5f54082672adb31a0b7892d9ff))
+
+
+### General maintenance
+
+* add a contributor ([c9b78b9](https://github.com/ScaRLib-group/ScaRLib/commit/c9b78b9aa9055276faa9c03fad344e05c168cbc0))
+* add issue templates ([58d00ac](https://github.com/ScaRLib-group/ScaRLib/commit/58d00acecea253b7473e9cea4c7153fdf07c9ce4))
+* add licence note in all scala files ([cd8065c](https://github.com/ScaRLib-group/ScaRLib/commit/cd8065cc294a3b683ffac2fb7eef35744175a766))
+* add scaladoc artifact generation ([1e921f1](https://github.com/ScaRLib-group/ScaRLib/commit/1e921f1081c679e4fecf7c7fadd9bf7f738e3e6d))
+* update license in publish on central plugin ([8a69a1f](https://github.com/ScaRLib-group/ScaRLib/commit/8a69a1f613f2d8249c3b001949f4bf5d90dfccf3))
+* update release configuration ([4fcd324](https://github.com/ScaRLib-group/ScaRLib/commit/4fcd324596cc77c7606a16eeecc6a57544d10d34))
+* update the license ([419aa84](https://github.com/ScaRLib-group/ScaRLib/commit/419aa84a5de210c984ca4197c7c4f7764da745f7))
+
 ## [1.6.4](https://github.com/ScaRLib-group/ScaRLib/compare/1.6.3...1.6.4) (2023-04-15)
 
 
