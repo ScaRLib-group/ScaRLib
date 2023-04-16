@@ -9,6 +9,7 @@
 
 package it.unibo.scarlib.core.neuralnetwork
 
+/** A factory of neural networks */
 abstract class DQNAbstractFactory[T] {
   def createNN(): T
 }

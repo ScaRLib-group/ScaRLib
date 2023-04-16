@@ -13,6 +13,7 @@ import it.unibo.scarlib.core.model.AutodiffDevice
 import it.unibo.scarlib.core.neuralnetwork.TorchSupport.{neuralNetworkModule => nn}
 import me.shadaj.scalapy.py
 
+/** A simple feed-forward neural network */
 object SimpleSequentialDQN extends DQN {
   def apply(input: Int, hidden: Int, output: Int): py.Dynamic =
     nn()

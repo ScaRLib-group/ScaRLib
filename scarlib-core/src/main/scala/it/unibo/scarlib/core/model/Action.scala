@@ -9,7 +9,9 @@
 
 package it.unibo.scarlib.core.model
 
+/** A generic action that an agent can perform */
 trait Action
 
+/** An empty action */
 case object NoAction extends Action
 

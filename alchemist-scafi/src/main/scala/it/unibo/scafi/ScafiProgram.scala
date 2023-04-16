@@ -12,6 +12,7 @@ package it.unibo.scafi
 import it.unibo.alchemist.model.scafi.ScafiIncarnationForAlchemist._
 import it.unibo.scarlib.core.model.State
 
+/** The scafi logic used to construct the state with aggregate programming */
 abstract class ScafiProgram
   extends AggregateProgram
   with StandardSensors

@@ -1,5 +1,5 @@
 /*
- * ScaRLib: A Framework for Cooperative Many Agent Deep Reinforcement learning in Scala
+ * ScaRLib: A Framework for Cooperative Many Agent Deep Reinforcement Learning in Scala
  * Copyright (C) 2023, Davide Domini, Filippo Cavallari and contributors
  * listed, for each module, in the respective subproject's build.gradle.kts file.
  *
@@ -13,7 +13,19 @@ import scala.annotation.tailrec
 import it.unibo.scarlib.core.model.{Environment, PolicyNN}
 import scala.concurrent.{ExecutionContext, Future}
 
+/** A system in which agents work in a Decentralized Training Decentralized Execution way
+ *
+ * @param agents all the agents
+ * @param environment the environment in which the agents interact
+ */
+
 class DTDESystem(agents: Seq[DecentralizedAgent], environment: Environment){
+
+  /** Starts the learning process
+   *
+   * @param episodes the number of episodes agents are trained for
+   * @param episodeLength the length of each episode
+   */
   @tailrec
   final def learn(episodes: Int, episodeLength: Int): Unit = {
     @tailrec
@@ -35,6 +47,12 @@ class DTDESystem(agents: Seq[DecentralizedAgent], environment: Environment){
     }
   }
 
+
+  /** Starts the testing process
+   *
+   * @param episodeLength the length of the episode
+   * @param policy the snapshot of the policy to be used
+   */
   final def runTest(episodeLength: Int, policy: PolicyNN): Unit = {
     agents.foreach(_.setTestPolicy(policy))
     episode(episodeLength)

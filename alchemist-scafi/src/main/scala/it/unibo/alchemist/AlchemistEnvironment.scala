@@ -23,6 +23,7 @@ import javax.swing.WindowConstants
 import _root_.scala.concurrent.{Future, Promise}
 import _root_.scala.util.Success
 
+/** An environment that uses the Alchemist simulator */
 class AlchemistEnvironment(
     rewardFunction: RewardFunction,
     actionSpace: Seq[Action],

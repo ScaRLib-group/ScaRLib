@@ -11,6 +11,7 @@ package it.unibo.scarlib.core.util
 
 import scala.reflect.ClassTag
 
+/** A container of agents data to be logged */
 trait AgentGlobalStore {
   def put(who: Int, tag: String, data: Any): Unit
   def filterByType[T: ClassTag]: Map[Int, Map[String, T]]

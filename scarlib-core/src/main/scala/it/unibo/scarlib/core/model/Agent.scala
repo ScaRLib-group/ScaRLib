@@ -11,6 +11,7 @@ package it.unibo.scarlib.core.model
 
 import scala.concurrent.Future
 
+/** A generic agent */
 trait Agent {
   def step(): Future[Unit]
 }

@@ -9,4 +9,5 @@
 
 package it.unibo.scarlib.core.neuralnetwork
 
+/** A generic deep neural network used to approximate the Q-Function */
 trait DQN

@@ -9,6 +9,7 @@
 
 package it.unibo.scarlib.core.model
 
+/** Indicates whether the agent is in training or testing */
 sealed trait AgentMode
 
 object AgentMode {

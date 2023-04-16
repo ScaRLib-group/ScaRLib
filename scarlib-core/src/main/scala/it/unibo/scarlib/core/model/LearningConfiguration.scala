@@ -13,6 +13,16 @@ import it.unibo.scarlib.core.neuralnetwork.DQNAbstractFactory
 
 import scala.util.Random
 
+/** The wrapper of all the hyper-parameters that the user can set
+ * @param epsilon the decay used to solve the exploitation-exploration problem
+ * @param gamma the discount factor
+ * @param learningRate the learning rate used to train the neural network
+ * @param batchSize the size of the batch of agents experience used to update the neural network
+ * @param updateEach represents every how many iterations the actual and the target neural networks are synchronized
+ * @param random
+ * @param dqnFactory the factory of the neural network used to approximate the policy
+ * @param snapshotPath the path to save the policy snapshots
+ */
 case class LearningConfiguration(
     epsilon: Decay[Double] = new ExponentialDecay(0.9, 0.1, 0.01),
     gamma: Double = 0.9,

@@ -11,6 +11,8 @@ package it.unibo.scarlib.core.model
 
 import it.unibo.scarlib.core.neuralnetwork.TorchSupport._
 
+
+/** Sets whether a GPU is available for training or if a cpu must be used */
 object AutodiffDevice {
 
   def apply() =

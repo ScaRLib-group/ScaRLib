@@ -18,6 +18,12 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import scala.util.Random
 
+/** The DQN learning algorithm
+ *
+ * @param memory the container of agents experience
+ * @param actionSpace all the possible actions an agent can perform
+ * @param learningConfiguration all the hyper-parameters specified by the user
+ */
 class DeepQLearner(
     memory: ReplayBuffer[State, Action],
     actionSpace: Seq[Action],
@@ -38,8 +44,10 @@ class DeepQLearner(
   private val behaviouralPolicy = DeepQLearner.policyFromNetwork(policyNetwork, actionSpace)
   private val optimizer = TorchSupport.optimizerModule().RMSprop(policyNetwork.parameters(), learningRate)
 
+  /** Gets the optimal policy */
   val optimal: State => Action = targetPolicy
 
+  /** Gets the behavioural policy */
   val behavioural: State => Action =
     state =>
       if (random.nextDouble() < epsilon.value()) {
@@ -48,9 +56,11 @@ class DeepQLearner(
         behaviouralPolicy(state)
       }
 
+  /** Records the experience gained from the last agent-environment interaction */
   def record(state: State, action: Action, reward: Double, nextState: State): Unit =
     memory.insert(state, action, reward, nextState)
 
+  /** Improves the policy following the DQN algorithm */
   def improve(): Unit = {
     val memorySample = memory.subsample(batchSize)
     if (memorySample.size == batchSize) {
@@ -80,6 +90,7 @@ class DeepQLearner(
     }
   }
 
+  /** Takes a snapshot of the current policy */
   def snapshot(episode: Int, agentId: Int): Unit = {
     val timeMark = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date)
     TorchSupport
@@ -92,6 +103,8 @@ class DeepQLearner(
 }
 
 object DeepQLearner {
+
+  /** Uploads the policy from a snapshot */
   def policyFromNetworkSnapshot[S <: State, A](
       path: String,
       inputSize: Int,
@@ -103,6 +116,7 @@ object DeepQLearner {
     policyFromNetwork(model, actionSpace)
   }
 
+  /** Gets the policy from the network which approximates it */
   def policyFromNetwork[S <: State, A](network: py.Dynamic, actionSpace: Seq[A]): S => A = { state =>
     val netInput = state.toSeq()
     py.`with`(TorchSupport.deepLearningLib().no_grad()) { _ =>

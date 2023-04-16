@@ -9,6 +9,7 @@
 
 package it.unibo.scarlib.core.model
 
+/** Converts an action into an effect on the environment */
 trait Actuator[T]{
   def convert(action: Action): T
 }

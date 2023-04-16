@@ -9,14 +9,20 @@
 
 package it.unibo.scarlib.core.model
 
+/** A generic state in which the environment can be */
 trait State {
+
+    /** Gets the number of elements in the state */
     def elements(): Int
 
+    /** Converts the state into a format usable by the neural network */
     def toSeq(): Seq[Double]
 
+    /** Checks if the state is empty */
     def isEmpty(): Boolean
 }
 
+/** An empty state */
 class EmptyState extends State {
     override def elements(): Int = 0
 

@@ -9,6 +9,8 @@
 
 package it.unibo.scarlib.core.model
 
+/** The function that evaluates the action performed by an agent in a certain state */
 trait RewardFunction {
+
   def compute(currentState: State, action: Action, newState: State): Double
 }
