@@ -29,7 +29,7 @@ jobs:
           submodule: recursive
           fetch-dept: 0
       - name: Run test
-        run: ./gradlew test
+        run: ./gradlew test --parallel
       
   release:
     needs:
