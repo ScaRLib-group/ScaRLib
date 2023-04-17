@@ -6,9 +6,7 @@ const publishCommands = `
 git tag -a -f \${nextRelease.version} \${nextRelease.version} -F CHANGELOG.md || exit 2
 git push --force origin \${nextRelease.version} || exit 3
 ./gradlew clean build
-./gradlew uploadAllPublicationsToMavenCentralNexus 
-./gradlew closeStagingRepositoryOnMavenCentral
-./gradlew releaseStagingRepositoryOnMavenCentral
+./gradlew uploadAllPublicationsToMavenCentralNexus releaseStagingRepositoryOnMavenCentral
 `
 // Only release on branch main
 const releaseBranches = ["main"]
