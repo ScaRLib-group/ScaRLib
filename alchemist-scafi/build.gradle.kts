@@ -10,15 +10,15 @@ repositories {
 }
 
 dependencies {
-    implementation("org.scala-lang:scala-library:2.13.10")
-    implementation("it.unibo.alchemist:alchemist:25.14.6")
-    implementation("it.unibo.alchemist:alchemist-incarnation-scafi:25.14.6")
-    implementation("it.unibo.alchemist:alchemist-incarnation-protelis:25.14.6")
-    implementation("org.slf4j:slf4j-api:2.0.6")
-    implementation("ch.qos.logback:logback-classic:1.4.5")
-    implementation("it.unibo.alchemist:alchemist-swingui:25.7.1")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    implementation(libs.scala2)
+    implementation(libs.alchemist)
+    implementation(libs.alchemistScafi)
+    implementation(libs.alchemistProtelis)
+    implementation(libs.alchemistGui)
+    implementation(libs.slf4j)
+    implementation(libs.logback)
+    testImplementation(libs.junit.api)
+    testRuntimeOnly(libs.junit.engine)
     implementation(project(":scarlib-core"))
 }
 

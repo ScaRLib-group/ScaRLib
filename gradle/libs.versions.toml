@@ -1,0 +1,35 @@
+[versions]
+junit = "5.9.2"
+alchemist = "25.14.6"
+scalapy = "0.5.3"
+scalaTest = "3.2.15"
+scalaTestPlus = "3.2.15.0"
+scala2 = "2.13.10"
+scala3 = "3.2.2"
+scalaReflect = "2.13.10"
+junitCore = "4.13.2"
+slf4j = "2.0.6"
+logback = "1.4.5"
+alchemistGui = "25.7.1"
+
+[libraries]
+junit-api = {module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit"}
+junit-engine = {module = "org.junit.jupiter:junit-jupiter-engine", version.ref="junit"}
+junit = {module = "junit:junit", version.ref = "junitCore"}
+scala2 = {module = "org.scala-lang:scala-library", version.ref = "scala2"}
+scala3 = {module = "org.scala-lang:scala3-library_3", version.ref = "scala3"}
+scalapy = {module = "dev.scalapy:scalapy-core_2.13", version.ref = "scalapy"}
+scalaTest = {module = "org.scalatest:scalatest_3", version.ref = "scalaTest"}
+scalaTestPlus = {module = "org.scalatestplus:junit-4-13_3", version.ref = "scalaTestPlus"}
+scalaReflect = {module = "org.scala-lang:scala-reflect", version.ref  = "scalaReflect"}
+alchemist = {module = "it.unibo.alchemist:alchemist", version.ref = "alchemist"}
+alchemistScafi = {module = "it.unibo.alchemist:alchemist-incarnation-scafi", version.ref = "alchemist"}
+alchemistProtelis = {module = "it.unibo.alchemist:alchemist-incarnation-protelis", version.ref = "alchemist"}
+slf4j = {module = "org.slf4j:slf4j-api", version.ref = "slf4j"}
+logback = {module = "ch.qos.logback:logback-classic", version.ref = "logback"}
+alchemistGui = {module = "it.unibo.alchemist:alchemist-swingui", version.ref = "alchemistGui"}
+
+[plugins]
+gitSemVer = "org.danilopianini.git-sensitive-semantic-versioning-gradle-plugin:1.1.4"
+publishOnCentral = "org.danilopianini.publish-on-central:3.3.2"
+shadow = "com.github.johnrengelman.shadow:8.1.0"

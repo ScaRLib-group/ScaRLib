@@ -1,8 +1,8 @@
 plugins {
     java
-    id ("org.danilopianini.publish-on-central") version "3.3.2"
-    id("org.danilopianini.git-sensitive-semantic-versioning-gradle-plugin") version "1.1.4"
-    id("com.github.johnrengelman.shadow") version "8.1.0"
+    alias(libs.plugins.publishOnCentral)
+    alias(libs.plugins.gitSemVer)
+    alias(libs.plugins.shadow)
     signing
 }
 
@@ -75,8 +75,8 @@ allprojects {
 }
 
 dependencies {
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation(libs.junit.api)
+    testRuntimeOnly(libs.junit.engine)
 }
 
 tasks.getByName<Test>("test") {

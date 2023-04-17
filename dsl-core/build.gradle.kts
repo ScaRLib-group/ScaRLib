@@ -8,7 +8,6 @@ scala {
     zincVersion.set("1.6.1")
 }
 
-
 sourceSets {
     main {
         scala {
@@ -27,10 +26,10 @@ repositories {
 }
 
 dependencies {
-    implementation("org.scala-lang:scala3-library_3:3.2.2")
-    testImplementation("org.scalatest:scalatest_3:3.2.15")
-    testImplementation("org.scalatestplus:junit-4-13_3:3.2.15.0")
-    implementation("org.scala-lang:scala-reflect:2.13.10")
-    testImplementation("junit:junit:4.13.2")
+    implementation(libs.scala3)
+    implementation(libs.scalaReflect)
+    testImplementation(libs.scalaTest)
+    testImplementation(libs.scalaTestPlus)
+    testImplementation(libs.junit)
     implementation(project(":scarlib-core"))
 }
