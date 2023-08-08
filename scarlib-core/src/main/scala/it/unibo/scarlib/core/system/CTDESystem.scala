@@ -71,7 +71,7 @@ class CTDESystem(
    * @param episodeLength the length of the episode
    * @param policy the snapshot of the policy to be used
    */
-  final def runTest(episodeLength: Int, policy: PolicyNN): Unit = {
+  final def runTest(episodeLength: Int, policy: NeuralNetworkSnapshot): Unit = {
     val p: State => Action =
       DeepQLearner.policyFromNetworkSnapshot(policy.path, policy.inputSize, policy.hiddenSize, actionSpace)
     agents.foreach(_.notifyNewPolicy(p))

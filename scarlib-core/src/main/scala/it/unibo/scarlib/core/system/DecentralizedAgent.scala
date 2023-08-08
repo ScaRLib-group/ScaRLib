@@ -60,7 +60,7 @@ class DecentralizedAgent(
   def snapshot(episode: Int): Unit = learner.snapshot(episode, agentId)
 
   /** Sets a new policy for testing */
-  def setTestPolicy(p: PolicyNN): Unit =
+  def setTestPolicy(p: NeuralNetworkSnapshot): Unit =
     testPolicy = DeepQLearner.policyFromNetworkSnapshot(p.path + s"-$agentId", p.inputSize, p.hiddenSize, actionSpace)
 
   /** Gets the current policy */

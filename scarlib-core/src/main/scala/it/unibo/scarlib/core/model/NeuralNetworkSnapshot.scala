@@ -10,4 +10,4 @@
 package it.unibo.scarlib.core.model
 
 /** Represents a snapshot of the policy saved on the disk */
-case class PolicyNN (path: String, inputSize: Int, hiddenSize: Int)
+case class NeuralNetworkSnapshot(path: String, inputSize: Int, hiddenSize: Int)

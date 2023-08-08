@@ -10,7 +10,7 @@
 package it.unibo.scarlib.core.system
 
 import scala.annotation.tailrec
-import it.unibo.scarlib.core.model.{Environment, PolicyNN}
+import it.unibo.scarlib.core.model.{Environment, NeuralNetworkSnapshot}
 import scala.concurrent.ExecutionContext
 import scala.concurrent.{Await, Future}
 
@@ -57,7 +57,7 @@ class DTDESystem(
    * @param episodeLength the length of the episode
    * @param policy the snapshot of the policy to be used
    */
-  final def runTest(episodeLength: Int, policy: PolicyNN): Unit = {
+  final def runTest(episodeLength: Int, policy: NeuralNetworkSnapshot): Unit = {
     agents.foreach(_.setTestPolicy(policy))
     episode(episodeLength)
 
