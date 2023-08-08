@@ -7,7 +7,7 @@
  * GNU General Public License as described in the file LICENSE in the ScaRLin distribution's top directory.
  */
 
-package it.unibo.scarlib.core.deepRL
+package it.unibo.scarlib.core.system
 
 import it.unibo.scarlib.core.model._
 import scala.annotation.tailrec

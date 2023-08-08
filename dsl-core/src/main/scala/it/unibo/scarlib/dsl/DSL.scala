@@ -10,7 +10,7 @@
 package it.unibo.scarlib.dsl
 import scala.reflect.runtime.universe as ru
 
-import it.unibo.scarlib.core.deepRL.{CTDESystem, IndependentAgent}
+import it.unibo.scarlib.core.system.{CTDESystem, IndependentAgent}
 import it.unibo.scarlib.core.model.*
 
 import scala.collection.mutable
