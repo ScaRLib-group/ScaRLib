@@ -26,6 +26,6 @@ abstract class ScafiProgram
 
   protected def computeState(): State
 
-  protected def makeActions(): State
+  protected def makeActions(): Unit
 
 }
