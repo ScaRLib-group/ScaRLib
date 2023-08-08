@@ -11,7 +11,8 @@ package it.unibo.scarlib.core.system
 
 import scala.annotation.tailrec
 import it.unibo.scarlib.core.model.{Environment, PolicyNN}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.{Await, Future}
 
 /** A system in which agents work in a Decentralized Training Decentralized Execution way
  *
@@ -19,7 +20,10 @@ import scala.concurrent.{ExecutionContext, Future}
  * @param environment the environment in which the agents interact
  */
 
-class DTDESystem(agents: Seq[DecentralizedAgent], environment: Environment){
+class DTDESystem(
+                  agents: Seq[DecentralizedAgent],
+                  environment: Environment
+)(implicit context: ExecutionContext){
 
   /** Starts the learning process
    *
