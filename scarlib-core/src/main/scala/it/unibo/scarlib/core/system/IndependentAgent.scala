@@ -15,7 +15,7 @@ import scala.util.Random
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-/** An agent that work in a [[CTDESystem]]
+/** An agent that works in a [[CTDESystem]]
  *
  * @param agentId the unique id of the agent
  * @param environment the environment in which the agents interact
