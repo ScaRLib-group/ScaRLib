@@ -24,7 +24,7 @@ import scala.concurrent.{Await, Future}
  * @param context the [[ExecutionContext]], it is used to configure how and on which thread pools asynchronous tasks (such as Futures) will run
  */
 class CTDESystem(
-                  agents: Seq[IndependentAgent],
+                  agents: Seq[CTDEAgent],
                   environment: Environment,
                   dataset: ReplayBuffer[State, Action],
                   actionSpace: Seq[Action],

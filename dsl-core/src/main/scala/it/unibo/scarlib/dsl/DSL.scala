@@ -10,7 +10,7 @@
 package it.unibo.scarlib.dsl
 import scala.reflect.runtime.universe as ru
 
-import it.unibo.scarlib.core.system.{CTDESystem, IndependentAgent}
+import it.unibo.scarlib.core.system.{CTDESystem, CTDEAgent}
 import it.unibo.scarlib.core.model.*
 
 import scala.collection.mutable
@@ -32,9 +32,9 @@ object DSL {
         given unit: Unit = ()
 
         init
-        var agentsSeq: Seq[IndependentAgent] = Seq.empty
+        var agentsSeq: Seq[CTDEAgent] = Seq.empty
         for (n <- 0 to nAgents) {
-            agentsSeq = agentsSeq :+ new IndependentAgent(n, env.get, actionSpace, ds.get)
+            agentsSeq = agentsSeq :+ new CTDEAgent(n, env.get, actionSpace, ds.get)
         }
         new CTDESystem(agentsSeq, env.get, ds.get, actionSpace, lc.get)
 

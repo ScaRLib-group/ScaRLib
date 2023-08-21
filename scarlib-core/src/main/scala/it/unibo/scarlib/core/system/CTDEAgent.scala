@@ -22,7 +22,7 @@ import scala.concurrent.Future
  * @param actionSpace all the possible actions an agent can perform
  * @param dataset the dataset that will contain the agents experience
  */
-class IndependentAgent(
+class CTDEAgent(
                         agentId: Int,
                         environment: Environment,
                         actionSpace: Seq[Action],
