@@ -59,8 +59,6 @@ class CTDESystem(
       environment.reset()
       learner.snapshot(episodes, 0)
       learn(episodes - 1, episodeLength)
-    } else {
-      agents.foreach(_.logOnFile())
     }
 
   }

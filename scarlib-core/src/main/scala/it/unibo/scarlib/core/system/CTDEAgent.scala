@@ -29,7 +29,6 @@ class CTDEAgent(
                         dataset: ReplayBuffer[State, Action],
 ) extends Agent {
   private var policy: State => Action = _
-  private val posLogs: StringBuilder = new StringBuilder()
 
   /** A single interaction of the agent with the environment */
   override def step(): Future[Unit] = {
@@ -52,12 +51,5 @@ class CTDEAgent(
   /** Sets a new policy */
   def notifyNewPolicy(newPolicy: State => Action): Unit =
     policy = newPolicy
-
-  def logOnFile(): Unit = {
-    val file = File(s"agent-$agentId.txt")
-    val bw = file.bufferedWriter(append = true)
-    bw.write(posLogs.toString())
-    bw.close()
-  }
 
 }
