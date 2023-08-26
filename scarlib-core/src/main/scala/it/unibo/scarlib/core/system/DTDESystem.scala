@@ -21,7 +21,7 @@ import scala.concurrent.{Await, Future}
  */
 
 class DTDESystem(
-                  agents: Seq[DecentralizedAgent],
+                  agents: Seq[DTDEAgent],
                   environment: Environment
 )(implicit context: ExecutionContext){
 

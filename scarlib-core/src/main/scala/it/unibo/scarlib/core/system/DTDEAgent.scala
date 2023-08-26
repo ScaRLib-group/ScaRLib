@@ -23,7 +23,7 @@ import scala.concurrent.Future
  * @param agentMode whether the agent is in training or testing
  * @param learningConfiguration all the hyper-parameters specified by the user
  */
-class DecentralizedAgent(
+class DTDEAgent(
                           agentId: Int,
                           environment: Environment,
                           actionSpace: Seq[Action],
