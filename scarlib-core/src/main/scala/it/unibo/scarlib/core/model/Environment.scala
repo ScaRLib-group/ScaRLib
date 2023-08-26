@@ -34,5 +34,4 @@ abstract class Environment(rewardFunction: RewardFunction, actionSpace: Seq[Acti
 
   def log(): Unit
 
-  def logOnFile(): Unit
 }

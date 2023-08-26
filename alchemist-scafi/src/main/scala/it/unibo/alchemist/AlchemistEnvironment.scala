@@ -89,8 +89,6 @@ class AlchemistEnvironment(
     AgentGlobalStore().clearAll()
   }
 
-  override def logOnFile(): Unit = {}
-
 }
 
 sealed trait OutputStrategy {
