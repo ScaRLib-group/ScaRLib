@@ -35,7 +35,6 @@ class DTDEAgent(
   private val dataset: ReplayBuffer[State, Action] = ReplayBuffer[State, Action](datasetSize)
   private val epsilon: Decay[Double] = learningConfiguration.epsilon
   private val learner: DeepQLearner = new DeepQLearner(dataset, actionSpace, learningConfiguration)
-  private val posLogs: StringBuilder = new StringBuilder()
   private var testPolicy: State => Action = _
 
   /** A single interaction of the agent with the environment */
@@ -69,16 +68,6 @@ class DTDEAgent(
       case AgentMode.Training => learner.behavioural
       case AgentMode.Testing => testPolicy
     }
-  }
-
-  private def logPos(pos: (Double, Double)): Unit =
-    posLogs.append(pos.toString + "\n")
-
-  def logOnFile(): Unit = {
-    val file = File(s"agent-$agentId.txt")
-    val bw = file.bufferedWriter(append = true)
-    bw.write(posLogs.toString())
-    bw.close()
   }
 
 }

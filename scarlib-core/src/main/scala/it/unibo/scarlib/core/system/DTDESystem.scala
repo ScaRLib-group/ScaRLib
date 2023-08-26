@@ -46,8 +46,6 @@ class DTDESystem(
       environment.reset()
       agents.foreach(_.snapshot(episodes))
       learn(episodes - 1, episodeLength)
-    } else {
-      agents.foreach(_.logOnFile())
     }
   }
 
