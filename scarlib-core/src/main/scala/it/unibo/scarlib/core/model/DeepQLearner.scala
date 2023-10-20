@@ -9,7 +9,7 @@
 
 package it.unibo.scarlib.core.model
 
-import it.unibo.scarlib.core.neuralnetwork.{SimpleSequentialDQN, TorchSupport}
+import it.unibo.scarlib.core.neuralnetwork.{NeuralNetworkEncoding, SimpleSequentialDQN, TorchSupport}
 import it.unibo.scarlib.core.util.TorchLiveLogger
 import me.shadaj.scalapy.py
 import me.shadaj.scalapy.py.{PyQuote, SeqConverters}
@@ -28,7 +28,7 @@ class DeepQLearner(
     memory: ReplayBuffer[State, Action],
     actionSpace: Seq[Action],
     learningConfiguration: LearningConfiguration
-) {
+)(implicit encoding: NeuralNetworkEncoding[State]) {
 
   private val random = learningConfiguration.random
   private val learningRate = learningConfiguration.learningRate
@@ -40,8 +40,8 @@ class DeepQLearner(
   private val device = AutodiffDevice()
   private val targetNetwork = learningConfiguration.dqnFactory.createNN().asInstanceOf[py.Dynamic]
   private val policyNetwork = learningConfiguration.dqnFactory.createNN().asInstanceOf[py.Dynamic]
-  private val targetPolicy = DeepQLearner.policyFromNetwork(policyNetwork, actionSpace)
-  private val behaviouralPolicy = DeepQLearner.policyFromNetwork(policyNetwork, actionSpace)
+  private val targetPolicy = DeepQLearner.policyFromNetwork(policyNetwork, encoding, actionSpace)
+  private val behaviouralPolicy = DeepQLearner.policyFromNetwork(policyNetwork, encoding, actionSpace)
   private val optimizer = TorchSupport.optimizerModule().RMSprop(policyNetwork.parameters(), learningRate)
 
   /** Gets the optimal policy */
@@ -64,10 +64,10 @@ class DeepQLearner(
   def improve(): Unit = {
     val memorySample = memory.subsample(batchSize)
     if (memorySample.size == batchSize) {
-      val states = memorySample.map(_.actualState).map(state => state.toSeq().toPythonCopy).toPythonCopy
+      val states = memorySample.map(_.actualState).map(state => encoding.toSeq(state).toPythonCopy).toPythonCopy
       val action = memorySample.map(_.action).map(action => actionSpace.indexOf(action)).toPythonCopy
       val rewards = TorchSupport.deepLearningLib().tensor(memorySample.map(_.reward).toPythonCopy).to(device)
-      val nextState = memorySample.map(_.nextState).map(state => state.toSeq().toPythonCopy).toPythonCopy
+      val nextState = memorySample.map(_.nextState).map(state => encoding.toSeq(state).toPythonCopy).toPythonCopy
       val stateActionValue = policyNetwork(TorchSupport.deepLearningLib().tensor(states).to(device))
         .gather(1, TorchSupport.deepLearningLib().tensor(action).to(device).view(batchSize, 1))
       val nextStateValues =
@@ -107,21 +107,22 @@ object DeepQLearner {
   /** Uploads the policy from a snapshot */
   def policyFromNetworkSnapshot[S <: State, A](
       path: String,
+      encoding: NeuralNetworkEncoding[S],
       inputSize: Int,
       hiddenSize: Int,
       actionSpace: Seq[A]
   ): S => A = {
     val model = SimpleSequentialDQN(inputSize, hiddenSize, actionSpace.size)
     model.load_state_dict(TorchSupport.deepLearningLib().load(path, map_location = AutodiffDevice()))
-    policyFromNetwork(model, actionSpace)
+    policyFromNetwork(model, encoding, actionSpace)
   }
 
   /** Gets the policy from the network which approximates it */
-  def policyFromNetwork[S <: State, A](network: py.Dynamic, actionSpace: Seq[A]): S => A = { state =>
-    val netInput = state.toSeq()
+  def policyFromNetwork[S <: State, A](network: py.Dynamic, encoding: NeuralNetworkEncoding[S], actionSpace: Seq[A]): S => A = { state =>
+    val netInput = encoding.toSeq(state)
     py.`with`(TorchSupport.deepLearningLib().no_grad()) { _ =>
       val tensor =
-        TorchSupport.deepLearningLib().tensor(netInput.toPythonCopy).to(AutodiffDevice()).view(1, state.elements())
+        TorchSupport.deepLearningLib().tensor(netInput.toPythonCopy).to(AutodiffDevice()).view(1, encoding.elements())
       val actionIndex = network(tensor).max(1).bracketAccess(1).item().as[Int]
       actionSpace(actionIndex)
     }

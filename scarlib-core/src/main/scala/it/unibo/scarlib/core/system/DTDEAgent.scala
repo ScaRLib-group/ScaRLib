@@ -10,6 +10,8 @@
 package it.unibo.scarlib.core.system
 
 import it.unibo.scarlib.core.model._
+import it.unibo.scarlib.core.neuralnetwork.NeuralNetworkEncoding
+
 import scala.reflect.io.File
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -30,7 +32,7 @@ class DTDEAgent(
                           datasetSize: Int,
                           agentMode: AgentMode = AgentMode.Training,
                           learningConfiguration: LearningConfiguration
-) extends Agent {
+)(implicit encoding: NeuralNetworkEncoding[State]) extends Agent {
 
   private val dataset: ReplayBuffer[State, Action] = ReplayBuffer[State, Action](datasetSize)
   private val epsilon: Decay[Double] = learningConfiguration.epsilon
@@ -60,7 +62,7 @@ class DTDEAgent(
 
   /** Sets a new policy for testing */
   def setTestPolicy(p: NeuralNetworkSnapshot): Unit =
-    testPolicy = DeepQLearner.policyFromNetworkSnapshot(p.path + s"-$agentId", p.inputSize, p.hiddenSize, actionSpace)
+    testPolicy = DeepQLearner.policyFromNetworkSnapshot(p.path + s"-$agentId", encoding, p.inputSize, p.hiddenSize, actionSpace)
 
   /** Gets the current policy */
   private def getPolicy: State => Action = {

@@ -10,6 +10,8 @@
 package it.unibo.scarlib.core.system
 
 import it.unibo.scarlib.core.model._
+import it.unibo.scarlib.core.neuralnetwork.NeuralNetworkEncoding
+
 import scala.annotation.tailrec
 import scala.concurrent.ExecutionContext
 import scala.concurrent.{Await, Future}
@@ -29,7 +31,7 @@ class CTDESystem(
                   dataset: ReplayBuffer[State, Action],
                   actionSpace: Seq[Action],
                   learningConfiguration: LearningConfiguration
-)(implicit context: ExecutionContext) {
+)(implicit context: ExecutionContext, encoding: NeuralNetworkEncoding[State]) {
 
   private val epsilon: Decay[Double] = learningConfiguration.epsilon
   private val learner: DeepQLearner =
@@ -70,7 +72,7 @@ class CTDESystem(
    */
   final def runTest(episodeLength: Int, policy: NeuralNetworkSnapshot): Unit = {
     val p: State => Action =
-      DeepQLearner.policyFromNetworkSnapshot(policy.path, policy.inputSize, policy.hiddenSize, actionSpace)
+      DeepQLearner.policyFromNetworkSnapshot(policy.path, encoding, policy.inputSize, policy.hiddenSize, actionSpace)
     agents.foreach(_.notifyNewPolicy(p))
     episode(episodeLength)
 

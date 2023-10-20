@@ -10,7 +10,9 @@
 package it.unibo.scarlib.core.system
 
 import scala.annotation.tailrec
-import it.unibo.scarlib.core.model.{Environment, NeuralNetworkSnapshot}
+import it.unibo.scarlib.core.model.{Environment, NeuralNetworkSnapshot, State}
+import it.unibo.scarlib.core.neuralnetwork.NeuralNetworkEncoding
+
 import scala.concurrent.ExecutionContext
 import scala.concurrent.{Await, Future}
 
@@ -23,7 +25,7 @@ import scala.concurrent.{Await, Future}
 class DTDESystem(
                   agents: Seq[DTDEAgent],
                   environment: Environment
-)(implicit context: ExecutionContext){
+)(implicit context: ExecutionContext, encoding: NeuralNetworkEncoding[State]){
 
   /** Starts the learning process
    *

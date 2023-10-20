@@ -9,24 +9,22 @@
 
 package it.unibo.scarlib.core.model
 
+import it.unibo.scarlib.core.neuralnetwork.NeuralNetworkEncoding
+
 /** A generic state in which the environment can be */
 trait State {
-
-    /** Gets the number of elements in the state */
-    def elements(): Int
-
-    /** Converts the state into a format usable by the neural network */
-    def toSeq(): Seq[Double]
-
-    /** Checks if the state is empty */
-    def isEmpty(): Boolean
+  def isEmpty(): Boolean
 }
 
 /** An empty state */
 class EmptyState extends State {
-    override def elements(): Int = 0
+  override def isEmpty(): Boolean = true
+}
 
-    override def toSeq(): Seq[Double] = Seq()
+object EmptyState {
+  implicit val encoding: NeuralNetworkEncoding[State] = new NeuralNetworkEncoding[State] {
+      override def elements(): Int = 0
 
-    override def isEmpty(): Boolean = true
+      override def toSeq(element: State): Seq[Double] = Seq.empty[Double]
+  }
 }
