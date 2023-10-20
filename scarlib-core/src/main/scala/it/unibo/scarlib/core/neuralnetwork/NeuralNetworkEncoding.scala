@@ -9,7 +9,9 @@
 
 package it.unibo.scarlib.core.neuralnetwork
 
-trait NeuralNetworkEncoding[A]{
+import it.unibo.scarlib.core.model.State
+
+trait NeuralNetworkEncoding[A <: State]{
     def elements(): Int
 
     def toSeq(element: A): Seq[Double]
