@@ -10,8 +10,8 @@
 package it.unibo.scarlib.core.system
 
 import scala.annotation.tailrec
-import it.unibo.scarlib.core.model.{Environment, NeuralNetworkSnapshot, State}
-import it.unibo.scarlib.core.neuralnetwork.NeuralNetworkEncoding
+import it.unibo.scarlib.core.model.{Environment, State}
+import it.unibo.scarlib.core.neuralnetwork.{NeuralNetworkEncoding, NeuralNetworkSnapshot}
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.{Await, Future}

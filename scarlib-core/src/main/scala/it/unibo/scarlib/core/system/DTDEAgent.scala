@@ -10,7 +10,7 @@
 package it.unibo.scarlib.core.system
 
 import it.unibo.scarlib.core.model._
-import it.unibo.scarlib.core.neuralnetwork.NeuralNetworkEncoding
+import it.unibo.scarlib.core.neuralnetwork.{NeuralNetworkEncoding, NeuralNetworkSnapshot}
 
 import scala.reflect.io.File
 import scala.concurrent.ExecutionContext.Implicits.global

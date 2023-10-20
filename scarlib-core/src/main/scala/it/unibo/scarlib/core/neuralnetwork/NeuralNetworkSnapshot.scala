@@ -7,7 +7,7 @@
  * MIT License as described in the file LICENSE in the ScaRLib distribution's top directory.
  */
 
-package it.unibo.scarlib.core.model
+package it.unibo.scarlib.core.neuralnetwork
 
 /** Represents a snapshot of the policy saved on the disk */
 case class NeuralNetworkSnapshot(path: String, inputSize: Int, hiddenSize: Int)
