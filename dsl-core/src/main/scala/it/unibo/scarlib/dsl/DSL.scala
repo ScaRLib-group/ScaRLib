@@ -7,6 +7,7 @@
  * MIT License as described in the file LICENSE in the ScaRLib distribution's top directory.
  */
 
+/*
 package it.unibo.scarlib.dsl
 import scala.reflect.runtime.universe as ru
 
@@ -81,3 +82,4 @@ object DSL {
 
 }
 
+*/
