@@ -28,7 +28,7 @@ class DeepQLearner(
     memory: ReplayBuffer[State, Action],
     actionSpace: Seq[Action],
     learningConfiguration: LearningConfiguration
-)(implicit encoding: NeuralNetworkEncoding[State]) {
+)(implicit encoding: NeuralNetworkEncoding[State]) extends Learner {
 
   private val random = learningConfiguration.random
   private val learningRate = learningConfiguration.learningRate
@@ -45,10 +45,10 @@ class DeepQLearner(
   private val optimizer = TorchSupport.optimizerModule().RMSprop(policyNetwork.parameters(), learningRate)
 
   /** Gets the optimal policy */
-  val optimal: State => Action = targetPolicy
+  override val optimal: State => Action = targetPolicy
 
   /** Gets the behavioural policy */
-  val behavioural: State => Action =
+  override val behavioural: State => Action =
     state =>
       if (random.nextDouble() < epsilon.value()) {
         random.shuffle(actionSpace).head
@@ -57,11 +57,11 @@ class DeepQLearner(
       }
 
   /** Records the experience gained from the last agent-environment interaction */
-  def record(state: State, action: Action, reward: Double, nextState: State): Unit =
+  override def record(state: State, action: Action, reward: Double, nextState: State): Unit =
     memory.insert(state, action, reward, nextState)
 
   /** Improves the policy following the DQN algorithm */
-  def improve(): Unit = {
+  override def improve(): Unit = {
     val memorySample = memory.subsample(batchSize)
     if (memorySample.size == batchSize) {
       val states = memorySample.map(_.actualState).map(state => encoding.toSeq(state).toPythonCopy).toPythonCopy
@@ -91,7 +91,7 @@ class DeepQLearner(
   }
 
   /** Takes a snapshot of the current policy */
-  def snapshot(episode: Int, agentId: Int): Unit = {
+  override def snapshot(episode: Int, agentId: Int): Unit = {
     val timeMark = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date)
     TorchSupport
       .deepLearningLib()

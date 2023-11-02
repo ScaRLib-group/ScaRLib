@@ -36,7 +36,7 @@ class DTDEAgent(
 
   private val dataset: ReplayBuffer[State, Action] = ReplayBuffer[State, Action](datasetSize)
   private val epsilon: Decay[Double] = learningConfiguration.epsilon
-  private val learner: DeepQLearner = new DeepQLearner(dataset, actionSpace, learningConfiguration)
+  private val learner = new DeepQLearner(dataset, actionSpace, learningConfiguration)
   private var testPolicy: State => Action = _
 
   /** A single interaction of the agent with the environment */

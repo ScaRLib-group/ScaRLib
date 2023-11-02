@@ -34,7 +34,7 @@ class CTDESystem(
 )(implicit context: ExecutionContext, encoding: NeuralNetworkEncoding[State]) {
 
   private val epsilon: Decay[Double] = learningConfiguration.epsilon
-  private val learner: DeepQLearner =
+  private val learner =
     new DeepQLearner(dataset, actionSpace, learningConfiguration)
 
   /** Starts the learning process
