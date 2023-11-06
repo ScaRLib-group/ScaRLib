@@ -1,3 +1,26 @@
+## [2.0.0](https://github.com/ScaRLib-group/ScaRLib/compare/1.6.5...2.0.0) (2023-11-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* improvements
+
+### Features
+
+* improvements ([27c22d7](https://github.com/ScaRLib-group/ScaRLib/commit/27c22d794204f17c9785b645c094f57230ffa7da))
+
+
+### General maintenance
+
+* add dependencies management with gradle catalogs ([01eec18](https://github.com/ScaRLib-group/ScaRLib/commit/01eec180cf91fa7a34f770d8e9448c70005f64eb))
+* update release command ([73fec4b](https://github.com/ScaRLib-group/ScaRLib/commit/73fec4b05ba50c0ac1093f663184ae9b9a89b531))
+* update test job ([60ccd76](https://github.com/ScaRLib-group/ScaRLib/commit/60ccd7621fa2d54819194430c4ab26c43085fef1))
+
+
+### Tests
+
+* add decay test ([577796d](https://github.com/ScaRLib-group/ScaRLib/commit/577796df4e964e02d4af127f64409c2ba7e38065))
+
 ## [1.6.5](https://github.com/ScaRLib-group/ScaRLib/compare/1.6.4...1.6.5) (2023-04-16)
 
 
