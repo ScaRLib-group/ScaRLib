@@ -7,12 +7,11 @@
  * MIT License as described in the file LICENSE in the ScaRLib distribution's top directory.
  */
 
-/*
 package it.unibo.scarlib.dsl
 import scala.reflect.runtime.universe as ru
-
-import it.unibo.scarlib.core.system.{CTDESystem, CTDEAgent}
+import it.unibo.scarlib.core.system.{CTDEAgent, CTDESystem}
 import it.unibo.scarlib.core.model.*
+import it.unibo.scarlib.core.neuralnetwork.NeuralNetworkEncoding
 
 import scala.collection.mutable
 import scala.collection.mutable.Seq as MSeq
@@ -29,7 +28,7 @@ object DSL {
     private var nAgents: Int = 0
 
     /** Specifies the system */
-    def CTDELearningSystem(init: Unit ?=> Unit)(using context: ExecutionContext): CTDESystem =
+    def CTDELearningSystem(init: Unit ?=> Unit)(using context: ExecutionContext, encoding: NeuralNetworkEncoding[State]): CTDESystem =
         given unit: Unit = ()
 
         init
@@ -82,4 +81,3 @@ object DSL {
 
 }
 
-*/
