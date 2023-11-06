@@ -4,12 +4,13 @@
  * listed, for each module, in the respective subproject's build.gradle.kts file.
  *
  * This file is part of ScaRLib, and is distributed under the terms of the
- * GNU General Public License as described in the file LICENSE in the ScaRLin distribution's top directory.
+ * MIT License as described in the file LICENSE in the ScaRLib distribution's top directory.
  */
 
 package it.unibo.scarlib.core.model
 
 import scala.util.Random
+import collection.mutable.ArrayDeque
 
 /** The experience gained by an agent from an interaction with the environment
  *
@@ -42,22 +43,22 @@ trait ReplayBuffer[State, Action]{
 
 object ReplayBuffer{
   def apply[S, A](size: Int): ReplayBuffer[S, A] = {
-    new BoundedQueue[S, A](size)
+    new BoundedQueue[S, A](size, 42)
   }
 
-  private class BoundedQueue[State, Action](bufferSize: Int) extends ReplayBuffer[State, Action]{
+  private class BoundedQueue[State, Action](bufferSize: Int, seed: Int) extends ReplayBuffer[State, Action]{
 
-    private var queue: Seq[Experience[State, Action]] = Seq.empty
+    private var queue: ArrayDeque[Experience[State, Action]] = ArrayDeque.empty
 
-    override def reset(): Unit = Seq.empty
+    override def reset(): Unit = queue = ArrayDeque.empty[Experience[State, Action]]
 
     override def insert(actualState: State, action: Action, reward: Double, nextState: State): Unit =
-      queue = (Experience(actualState, action, reward, nextState) +: queue).take(bufferSize)
+      queue = (queue :+ Experience(actualState, action, reward, nextState)).takeRight(bufferSize)
 
     override def subsample(batchSize: Int): Seq[Experience[State, Action]] =
-      new Random(42).shuffle(queue).take(batchSize)
+      new Random(seed).shuffle(queue).take(batchSize).toSeq
 
-    override def getAll(): Seq[Experience[State, Action]] = queue
+    override def getAll(): Seq[Experience[State, Action]] = queue.toSeq
 
     override def size(): Int = queue.size
   }

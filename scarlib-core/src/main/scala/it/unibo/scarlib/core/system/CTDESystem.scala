@@ -1,15 +1,17 @@
 /*
- * ScaRLib: A Framework for Cooperative Many Agent Deep Reinforcement Learning in Scala
+ * ScaRLib: A Framework for Cooperative Many Agent Deep Reinforcement learning in Scala
  * Copyright (C) 2023, Davide Domini, Filippo Cavallari and contributors
  * listed, for each module, in the respective subproject's build.gradle.kts file.
  *
  * This file is part of ScaRLib, and is distributed under the terms of the
- * GNU General Public License as described in the file LICENSE in the ScaRLin distribution's top directory.
+ * MIT License as described in the file LICENSE in the ScaRLib distribution's top directory.
  */
 
-package it.unibo.scarlib.core.deepRL
+package it.unibo.scarlib.core.system
 
 import it.unibo.scarlib.core.model._
+import it.unibo.scarlib.core.neuralnetwork.{NeuralNetworkEncoding, NeuralNetworkSnapshot}
+
 import scala.annotation.tailrec
 import scala.concurrent.ExecutionContext
 import scala.concurrent.{Await, Future}
@@ -24,15 +26,15 @@ import scala.concurrent.{Await, Future}
  * @param context the [[ExecutionContext]], it is used to configure how and on which thread pools asynchronous tasks (such as Futures) will run
  */
 class CTDESystem(
-                  agents: Seq[IndependentAgent],
+                  agents: Seq[CTDEAgent],
                   environment: Environment,
                   dataset: ReplayBuffer[State, Action],
                   actionSpace: Seq[Action],
                   learningConfiguration: LearningConfiguration
-)(implicit context: ExecutionContext) {
+)(implicit context: ExecutionContext, encoding: NeuralNetworkEncoding[State]) {
 
   private val epsilon: Decay[Double] = learningConfiguration.epsilon
-  private val learner: DeepQLearner =
+  private val learner =
     new DeepQLearner(dataset, actionSpace, learningConfiguration)
 
   /** Starts the learning process
@@ -59,9 +61,6 @@ class CTDESystem(
       environment.reset()
       learner.snapshot(episodes, 0)
       learn(episodes - 1, episodeLength)
-    } else {
-      agents.foreach(_.logOnFile())
-      environment.logOnFile()
     }
 
   }
@@ -71,9 +70,9 @@ class CTDESystem(
    * @param episodeLength the length of the episode
    * @param policy the snapshot of the policy to be used
    */
-  final def runTest(episodeLength: Int, policy: PolicyNN): Unit = {
+  final def runTest(episodeLength: Int, policy: NeuralNetworkSnapshot): Unit = {
     val p: State => Action =
-      DeepQLearner.policyFromNetworkSnapshot(policy.path, policy.inputSize, policy.hiddenSize, actionSpace)
+      DeepQLearner.policyFromNetworkSnapshot(policy.path, encoding, policy.inputSize, policy.hiddenSize, actionSpace)
     agents.foreach(_.notifyNewPolicy(p))
     episode(episodeLength)
 

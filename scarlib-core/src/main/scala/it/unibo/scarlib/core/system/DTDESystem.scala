@@ -1,17 +1,20 @@
 /*
- * ScaRLib: A Framework for Cooperative Many Agent Deep Reinforcement Learning in Scala
+ * ScaRLib: A Framework for Cooperative Many Agent Deep Reinforcement learning in Scala
  * Copyright (C) 2023, Davide Domini, Filippo Cavallari and contributors
  * listed, for each module, in the respective subproject's build.gradle.kts file.
  *
  * This file is part of ScaRLib, and is distributed under the terms of the
- * GNU General Public License as described in the file LICENSE in the ScaRLin distribution's top directory.
+ * MIT License as described in the file LICENSE in the ScaRLib distribution's top directory.
  */
 
-package it.unibo.scarlib.core.deepRL
+package it.unibo.scarlib.core.system
 
 import scala.annotation.tailrec
-import it.unibo.scarlib.core.model.{Environment, PolicyNN}
-import scala.concurrent.{ExecutionContext, Future}
+import it.unibo.scarlib.core.model.{Environment, State}
+import it.unibo.scarlib.core.neuralnetwork.{NeuralNetworkEncoding, NeuralNetworkSnapshot}
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.{Await, Future}
 
 /** A system in which agents work in a Decentralized Training Decentralized Execution way
  *
@@ -19,7 +22,10 @@ import scala.concurrent.{ExecutionContext, Future}
  * @param environment the environment in which the agents interact
  */
 
-class DTDESystem(agents: Seq[DecentralizedAgent], environment: Environment){
+class DTDESystem(
+                  agents: Seq[DTDEAgent],
+                  environment: Environment
+)(implicit context: ExecutionContext, encoding: NeuralNetworkEncoding[State]){
 
   /** Starts the learning process
    *
@@ -42,8 +48,6 @@ class DTDESystem(agents: Seq[DecentralizedAgent], environment: Environment){
       environment.reset()
       agents.foreach(_.snapshot(episodes))
       learn(episodes - 1, episodeLength)
-    } else {
-      agents.foreach(_.logOnFile())
     }
   }
 
@@ -53,7 +57,7 @@ class DTDESystem(agents: Seq[DecentralizedAgent], environment: Environment){
    * @param episodeLength the length of the episode
    * @param policy the snapshot of the policy to be used
    */
-  final def runTest(episodeLength: Int, policy: PolicyNN): Unit = {
+  final def runTest(episodeLength: Int, policy: NeuralNetworkSnapshot): Unit = {
     agents.foreach(_.setTestPolicy(policy))
     episode(episodeLength)
 

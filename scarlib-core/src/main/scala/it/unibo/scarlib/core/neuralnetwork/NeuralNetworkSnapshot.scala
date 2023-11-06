@@ -4,10 +4,10 @@
  * listed, for each module, in the respective subproject's build.gradle.kts file.
  *
  * This file is part of ScaRLib, and is distributed under the terms of the
- * GNU General Public License as described in the file LICENSE in the ScaRLin distribution's top directory.
+ * MIT License as described in the file LICENSE in the ScaRLib distribution's top directory.
  */
 
-package it.unibo.scarlib.core.model
+package it.unibo.scarlib.core.neuralnetwork
 
 /** Represents a snapshot of the policy saved on the disk */
-case class PolicyNN (path: String, inputSize: Int, hiddenSize: Int)
+case class NeuralNetworkSnapshot(path: String, inputSize: Int, hiddenSize: Int)

@@ -4,7 +4,7 @@
  * listed, for each module, in the respective subproject's build.gradle.kts file.
  *
  * This file is part of ScaRLib, and is distributed under the terms of the
- * GNU General Public License as described in the file LICENSE in the ScaRLin distribution's top directory.
+ * MIT License as described in the file LICENSE in the ScaRLib distribution's top directory.
  */
 
 package it.unibo.alchemist
@@ -88,8 +88,6 @@ class AlchemistEnvironment(
     }
     AgentGlobalStore().clearAll()
   }
-
-  override def logOnFile(): Unit = {}
 
 }
 
