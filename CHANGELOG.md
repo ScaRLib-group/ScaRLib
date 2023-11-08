@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/ScaRLib-group/ScaRLib/compare/2.0.0...2.0.1) (2023-11-08)
+
+
+### Bug Fixes
+
+* **ReplayBuffer:** fix generics ([110127c](https://github.com/ScaRLib-group/ScaRLib/commit/110127cd416d748821460eaf66ee9c1aa36989cc))
+
 ## [2.0.0](https://github.com/ScaRLib-group/ScaRLib/compare/1.6.5...2.0.0) (2023-11-06)
 
 
