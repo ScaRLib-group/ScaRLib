@@ -1,3 +1,14 @@
+## [3.0.0](https://github.com/ScaRLib-group/ScaRLib/compare/2.0.1...3.0.0) (2023-11-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* new dsl api (#28)
+
+### Features
+
+* new dsl api ([#28](https://github.com/ScaRLib-group/ScaRLib/issues/28)) ([78d1843](https://github.com/ScaRLib-group/ScaRLib/commit/78d18439ae7da92cf7fcc7c7d58d3f25ef98e529))
+
 ## [2.0.1](https://github.com/ScaRLib-group/ScaRLib/compare/2.0.0...2.0.1) (2023-11-08)
 
 
