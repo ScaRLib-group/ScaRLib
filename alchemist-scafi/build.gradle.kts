@@ -20,12 +20,12 @@ dependencies {
     testImplementation(libs.junit.api)
     testRuntimeOnly(libs.junit.engine)
     implementation(project(":scarlib-core"))
+    implementation(project(":dsl-core"))
 }
 
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
-
 
 publishing.publications {
     withType<MavenPublication> {
