@@ -19,10 +19,10 @@ import collection.mutable.ArrayDeque
  * @param reward the reward earned by the agent after taking the action from the actual state
  * @param nextState the state in which the environment goes into after the action taken by the agent
  */
-case class Experience[S <: State, A <: Action](actualState: S, action: A, reward: Double, nextState: S)
+case class Experience[S, A](actualState: S, action: A, reward: Double, nextState: S)
 
 /** The container of agents experience */
-trait ReplayBuffer[S <: State, A <: Action]{
+trait ReplayBuffer[S, A]{
 
   /** Inserts new experience */
   def insert(actualState: S, action: A, reward: Double, nextState: S): Unit
@@ -42,11 +42,11 @@ trait ReplayBuffer[S <: State, A <: Action]{
 }
 
 object ReplayBuffer{
-  def apply[S <: State, A <: Action](size: Int): ReplayBuffer[S, A] = {
+  def apply[S, A](size: Int): ReplayBuffer[S, A] = {
     new BoundedQueue[S, A](size, 42)
   }
 
-  private class BoundedQueue[S <: State, A <: Action](bufferSize: Int, seed: Int) extends ReplayBuffer[S, A]{
+  private class BoundedQueue[S, A](bufferSize: Int, seed: Int) extends ReplayBuffer[S, A]{
 
     private var queue: ArrayDeque[Experience[S, A]] = ArrayDeque.empty
 
