@@ -35,7 +35,6 @@ class AlchemistEnvironment(
   private val file = new File(envDefinition)
   private val alchemistUtil = new AlchemistUtil()
   private var engine: Engine[Any, Nothing] = _
-  this.reset()
   private var agentPromises = Map.empty[Int, Promise[(Double, State)]]
   private var oldState = Map.empty[Int, State]
   private var ticks = 0
