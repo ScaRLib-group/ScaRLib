@@ -38,14 +38,16 @@ object DSL {
     rf = Option(init)
   }
 
-  def environment(init: => String): Unit = {
+  def environment(init: => String)(implicit config: Environment => Unit): Unit = {
     val name = init
     val runtimeMirror = ru.runtimeMirror(getClass.getClassLoader)
     val classSymbol = runtimeMirror.classSymbol(Class.forName(name))
     val classMirror = runtimeMirror.reflectClass(classSymbol)
     val constructor = classSymbol.typeSignature.members.filter(_.isConstructor).toList.head.asMethod
     val constructorMirror = classMirror.reflectConstructor(constructor).apply(rf.get, actionSpace)
-    env = Option(constructorMirror.asInstanceOf[Environment])
+    val e = constructorMirror.asInstanceOf[Environment]
+    config(e)
+    env = Option(e)
   }
 
   def dataset(init: => ReplayBuffer[State, Action]): Unit = {

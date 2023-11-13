@@ -56,9 +56,9 @@ class CTDESystem(
 
     if (episodes > 0) {
       println("Episode: " + episodes)
+      environment.reset()
       singleEpisode(episodeLength)
       epsilon.update()
-      environment.reset()
       learner.snapshot(episodes, 0)
       learn(episodes - 1, episodeLength)
     }
@@ -74,6 +74,7 @@ class CTDESystem(
     val p: State => Action =
       DeepQLearner.policyFromNetworkSnapshot(policy.path, encoding, policy.inputSize, policy.hiddenSize, actionSpace)
     agents.foreach(_.notifyNewPolicy(p))
+    environment.reset()
     episode(episodeLength)
 
     @tailrec

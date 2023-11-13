@@ -44,8 +44,9 @@ class DTDESystem(
     }
 
     if (episodes > 0) {
-      singleEpisode(episodeLength)
+      println("Episode: " + episodes)
       environment.reset()
+      singleEpisode(episodeLength)
       agents.foreach(_.snapshot(episodes))
       learn(episodes - 1, episodeLength)
     }
@@ -59,6 +60,7 @@ class DTDESystem(
    */
   final def runTest(episodeLength: Int, policy: NeuralNetworkSnapshot): Unit = {
     agents.foreach(_.setTestPolicy(policy))
+    environment.reset()
     episode(episodeLength)
 
     @tailrec
