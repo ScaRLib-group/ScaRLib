@@ -49,6 +49,7 @@ object DSL {
     config(e)
     env = Option(e)
   }
+
   def dataset(init: => ReplayBuffer[State, Action]): Unit = {
     ds = Option(init)
   }
