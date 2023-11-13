@@ -1,3 +1,10 @@
+## [3.1.0](https://github.com/ScaRLib-group/ScaRLib/compare/3.0.0...3.1.0) (2023-11-13)
+
+
+### Features
+
+* add implicit configuration to environment method ([#29](https://github.com/ScaRLib-group/ScaRLib/issues/29)) ([d922f48](https://github.com/ScaRLib-group/ScaRLib/commit/d922f48feb7f1b28bb7ac326faae2957ba416bc1))
+
 ## [3.0.0](https://github.com/ScaRLib-group/ScaRLib/compare/2.0.1...3.0.0) (2023-11-09)
 
 
