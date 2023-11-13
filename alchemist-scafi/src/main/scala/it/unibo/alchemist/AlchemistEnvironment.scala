@@ -32,7 +32,6 @@ class AlchemistEnvironment(
   private var outputStrategy: OutputStrategy = NoOutput
   private var randomSeed: Option[Int] = None
   private def dt = 1.0
-  private val file = new File(envDefinition)
   private val alchemistUtil = new AlchemistUtil()
   private var engine: Engine[Any, Nothing] = _
   private var agentPromises = Map.empty[Int, Promise[(Double, State)]]
@@ -74,6 +73,7 @@ class AlchemistEnvironment(
       engine.terminate()
       engine.waitFor(Status.TERMINATED, Long.MaxValue, TimeUnit.SECONDS)
     }
+    val file = new File(envDefinition)
     engine = alchemistUtil.load(file, randomSeed)
     outputStrategy.output(engine)
   }
