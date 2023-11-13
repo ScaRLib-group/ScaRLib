@@ -17,7 +17,6 @@ import it.unibo.alchemist.model.interfaces.Position2D
 import it.unibo.scarlib.core.model._
 import it.unibo.scarlib.core.util.{AgentGlobalStore, TorchLiveLogger}
 import java.io.File
-import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
 import javax.swing.WindowConstants
 import _root_.scala.concurrent.{Future, Promise}
@@ -26,12 +25,12 @@ import _root_.scala.util.Success
 /** An environment that uses the Alchemist simulator */
 class AlchemistEnvironment(
     rewardFunction: RewardFunction,
-    actionSpace: Seq[Action],
-    envDefinition: String,
-    outputStrategy: OutputStrategy = NoOutput,
-    randomSeed: Option[Int] = None
+    actionSpace: Seq[Action]
 ) extends Environment(rewardFunction, actionSpace) {
 
+  private var envDefinition: String = ""
+  private var outputStrategy: OutputStrategy = NoOutput
+  private var randomSeed: Option[Int] = None
   private def dt = 1.0
   private val file = new File(envDefinition)
   private val alchemistUtil = new AlchemistUtil()
@@ -87,6 +86,18 @@ class AlchemistEnvironment(
       TorchLiveLogger.logScalar(k, v, ticks)
     }
     AgentGlobalStore().clearAll()
+  }
+
+  def setEnvironmentDefinition(definition: String): Unit = {
+    envDefinition = definition
+  }
+
+  def setOutputStrategy(strategy: OutputStrategy = NoOutput): Unit = {
+    outputStrategy = strategy
+  }
+
+  def setRandomSeed(seed: Option[Int]): Unit = {
+    randomSeed = seed
   }
 
 }
