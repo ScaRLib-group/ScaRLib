@@ -133,3 +133,10 @@ To integrate it into your own repository, you need to add (using Gradle):
 implementation("io.github.davidedomini:scarlib-core:$version")
 implementation("io.github.davidedomini:dsl-core:$version")
 ```
+
+### Contributors
+
+<a href="https://github.com/AlchemistSimulator/Alchemist/graphs/contributors">
+	<img src="https://contributors-img.web.app/image?repo=ScaRLib-group/ScaRLib" />
+</a>
+
