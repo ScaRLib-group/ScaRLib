@@ -1,3 +1,10 @@
+## [3.1.2](https://github.com/ScaRLib-group/ScaRLib/compare/3.1.1...3.1.2) (2023-11-16)
+
+
+### Bug Fixes
+
+* **DSL:** fix agents instantiation ([2490106](https://github.com/ScaRLib-group/ScaRLib/commit/2490106cc7fa67de2b4782775be816a4c3ce6cb0))
+
 ## [3.1.1](https://github.com/ScaRLib-group/ScaRLib/compare/3.1.0...3.1.1) (2023-11-16)
 
 
