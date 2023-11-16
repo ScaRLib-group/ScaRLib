@@ -28,7 +28,7 @@ object DSL {
   def CTDELearningSystem(init: => Unit)(implicit context: ExecutionContext, encoding: NeuralNetworkEncoding[State]): CTDESystem = {
     init
     var agentsSeq: Seq[CTDEAgent] = Seq.empty
-    for (n <- 0  to nAgents) {
+    for (n <- 0  until nAgents) {
       agentsSeq = agentsSeq :+ new CTDEAgent(n, env.get, actionSpace, ds.get)
     }
     new CTDESystem(agentsSeq, env.get, ds.get, actionSpace, lc.get)
