@@ -1,3 +1,21 @@
+## [3.1.1](https://github.com/ScaRLib-group/ScaRLib/compare/3.1.0...3.1.1) (2023-11-16)
+
+
+### Bug Fixes
+
+* **Learner:** remove useless method record ([1b59dbc](https://github.com/ScaRLib-group/ScaRLib/commit/1b59dbc2fc3c314c414882b4c5052725fa5c0973))
+* **ReplayBuffer:** insert method now takes Experience as input ([7018216](https://github.com/ScaRLib-group/ScaRLib/commit/7018216be4c991e116fe7a09ab40655dae735584))
+
+
+### General maintenance
+
+* update README.md ([f019d5e](https://github.com/ScaRLib-group/ScaRLib/commit/f019d5ea0166058292c328d359cf1324a224a85c))
+
+
+### Build and continuous integration
+
+* change license name in publishing metadata ([3b93d16](https://github.com/ScaRLib-group/ScaRLib/commit/3b93d16fc271c0e17a881643964f0ebfcf517d28))
+
 ## [3.1.0](https://github.com/ScaRLib-group/ScaRLib/compare/3.0.0...3.1.0) (2023-11-13)
 
 
