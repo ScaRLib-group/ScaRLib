@@ -25,7 +25,7 @@ case class Experience[S, A](actualState: S, action: A, reward: Double, nextState
 trait ReplayBuffer[S, A]{
 
   /** Inserts new experience */
-  def insert(actualState: S, action: A, reward: Double, nextState: S): Unit
+  def insert(experience: Experience[S, A]): Unit
 
   /** Empty the buffer */
   def reset(): Unit
@@ -52,8 +52,8 @@ object ReplayBuffer{
 
     override def reset(): Unit = queue = ArrayDeque.empty[Experience[S, A]]
 
-    override def insert(actualState: S, action: A, reward: Double, nextState: S): Unit =
-      queue = (queue :+ Experience(actualState, action, reward, nextState)).takeRight(bufferSize)
+    override def insert(experience: Experience[S, A]): Unit =
+      queue = (queue :+ experience).takeRight(bufferSize)
 
     override def subsample(batchSize: Int): Seq[Experience[S, A]] =
       new Random(seed).shuffle(queue).take(batchSize).toSeq

@@ -25,17 +25,17 @@ class MyAction(id: Int) extends Action
 class BufferTest extends AnyFlatSpec with Matchers:
   "Insert method" should "increase buffer size when it is not full" in {
     val buffer = ReplayBuffer[MyState, MyAction](10)
-    buffer.insert(new MyState(1), new MyAction(1), 10, new MyState(1))
+    buffer.insert(Experience(new MyState(1), new MyAction(1), 10, new MyState(1)))
     buffer.getAll.size shouldBe 1
   }
 
   "Insert method" should "not overflow buffer size" in {
     val buffer = ReplayBuffer[MyState, MyAction](5)
-    buffer.insert(new MyState(1), new MyAction(1), 10, new MyState(1))
-    buffer.insert(new MyState(2), new MyAction(2), 10, new MyState(2))
-    buffer.insert(new MyState(3), new MyAction(3), 10, new MyState(3))
-    buffer.insert(new MyState(4), new MyAction(4), 10, new MyState(4))
-    buffer.insert(new MyState(5), new MyAction(5), 10, new MyState(5))
+    buffer.insert(Experience(new MyState(1), new MyAction(1), 10, new MyState(1)))
+    buffer.insert(Experience(new MyState(2), new MyAction(2), 10, new MyState(2)))
+    buffer.insert(Experience(new MyState(3), new MyAction(3), 10, new MyState(3)))
+    buffer.insert(Experience(new MyState(4), new MyAction(4), 10, new MyState(4)))
+    buffer.insert(Experience(new MyState(5), new MyAction(5), 10, new MyState(5)))
     buffer.getAll.size shouldBe 5
   }
 

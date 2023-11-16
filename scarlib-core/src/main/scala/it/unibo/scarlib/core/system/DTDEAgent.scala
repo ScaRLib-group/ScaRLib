@@ -49,7 +49,7 @@ class DTDEAgent(
       .map { result =>
         agentMode match {
           case AgentMode.Training =>
-            dataset.insert(state, action, result._1, result._2)
+            dataset.insert(Experience(state, action, result._1, result._2))
             learner.improve()
             epsilon.update()
           case AgentMode.Testing => //do nothing

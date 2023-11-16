@@ -38,7 +38,7 @@ class CTDEAgent(
       environment
         .step(action, agentId)
         .map { result =>
-          dataset.insert(state, action, result._1, result._2)
+          dataset.insert(Experience(state, action, result._1, result._2))
         }
         .map(_ => ())
 
