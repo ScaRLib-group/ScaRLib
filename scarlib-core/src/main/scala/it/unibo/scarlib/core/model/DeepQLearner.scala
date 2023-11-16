@@ -56,10 +56,6 @@ class DeepQLearner(
         behaviouralPolicy(state)
       }
 
-  /** Records the experience gained from the last agent-environment interaction */
-  override def record(state: State, action: Action, reward: Double, nextState: State): Unit =
-    memory.insert(state, action, reward, nextState)
-
   /** Improves the policy following the DQN algorithm */
   override def improve(): Unit = {
     val memorySample = memory.subsample(batchSize)

@@ -17,9 +17,6 @@ trait Learner {
   /** Gets the behavioural policy */
   val behavioural: State => Action
 
-  /** Records the experience gained from the last agent-environment interaction */
-  def record(state: State, action: Action, reward: Double, nextState: State): Unit
-
   /** Improves the policy following the learning algorithm */
   def improve(): Unit
 
