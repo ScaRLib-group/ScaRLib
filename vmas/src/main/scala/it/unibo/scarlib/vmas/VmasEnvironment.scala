@@ -8,9 +8,10 @@ import me.shadaj.scalapy.py
 import me.shadaj.scalapy.py.PyQuote
 
 import scala.collection.mutable
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class VmasEnvironment(rewardFunction: RewardFunction,
-                      actionSpace: Seq[Action], settings: VmasSettings, logger: Class[_ <: Logger])
+                      actionSpace: Seq[Action], settings: VmasSettings, logger: Logger)
   extends Environment(rewardFunction, actionSpace) {
 
 
@@ -28,6 +29,9 @@ class VmasEnvironment(rewardFunction: RewardFunction,
     private var lastObservation: Option[VMASState] = Option.empty
     private var ticks = 0
 
+    private var actions: Seq[py.Dynamic] = Seq[py.Dynamic]()
+    private var futures = Seq[Future[(Double, State)]]()
+
     /** A single interaction with an agent
      *
      * @param action  the action performed by the agent
@@ -37,15 +41,26 @@ class VmasEnvironment(rewardFunction: RewardFunction,
     override def step(action: Action, agentId: Int): Future[(Double, State)] = {
         //Check if agent is the last one
         val agents = env.agents.as[mutable.Seq[py.Dynamic]]
-        val agentPos = agents(agentId).pos //Tensor of shape [n_env, 2]
-        
-        val isLast = env.agents.len.as[Int]-1 == agentId
+        //val agentPos = agents(agentId).pos //Tensor of shape [n_env, 2] - NOT USED
+        actions = actions :+ action.asInstanceOf[VMASAction].toTensor()
+        val nAgents:Int = env.n_agents.as[Int]
+        val isLast = nAgents-1 == agentId
+        val promise = scala.concurrent.Promise[(Double, State)]()
+        val future = promise.future
+        futures = futures :+ future
         if (isLast){
-
-        }else{
+            val result = env.step(actions.toPythonCopy)
+            val observations = result.bracketAccess(0)
+            val rewards = result.bracketAccess(1)
+            for (i <- 0 until nAgents ) {
+                val reward = rewards.bracketAccess(i).as[Double]
+                val observation = observations.bracketAccess(i)
+                val state = VMASState(observation)
+                lastObservation = Some(state) //TODO check if this is correct
+                promise.success((reward, state))
+            }
         }
-        return null
-        //py""
+        return future
     }
 
     /** Gets the current state of the environment */
@@ -70,5 +85,5 @@ class VmasEnvironment(rewardFunction: RewardFunction,
         AgentGlobalStore().clearAll()
     }
 
-    override def logOnFile(): Unit = ???
+    def logOnFile(): Unit = ???
 }

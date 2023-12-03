@@ -26,7 +26,7 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.scala3)
+    implementation(libs.scala2)
     implementation(libs.scalaReflect)
     testImplementation(libs.scalaTest)
     testImplementation(libs.scalaTestPlus)

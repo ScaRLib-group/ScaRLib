@@ -39,7 +39,7 @@ allprojects {
     publishOnCentral {
         projectUrl.set("https://github.com/davidedomini/ScaRLib")
         scmConnection.set("git:git@github.com:davidedomini/ScaRLib")
-        licenseName.set("GNU GENERAL PUBLIC LICENSE")
+        licenseName.set("MIT License")
     }
 
     publishing {

@@ -4,7 +4,7 @@
  * listed, for each module, in the respective subproject's build.gradle.kts file.
  *
  * This file is part of ScaRLib, and is distributed under the terms of the
- * GNU General Public License as described in the file LICENSE in the ScaRLin distribution's top directory.
+ * MIT License as described in the file LICENSE in the ScaRLib distribution's top directory.
  */
 
 package it.unibo.alchemist
@@ -17,7 +17,6 @@ import it.unibo.alchemist.model.interfaces.Position2D
 import it.unibo.scarlib.core.model._
 import it.unibo.scarlib.core.util.{AgentGlobalStore, TorchLiveLogger}
 import java.io.File
-import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
 import javax.swing.WindowConstants
 import _root_.scala.concurrent.{Future, Promise}
@@ -26,17 +25,15 @@ import _root_.scala.util.Success
 /** An environment that uses the Alchemist simulator */
 class AlchemistEnvironment(
     rewardFunction: RewardFunction,
-    actionSpace: Seq[Action],
-    envDefinition: String,
-    outputStrategy: OutputStrategy = NoOutput,
-    randomSeed: Option[Int] = None
+    actionSpace: Seq[Action]
 ) extends Environment(rewardFunction, actionSpace) {
 
+  private var envDefinition: String = ""
+  private var outputStrategy: OutputStrategy = NoOutput
+  private var randomSeed: Option[Int] = None
   private def dt = 1.0
-  private val file = new File(envDefinition)
   private val alchemistUtil = new AlchemistUtil()
   private var engine: Engine[Any, Nothing] = _
-  this.reset()
   private var agentPromises = Map.empty[Int, Promise[(Double, State)]]
   private var oldState = Map.empty[Int, State]
   private var ticks = 0
@@ -76,6 +73,7 @@ class AlchemistEnvironment(
       engine.terminate()
       engine.waitFor(Status.TERMINATED, Long.MaxValue, TimeUnit.SECONDS)
     }
+    val file = new File(envDefinition)
     engine = alchemistUtil.load(file, randomSeed)
     outputStrategy.output(engine)
   }
@@ -89,7 +87,17 @@ class AlchemistEnvironment(
     AgentGlobalStore().clearAll()
   }
 
-  override def logOnFile(): Unit = {}
+  def setEnvironmentDefinition(definition: String): Unit = {
+    envDefinition = definition
+  }
+
+  def setOutputStrategy(strategy: OutputStrategy = NoOutput): Unit = {
+    outputStrategy = strategy
+  }
+
+  def setRandomSeed(seed: Option[Int]): Unit = {
+    randomSeed = seed
+  }
 
 }
 

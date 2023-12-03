@@ -1,6 +1,6 @@
 package it.unibo.scarlib.vmas
 
-import it.unibo.scarlib.core.deepRL.IndependentAgent
+import it.unibo.scarlib.core.system.{CTDEAgent, DTDEAgent}
 import it.unibo.scarlib.core.model.{Action, ReplayBuffer, State}
 
 object VMASAgent {
@@ -13,7 +13,7 @@ object VMASAgent {
 }
 
 class VMASAgent(environment: VmasEnvironment, actionSpace: Seq[VMASAction], dataset: ReplayBuffer[State, Action])
-  extends IndependentAgent(agentId = VMASAgent.GET_AND_INCREMENT,
+  extends CTDEAgent(agentId = VMASAgent.GET_AND_INCREMENT,
       environment = environment,
       actionSpace = actionSpace,
       dataset = dataset

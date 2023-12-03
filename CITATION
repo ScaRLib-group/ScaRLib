@@ -1,0 +1,24 @@
+To cite ScaRLib in publications, please use:
+
+Domini, D., Cavallari, F., Aguzzi, G., Viroli, M. (2023). ScaRLib: A Framework for Cooperative Many Agent Deep Reinforcement Learning in Scala.
+In: Jongmans, SS., Lopes, A. (eds) Coordination Models and Languages. COORDINATION 2023. Lecture Notes in Computer Science, vol 13908. Springer, Cham.
+https://doi.org/10.1007/978-3-031-35361-1_3
+
+A BibTeX entry for LaTeX users is
+
+@InProceedings{10.1007/978-3-031-35361-1_3,
+    author={Domini, Davide
+        and Cavallari, Filippo
+        and Aguzzi, Gianluca
+        and Viroli, Mirko},
+    editor={Jongmans, Sung-Shik
+        and Lopes, Ant{\'o}nia},
+    title={ScaRLib: A Framework for Cooperative Many Agent Deep Reinforcement Learning in Scala},
+    booktitle={Coordination Models and Languages},
+    year={2023},
+    publisher={Springer Nature Switzerland},
+    address={Cham},
+    pages={52-70},
+    abstract={Multi Agent Reinforcement Learning (MARL) is an emerging field in machine learning where multiple agents learn, simultaneously and in a shared environment, how to optimise a global or local reward signal. MARL has gained significant interest in recent years due to its successful applications in various domains, such as robotics, IoT, and traffic control. Cooperative Many Agent Reinforcement Learning (CMARL) is a relevant subclass of MARL, where thousands of agents work together to achieve a common coordination goal.},
+    isbn={978-3-031-35361-1}
+}

@@ -1,3 +1,76 @@
+## [3.1.2](https://github.com/ScaRLib-group/ScaRLib/compare/3.1.1...3.1.2) (2023-11-16)
+
+
+### Bug Fixes
+
+* **DSL:** fix agents instantiation ([2490106](https://github.com/ScaRLib-group/ScaRLib/commit/2490106cc7fa67de2b4782775be816a4c3ce6cb0))
+
+## [3.1.1](https://github.com/ScaRLib-group/ScaRLib/compare/3.1.0...3.1.1) (2023-11-16)
+
+
+### Bug Fixes
+
+* **Learner:** remove useless method record ([1b59dbc](https://github.com/ScaRLib-group/ScaRLib/commit/1b59dbc2fc3c314c414882b4c5052725fa5c0973))
+* **ReplayBuffer:** insert method now takes Experience as input ([7018216](https://github.com/ScaRLib-group/ScaRLib/commit/7018216be4c991e116fe7a09ab40655dae735584))
+
+
+### General maintenance
+
+* update README.md ([f019d5e](https://github.com/ScaRLib-group/ScaRLib/commit/f019d5ea0166058292c328d359cf1324a224a85c))
+
+
+### Build and continuous integration
+
+* change license name in publishing metadata ([3b93d16](https://github.com/ScaRLib-group/ScaRLib/commit/3b93d16fc271c0e17a881643964f0ebfcf517d28))
+
+## [3.1.0](https://github.com/ScaRLib-group/ScaRLib/compare/3.0.0...3.1.0) (2023-11-13)
+
+
+### Features
+
+* add implicit configuration to environment method ([#29](https://github.com/ScaRLib-group/ScaRLib/issues/29)) ([d922f48](https://github.com/ScaRLib-group/ScaRLib/commit/d922f48feb7f1b28bb7ac326faae2957ba416bc1))
+
+## [3.0.0](https://github.com/ScaRLib-group/ScaRLib/compare/2.0.1...3.0.0) (2023-11-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* new dsl api (#28)
+
+### Features
+
+* new dsl api ([#28](https://github.com/ScaRLib-group/ScaRLib/issues/28)) ([78d1843](https://github.com/ScaRLib-group/ScaRLib/commit/78d18439ae7da92cf7fcc7c7d58d3f25ef98e529))
+
+## [2.0.1](https://github.com/ScaRLib-group/ScaRLib/compare/2.0.0...2.0.1) (2023-11-08)
+
+
+### Bug Fixes
+
+* **ReplayBuffer:** fix generics ([110127c](https://github.com/ScaRLib-group/ScaRLib/commit/110127cd416d748821460eaf66ee9c1aa36989cc))
+
+## [2.0.0](https://github.com/ScaRLib-group/ScaRLib/compare/1.6.5...2.0.0) (2023-11-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* improvements
+
+### Features
+
+* improvements ([27c22d7](https://github.com/ScaRLib-group/ScaRLib/commit/27c22d794204f17c9785b645c094f57230ffa7da))
+
+
+### General maintenance
+
+* add dependencies management with gradle catalogs ([01eec18](https://github.com/ScaRLib-group/ScaRLib/commit/01eec180cf91fa7a34f770d8e9448c70005f64eb))
+* update release command ([73fec4b](https://github.com/ScaRLib-group/ScaRLib/commit/73fec4b05ba50c0ac1093f663184ae9b9a89b531))
+* update test job ([60ccd76](https://github.com/ScaRLib-group/ScaRLib/commit/60ccd7621fa2d54819194430c4ab26c43085fef1))
+
+
+### Tests
+
+* add decay test ([577796d](https://github.com/ScaRLib-group/ScaRLib/commit/577796df4e964e02d4af127f64409c2ba7e38065))
+
 ## [1.6.5](https://github.com/ScaRLib-group/ScaRLib/compare/1.6.4...1.6.5) (2023-04-16)
 
 

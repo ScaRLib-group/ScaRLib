@@ -9,8 +9,18 @@
 
 package it.unibo.scarlib.core.model
 
-/** The function that evaluates the action performed by an agent in a certain state */
-trait RewardFunction {
+trait Learner {
 
-  def compute(currentState: State, action: Action, newState: State): Double
+  /** Gets the optimal policy */
+  val optimal: State => Action
+
+  /** Gets the behavioural policy */
+  val behavioural: State => Action
+
+  /** Improves the policy following the learning algorithm */
+  def improve(): Unit
+
+  /** Takes a snapshot of the current policy */
+  def snapshot(episode: Int, agentId: Int): Unit
+
 }

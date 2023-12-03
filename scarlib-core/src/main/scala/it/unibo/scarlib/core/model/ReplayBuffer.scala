@@ -4,12 +4,13 @@
  * listed, for each module, in the respective subproject's build.gradle.kts file.
  *
  * This file is part of ScaRLib, and is distributed under the terms of the
- * GNU General Public License as described in the file LICENSE in the ScaRLin distribution's top directory.
+ * MIT License as described in the file LICENSE in the ScaRLib distribution's top directory.
  */
 
 package it.unibo.scarlib.core.model
 
 import scala.util.Random
+import collection.mutable.ArrayDeque
 
 /** The experience gained by an agent from an interaction with the environment
  *
@@ -18,13 +19,13 @@ import scala.util.Random
  * @param reward the reward earned by the agent after taking the action from the actual state
  * @param nextState the state in which the environment goes into after the action taken by the agent
  */
-case class Experience[State, Action](actualState: State, action: Action, reward: Double, nextState: State)
+case class Experience[S, A](actualState: S, action: A, reward: Double, nextState: S)
 
 /** The container of agents experience */
-trait ReplayBuffer[S <: State, A <: Action]{
+trait ReplayBuffer[S, A]{
 
   /** Inserts new experience */
-  def insert(actualState: S, action: A, reward: Double, nextState: S): Unit
+  def insert(experience: Experience[S, A]): Unit
 
   /** Empty the buffer */
   def reset(): Unit
@@ -41,23 +42,23 @@ trait ReplayBuffer[S <: State, A <: Action]{
 }
 
 object ReplayBuffer{
-  def apply[S <: State, A <: Action](size: Int): ReplayBuffer[S, A] = {
-    new BoundedQueue[S, A](size)
+  def apply[S, A](size: Int): ReplayBuffer[S, A] = {
+    new BoundedQueue[S, A](size, 42)
   }
 
-  private class BoundedQueue[S <: State, A <: Action](bufferSize: Int) extends ReplayBuffer[S, A]{
+  private class BoundedQueue[S, A](bufferSize: Int, seed: Int) extends ReplayBuffer[S, A]{
 
-    private var queue: Seq[Experience[S, A]] = Seq.empty
+    private var queue: ArrayDeque[Experience[S, A]] = ArrayDeque.empty
 
-    override def reset(): Unit = Seq.empty
+    override def reset(): Unit = queue = ArrayDeque.empty[Experience[S, A]]
 
-    override def insert(actualState: S, action: A, reward: Double, nextState: S): Unit =
-      queue = (Experience(actualState, action, reward, nextState) +: queue).take(bufferSize)
+    override def insert(experience: Experience[S, A]): Unit =
+      queue = (queue :+ experience).takeRight(bufferSize)
 
     override def subsample(batchSize: Int): Seq[Experience[S, A]] =
-      new Random(42).shuffle(queue).take(batchSize)
+      new Random(seed).shuffle(queue).take(batchSize).toSeq
 
-    override def getAll(): Seq[Experience[S, A]] = queue
+    override def getAll(): Seq[Experience[S, A]] = queue.toSeq
 
     override def size(): Int = queue.size
   }

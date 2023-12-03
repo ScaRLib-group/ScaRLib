@@ -16,9 +16,16 @@ abstract class VMASAction(tuple: (Float, Float)) extends Action{
 
 }
 
-case object North extends VMASAction(tuple = (0.0f, 0.5f))
-case object South extends VMASAction(tuple = (0.0f, -0.5f))
+case object North extends VMASAction(tuple = (0.0f, 1f * VMASAction.speed))
+case object South extends VMASAction(tuple = (0.0f, -1f * VMASAction.speed))
+case object East extends VMASAction(tuple = (1f * VMASAction.speed, 0.0f))
+case object West extends VMASAction(tuple = (-1f * VMASAction.speed, 0.0f))
+case object NorthEast extends VMASAction(tuple = (1f * VMASAction.speed, 1f * VMASAction.speed))
+case object NorthWest extends VMASAction(tuple = (-1f * VMASAction.speed, 1f * VMASAction.speed))
+case object SouthEast extends VMASAction(tuple = (1f * VMASAction.speed, -1f * VMASAction.speed))
+case object SouthWest extends VMASAction(tuple = (-1f * VMASAction.speed, -1f * VMASAction.speed))
 
 object VMASAction{
-    def toSeq: Seq[VMASAction] = Seq(North, South)
+    val speed = 0.5f
+    def toSeq: Seq[VMASAction] = Seq(North, South, East, West, NorthEast, NorthWest, SouthEast, SouthWest)
 }

@@ -2,7 +2,6 @@ package it.unibo.scarlib.vmas
 
 import it.unibo.scarlib.core.util.Logger
 import me.shadaj.scalapy.py
-import me.shadaj.scalapy.py.
 
 object WANDBLogger extends Logger {
 
