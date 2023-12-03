@@ -53,6 +53,7 @@ class IndependentAgent(
   def notifyNewPolicy(newPolicy: State => Action): Unit =
     policy = newPolicy
 
+  @Deprecated
   private def logPos(pos: (Double, Double), breakLine: Boolean = false): Unit = {
     posLogs.append(pos.toString)
     if (breakLine) {
@@ -60,6 +61,7 @@ class IndependentAgent(
     }
   }
 
+  @Deprecated
   def logOnFile(): Unit = {
     val file = File(s"agent-$agentId.txt")
     val bw = file.bufferedWriter(append = true)

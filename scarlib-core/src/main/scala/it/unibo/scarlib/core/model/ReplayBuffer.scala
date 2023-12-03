@@ -21,19 +21,19 @@ import scala.util.Random
 case class Experience[State, Action](actualState: State, action: Action, reward: Double, nextState: State)
 
 /** The container of agents experience */
-trait ReplayBuffer[State, Action]{
+trait ReplayBuffer[S <: State, A <: Action]{
 
   /** Inserts new experience */
-  def insert(actualState: State, action: Action, reward: Double, nextState: State): Unit
+  def insert(actualState: S, action: A, reward: Double, nextState: S): Unit
 
   /** Empty the buffer */
   def reset(): Unit
 
   /** Gets a sub-sample of the experience stored by the agents */
-  def subsample(batchSize: Int): Seq[Experience[State, Action]]
+  def subsample(batchSize: Int): Seq[Experience[S, A]]
 
   /** Gets all the experience stored by the agents */
-  def getAll(): Seq[Experience[State, Action]]
+  def getAll(): Seq[Experience[S, A]]
 
   /** Gets the buffer size */
   def size(): Int
@@ -41,23 +41,23 @@ trait ReplayBuffer[State, Action]{
 }
 
 object ReplayBuffer{
-  def apply[S, A](size: Int): ReplayBuffer[S, A] = {
+  def apply[S <: State, A <: Action](size: Int): ReplayBuffer[S, A] = {
     new BoundedQueue[S, A](size)
   }
 
-  private class BoundedQueue[State, Action](bufferSize: Int) extends ReplayBuffer[State, Action]{
+  private class BoundedQueue[S <: State, A <: Action](bufferSize: Int) extends ReplayBuffer[S, A]{
 
-    private var queue: Seq[Experience[State, Action]] = Seq.empty
+    private var queue: Seq[Experience[S, A]] = Seq.empty
 
     override def reset(): Unit = Seq.empty
 
-    override def insert(actualState: State, action: Action, reward: Double, nextState: State): Unit =
+    override def insert(actualState: S, action: A, reward: Double, nextState: S): Unit =
       queue = (Experience(actualState, action, reward, nextState) +: queue).take(bufferSize)
 
-    override def subsample(batchSize: Int): Seq[Experience[State, Action]] =
+    override def subsample(batchSize: Int): Seq[Experience[S, A]] =
       new Random(42).shuffle(queue).take(batchSize)
 
-    override def getAll(): Seq[Experience[State, Action]] = queue
+    override def getAll(): Seq[Experience[S, A]] = queue
 
     override def size(): Int = queue.size
   }
