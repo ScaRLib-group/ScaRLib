@@ -1,5 +1,6 @@
 package it.unibo.scarlib.vmas
 
+import it.unibo.scarlib.core.model.AutodiffDevice
 import me.shadaj.scalapy.py
 
 case class VmasSettings(
@@ -9,7 +10,7 @@ case class VmasSettings(
                          nTargets: Int = 0,
                          nSteps: Int = 1000,
                          nEpochs: Int = 1,
-                         device: String = "cpu",
+                         device: String = AutodiffDevice().as[String],
                          continuousActions: Boolean = true,
                          dictionarySpaces: Boolean = true
                        )

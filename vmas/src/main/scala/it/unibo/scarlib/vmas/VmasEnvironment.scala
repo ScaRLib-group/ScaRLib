@@ -12,7 +12,7 @@ import scala.collection.mutable
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class VmasEnvironment(rewardFunction: RewardFunction,
-                      actionSpace: Seq[Action], settings: VmasSettings, logger: Logger)
+                      actionSpace: Seq[Action], settings: VmasSettings, logger: Logger, render: Boolean = false)
   extends Environment(rewardFunction, actionSpace) {
 
 
@@ -29,10 +29,13 @@ class VmasEnvironment(rewardFunction: RewardFunction,
 
     //TODO Handling multiple environments
     private var lastObservation: List[Option[VMASState]] = List.fill(settings.nAgents)(None)
-    private var ticks = 0
+    private var steps = 0
+    private var epochs = 0
 
     private var actions: Seq[py.Dynamic] = Seq[py.Dynamic]()
     private var futures = Seq[Future[(Double, State)]]()
+    private var frames: py.Dynamic = py.Dynamic.global.list(Seq[py.Dynamic]().toPythonCopy)
+    private val PIL = py.module("PIL")
 
     /** A single interaction with an agent
      *
@@ -51,6 +54,7 @@ class VmasEnvironment(rewardFunction: RewardFunction,
         val future = promise.future
         futures = futures :+ future
         if (isLast){
+            steps += 1
             val result = env.step(actions.toPythonCopy)
             actions = Seq[py.Dynamic]()
             val observations = result.bracketAccess(0)
@@ -62,6 +66,16 @@ class VmasEnvironment(rewardFunction: RewardFunction,
                 val state = new VMASState(observation)
                 lastObservation = lastObservation.updated(agentId, Some(state))  //TODO check if this is correct
                 promise.success((reward, state))
+                if (render) {
+                    frames.append(
+                        PIL.Image.fromarray(env.render(mode="rgb_array", agent_index_focus=py"None"))
+                    )
+                }
+                if (steps == settings.nSteps) {
+                    if(render) render(epochs)
+                    epochs += 1
+                    steps = 0
+                }
             }
         }
         return future
@@ -83,9 +97,21 @@ class VmasEnvironment(rewardFunction: RewardFunction,
 
     override def log(): Unit = {
         AgentGlobalStore.sumAllNumeric(AgentGlobalStore()).foreach { case (k, v) =>
-            logger.logScalar(k, v, ticks)
+            logger.logScalar(k, v, steps)
         }
         AgentGlobalStore().clearAll()
+    }
+
+    def render(epoch: Int) = {
+        val gifName = settings.scenario.__class__.__name__.as[String] + "-" + epoch + ".gif"
+        frames.bracketAccess(0).save(
+            gifName,
+            save_all = true,
+            append_images = py"${frames}[1:]",
+            duration = 1,
+            loop = 0
+        )
+        frames = py.Dynamic.global.list(Seq[py.Dynamic]().toPythonCopy)
     }
 
     def logOnFile(): Unit = ???

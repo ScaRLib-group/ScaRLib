@@ -169,7 +169,7 @@ class CleaningScenario(BaseScenario):
             final_rewards[mask] = -1 #-(2/math.pi) * (torch.atan(k * t[mask]).to(Device.get())) #rewards_for_agents_outside_lidar_range  # -(t[~mask]**2)
         mask = min_distances_from_lidar <= self.target_distance
         if mask.any():
-            final_rewards[mask] = torch.full([self.world.batch_dim, 1], self.n_targets, device=Device.get()) - (self.active_targets) + 1
+            final_rewards[mask] = torch.full([self.world.batch_dim, 1], self.n_targets, device=Device.get(), dtype=torch.float32) - (self.active_targets) + 1
         mask = (min_distances_from_lidar > self.target_distance) & (min_distances_from_lidar < self._lidar_range) & (min_distances_from_lidar < agent.prev_distances)
         if mask.any():
                 final_rewards[mask] = -0.5 + ((-min_distances_from_lidar[mask] / self._lidar_range + 1) * -0.5 / 1) #1 - (min_distances_from_lidar[mask] / self._lidar_range)

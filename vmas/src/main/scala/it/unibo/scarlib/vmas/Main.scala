@@ -31,8 +31,8 @@ object Main extends App {
     val rewardFunction = new CohisionAndCollisionRewardFunction()
     val nAgents = 1
     private val envSettings = VmasSettings(scenario = scenario, nEnv = 1, nAgents = nAgents, nTargets = 8,
-        nSteps = 1000, nEpochs = 150, device = "cpu")
-    val environment = new VmasEnvironment(rewardFunction, actions, envSettings, WANDBLogger)
+        nSteps = 250, nEpochs = 150, device = "cuda")
+    val environment = new VmasEnvironment(rewardFunction, actions, envSettings, WANDBLogger, render = true)
     var agents = Seq[VMASAgent]()
     for (i <- 0 until nAgents) {
         val agent = new VMASAgent(environment, actions, memory.asInstanceOf[ReplayBuffer[State, Action]])
@@ -43,7 +43,7 @@ object Main extends App {
         environment = environment,
         dataset = memory.asInstanceOf[ReplayBuffer[State, Action]],
         actionSpace = actions,
-        learningConfiguration = learningConfiguration,
+        learningConfiguration = learningConfiguration
     )(ExecutionContext.global, VMASState.encoding)
-    ctde.learn(envSettings.nSteps, envSettings.nEpochs)
+    ctde.learn(envSettings.nEpochs, envSettings.nSteps)
 }

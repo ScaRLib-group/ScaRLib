@@ -1,6 +1,7 @@
 package it.unibo.scarlib.vmas
 
-import it.unibo.scarlib.core.model.Action
+import it.unibo.scarlib.core.model.{Action, AutodiffDevice}
+import it.unibo.scarlib.core.neuralnetwork.TorchSupport
 import me.shadaj.scalapy.py
 import me.shadaj.scalapy.py.SeqConverters
 import me.shadaj.scalapy.readwrite.Writer.floatWriter
@@ -8,10 +9,10 @@ import me.shadaj.scalapy.readwrite.Writer.floatWriter
 abstract class VMASAction(tuple: (Float, Float)) extends Action{
 
     def toTensor(): py.Dynamic = {
-        val np = py.module("numpy")
-        val torch = py.module("torch")
+        val np = TorchSupport.arrayModule
+        val torch = TorchSupport.deepLearningLib()
         val array=np.array(Seq(tuple).toPythonCopy)
-        torch.from_numpy(array)
+        torch.from_numpy(array).to(AutodiffDevice())
     }
 
 }
