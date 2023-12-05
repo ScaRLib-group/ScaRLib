@@ -30,7 +30,7 @@ def normalize(_value: torch.Tensor, _min, _max) -> torch.Tensor:
     return (_value - _min) / (_max - _min)
 
 
-class Scenario(BaseScenario):
+class CleaningScenario(BaseScenario):
     def make_world(self, batch_dim: int, device: torch.device, **kwargs) -> World:
         self.wandb = kwargs.get("wandb", None)
         self.n_agents = kwargs.get("n_agents", 5)

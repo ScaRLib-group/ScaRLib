@@ -5,10 +5,20 @@ import it.unibo.scarlib.core.system.CTDESystem
 import it.unibo.scarlib.core.model.{Action, DeepQLearner, LearningConfiguration, ReplayBuffer, State}
 import it.unibo.scarlib.core.neuralnetwork.NeuralNetworkEncoding
 import it.unibo.scarlib.core.util.Logger
+import me.shadaj.scalapy.py
+import me.shadaj.scalapy.py.PyQuote
 
 import scala.concurrent.ExecutionContext
 
 object Main extends App {
+//    py.module("sys").path.append("src/main/resources/Cleaning.py")
+//    py"import sys".call()
+//    py"sys.path.append('src/main/resources')".call()
+//    py"print('ciao')".call()
+//    py"import Cleaning".call()
+//    py"from Cleaning import CleaningScenario".call()
+//    val scenario = py"CleaningScenario()".call()
+    val scenario = py.module("Cleaning").CleaningScenario()
     val stateDescriptor = VMASStateDescriptor(hasPosition=false, hasVelocity=false, lidars = Seq[Int](50))
     VMASState.setDescriptor(stateDescriptor)
     private val memory = ReplayBuffer[VMASState, VMASAction](10000)
@@ -20,7 +30,7 @@ object Main extends App {
     val dql = new DeepQLearner(memory.asInstanceOf[ReplayBuffer[State, Action]], actions, learningConfiguration)
     val rewardFunction = new CohisionAndCollisionRewardFunction()
     val nAgents = 1
-    private val envSettings = VmasSettings(scenario = "CohisionAndCollision", nEnv = 1, nAgents = nAgents, nTargets = 8,
+    private val envSettings = VmasSettings(scenario = scenario, nEnv = 1, nAgents = nAgents, nTargets = 8,
         nSteps = 1000, nEpochs = 150, device = "cpu")
     val environment = new VmasEnvironment(rewardFunction, actions, envSettings, WANDBLogger)
     var agents = Seq[VMASAgent]()
@@ -34,7 +44,6 @@ object Main extends App {
         dataset = memory.asInstanceOf[ReplayBuffer[State, Action]],
         actionSpace = actions,
         learningConfiguration = learningConfiguration,
-        learner = Some(dql)
     )(ExecutionContext.global, VMASState.encoding)
     ctde.learn(envSettings.nSteps, envSettings.nEpochs)
 }

@@ -1,6 +1,7 @@
 package it.unibo.scarlib.vmas
 
 import it.unibo.scarlib.core.model.{Action, Environment, RewardFunction, State}
+import it.unibo.scarlib.core.neuralnetwork.TorchSupport
 import it.unibo.scarlib.core.util.{AgentGlobalStore, Logger}
 
 import scala.concurrent.Future
@@ -26,7 +27,8 @@ class VmasEnvironment(rewardFunction: RewardFunction,
         n_targets=settings.nTargets
     )
 
-    private var lastObservation: Option[VMASState] = Option.empty
+    //TODO Handling multiple environments
+    private var lastObservation: List[Option[VMASState]] = List.fill(settings.nAgents)(None)
     private var ticks = 0
 
     private var actions: Seq[py.Dynamic] = Seq[py.Dynamic]()
@@ -50,13 +52,15 @@ class VmasEnvironment(rewardFunction: RewardFunction,
         futures = futures :+ future
         if (isLast){
             val result = env.step(actions.toPythonCopy)
+            actions = Seq[py.Dynamic]()
             val observations = result.bracketAccess(0)
             val rewards = result.bracketAccess(1)
             for (i <- 0 until nAgents ) {
-                val reward = rewards.bracketAccess(i).as[Double]
-                val observation = observations.bracketAccess(i)
-                val state = VMASState(observation)
-                lastObservation = Some(state) //TODO check if this is correct
+                val agentName = "agent_"+i
+                val reward = rewards.bracketAccess(agentName).as[Double]
+                val observation = observations.bracketAccess(agentName)
+                val state = new VMASState(observation)
+                lastObservation = lastObservation.updated(agentId, Some(state))  //TODO check if this is correct
                 promise.success((reward, state))
             }
         }
@@ -64,18 +68,17 @@ class VmasEnvironment(rewardFunction: RewardFunction,
     }
 
     /** Gets the current state of the environment */
-    override def observe(agentId: Int): State = lastObservation match{
-        case Some(obs) => obs
-        case None => {
-            lastObservation = Some(VMASState(env.get_observation_space()))
-            lastObservation.get
+    override def observe(agentId: Int): State = {
+        lastObservation(agentId) match {
+            case Some(state) => state
+            case None => new VMASState(TorchSupport.deepLearningLib().from_numpy(TorchSupport.arrayModule.zeros(VMASState.encoding.elements())))
         }
     }
 
     /** Resets the environment to the initial state */
     override def reset(): Unit = {
         env.reset()
-        lastObservation = None
+        lastObservation = List.fill(settings.nAgents)(None)
     }
 
     override def log(): Unit = {

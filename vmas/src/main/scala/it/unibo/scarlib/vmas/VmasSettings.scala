@@ -1,7 +1,9 @@
 package it.unibo.scarlib.vmas
 
+import me.shadaj.scalapy.py
+
 case class VmasSettings(
-                         scenario: String,
+                         scenario: py.Dynamic,
                          nEnv: Int = 1,
                          nAgents: Int = 1,
                          nTargets: Int = 0,

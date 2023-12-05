@@ -31,13 +31,11 @@ class CTDESystem(
                   dataset: ReplayBuffer[State, Action],
                   actionSpace: Seq[Action],
                   learningConfiguration: LearningConfiguration,
-                  private var learner: Option[Learner] = None
 )(implicit context: ExecutionContext, encoding: NeuralNetworkEncoding[State]) {
 
   private val epsilon: Decay[Double] = learningConfiguration.epsilon
-  learner match {
-    case None => learner = Some(new DeepQLearner(dataset, actionSpace, learningConfiguration))
-  }
+
+  private val learner = Some(new DeepQLearner(dataset, actionSpace, learningConfiguration))
 
   /** Starts the learning process
    *

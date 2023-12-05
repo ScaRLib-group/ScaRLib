@@ -19,7 +19,13 @@ object VMASState{
         }
 
         /** Converts the state into a format usable by the neural network */
-        override def toSeq(element: State): Seq[Double] = element.asInstanceOf[vmas.VMASState].tensor.flatten().as[Seq[Double]]
+        override def toSeq(element: State): Seq[Double] = {
+            val t1 = element.asInstanceOf[vmas.VMASState]
+            val t2 = t1.tensor
+            val t3 = t2.flatten().tolist()
+            val t4 = t3.as[Seq[Double]]
+            element.asInstanceOf[vmas.VMASState].tensor.flatten().tolist().as[Seq[Double]]
+        }
 
     }
 
