@@ -9,8 +9,9 @@
 
 package it.unibo.scarlib.core.system
 
-import it.unibo.scarlib.core.model._
+import it.unibo.scarlib.core.model.{Action, Agent, AgentMode, Decay, DeepQLearner, Environment, Experience, LearningConfiguration, ReplayBuffer, State}
 import it.unibo.scarlib.core.neuralnetwork.{NeuralNetworkEncoding, NeuralNetworkSnapshot}
+import it.unibo.scarlib.core.util.{Logger, TorchLiveLogger}
 
 import scala.reflect.io.File
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -31,12 +32,13 @@ class DTDEAgent(
                           actionSpace: Seq[Action],
                           datasetSize: Int,
                           agentMode: AgentMode = AgentMode.Training,
-                          learningConfiguration: LearningConfiguration
+                          learningConfiguration: LearningConfiguration,
+                          logger: Logger = TorchLiveLogger
 )(implicit encoding: NeuralNetworkEncoding[State]) extends Agent {
 
   private val dataset: ReplayBuffer[State, Action] = ReplayBuffer[State, Action](datasetSize)
   private val epsilon: Decay[Double] = learningConfiguration.epsilon
-  private val learner = new DeepQLearner(dataset, actionSpace, learningConfiguration)
+  private val learner = new DeepQLearner(dataset, actionSpace, learningConfiguration, logger)
   private var testPolicy: State => Action = _
 
   /** A single interaction of the agent with the environment */

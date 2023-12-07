@@ -27,11 +27,12 @@ object Main extends App {
         snapshotPath = "snapshot/",
         dqnFactory = new NNFactory(stateDescriptor, actions)
     )
-    val dql = new DeepQLearner(memory.asInstanceOf[ReplayBuffer[State, Action]], actions, learningConfiguration)
     val rewardFunction = new CohisionAndCollisionRewardFunction()
     val nAgents = 1
     private val envSettings = VmasSettings(scenario = scenario, nEnv = 1, nAgents = nAgents, nTargets = 8,
-        nSteps = 250, nEpochs = 150, device = "cuda")
+        nSteps = 1000, nEpochs = 150, device = "cpu")
+    //WANDBLogger.login()
+    WANDBLogger.init()
     val environment = new VmasEnvironment(rewardFunction, actions, envSettings, WANDBLogger, render = true)
     var agents = Seq[VMASAgent]()
     for (i <- 0 until nAgents) {
@@ -43,7 +44,8 @@ object Main extends App {
         environment = environment,
         dataset = memory.asInstanceOf[ReplayBuffer[State, Action]],
         actionSpace = actions,
-        learningConfiguration = learningConfiguration
+        learningConfiguration = learningConfiguration,
+        logger = WANDBLogger
     )(ExecutionContext.global, VMASState.encoding)
     ctde.learn(envSettings.nEpochs, envSettings.nSteps)
 }

@@ -9,7 +9,8 @@
 
 package it.unibo.scarlib.core.system
 
-import it.unibo.scarlib.core.model._
+import it.unibo.scarlib.core.model.{Action, Decay, DeepQLearner, Environment, LearningConfiguration, ReplayBuffer, State}
+import it.unibo.scarlib.core.util.{Logger, TorchLiveLogger}
 import it.unibo.scarlib.core.neuralnetwork.{NeuralNetworkEncoding, NeuralNetworkSnapshot}
 
 import scala.annotation.tailrec
@@ -31,11 +32,12 @@ class CTDESystem(
                   dataset: ReplayBuffer[State, Action],
                   actionSpace: Seq[Action],
                   learningConfiguration: LearningConfiguration,
+                  logger: Logger = TorchLiveLogger
 )(implicit context: ExecutionContext, encoding: NeuralNetworkEncoding[State]) {
 
   private val epsilon: Decay[Double] = learningConfiguration.epsilon
 
-  private val learner = Some(new DeepQLearner(dataset, actionSpace, learningConfiguration))
+  private val learner = new DeepQLearner(dataset, actionSpace, learningConfiguration, logger)
 
   /** Starts the learning process
    *
@@ -47,10 +49,11 @@ class CTDESystem(
     @tailrec
     def singleEpisode(time: Int): Unit =
       if (time > 0) {
-        agents.foreach(_.notifyNewPolicy(learner.get.behavioural))
+        println("Time: " + time)
+        agents.foreach(_.notifyNewPolicy(learner.behavioural))
         Await.ready(Future.sequence(agents.map(_.step())), scala.concurrent.duration.Duration.Inf)
         environment.log()
-        learner.get.improve()
+        learner.improve()
         singleEpisode(time - 1)
       }
 
@@ -59,7 +62,7 @@ class CTDESystem(
       environment.reset()
       singleEpisode(episodeLength)
       epsilon.update()
-      learner.get.snapshot(episodes, 0)
+      learner.snapshot(episodes, 0)
       learn(episodes - 1, episodeLength)
     }
 

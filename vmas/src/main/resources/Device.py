@@ -1,5 +1,5 @@
 def get():
-    return "cuda"
+    return "cpu"
 
 
 # class Device:

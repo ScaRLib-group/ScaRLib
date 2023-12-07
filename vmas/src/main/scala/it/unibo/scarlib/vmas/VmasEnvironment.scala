@@ -3,10 +3,12 @@ package it.unibo.scarlib.vmas
 import it.unibo.scarlib.core.model.{Action, Environment, RewardFunction, State}
 import it.unibo.scarlib.core.neuralnetwork.TorchSupport
 import it.unibo.scarlib.core.util.{AgentGlobalStore, Logger}
+import it.unibo.scarlib.vmas.WANDBLogger
 
 import scala.concurrent.Future
 import me.shadaj.scalapy.py
 import me.shadaj.scalapy.py.PyQuote
+import me.shadaj.scalapy.py.SeqConverters
 
 import scala.collection.mutable
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -45,7 +47,6 @@ class VmasEnvironment(rewardFunction: RewardFunction,
      */
     override def step(action: Action, agentId: Int): Future[(Double, State)] = {
         //Check if agent is the last one
-        val agents = env.agents.as[mutable.Seq[py.Dynamic]]
         //val agentPos = agents(agentId).pos //Tensor of shape [n_env, 2] - NOT USED
         actions = actions :+ action.asInstanceOf[VMASAction].toTensor()
         val nAgents:Int = env.n_agents.as[Int]
@@ -62,6 +63,7 @@ class VmasEnvironment(rewardFunction: RewardFunction,
             for (i <- 0 until nAgents ) {
                 val agentName = "agent_"+i
                 val reward = rewards.bracketAccess(agentName).as[Double]
+                AgentGlobalStore().put(i, s"agent-$i-reward", reward)
                 val observation = observations.bracketAccess(agentName)
                 val state = new VMASState(observation)
                 lastObservation = lastObservation.updated(agentId, Some(state))  //TODO check if this is correct
@@ -99,6 +101,7 @@ class VmasEnvironment(rewardFunction: RewardFunction,
         AgentGlobalStore.sumAllNumeric(AgentGlobalStore()).foreach { case (k, v) =>
             logger.logScalar(k, v, steps)
         }
+        logger.asInstanceOf[WANDBLogger.type].log()
         AgentGlobalStore().clearAll()
     }
 

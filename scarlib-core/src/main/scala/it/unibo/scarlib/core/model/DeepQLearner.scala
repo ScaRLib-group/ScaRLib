@@ -10,7 +10,7 @@
 package it.unibo.scarlib.core.model
 
 import it.unibo.scarlib.core.neuralnetwork.{NeuralNetworkEncoding, SimpleSequentialDQN, TorchSupport}
-import it.unibo.scarlib.core.util.TorchLiveLogger
+import it.unibo.scarlib.core.util.{Logger, TorchLiveLogger}
 import me.shadaj.scalapy.py
 import me.shadaj.scalapy.py.{PyQuote, SeqConverters}
 
@@ -27,7 +27,8 @@ import scala.util.Random
 class DeepQLearner(
     memory: ReplayBuffer[State, Action],
     actionSpace: Seq[Action],
-    learningConfiguration: LearningConfiguration
+    learningConfiguration: LearningConfiguration,
+    logger: Logger
 )(implicit encoding: NeuralNetworkEncoding[State]) extends Learner {
 
   private val random = learningConfiguration.random
@@ -71,7 +72,7 @@ class DeepQLearner(
       val expectedValue = (nextStateValues * gamma) + rewards
       val criterion = TorchSupport.neuralNetworkModule().SmoothL1Loss()
       val loss = criterion(stateActionValue, expectedValue.unsqueeze(1))
-      TorchLiveLogger.logScalar("Loss", loss.item().as[Double], updates)
+      logger.logScalar("Loss", loss.item().as[Double], updates)
       optimizer.zero_grad()
       loss.backward()
       it.unibo.scarlib.core.neuralnetwork.TorchSupport
