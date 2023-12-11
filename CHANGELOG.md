@@ -1,3 +1,10 @@
+## [3.1.3](https://github.com/ScaRLib-group/ScaRLib/compare/3.1.2...3.1.3) (2023-12-11)
+
+
+### Documentation
+
+* improve scaladoc ([0870554](https://github.com/ScaRLib-group/ScaRLib/commit/087055495f90699bb8384a4828ce7c8c3d815fc2))
+
 ## [3.1.2](https://github.com/ScaRLib-group/ScaRLib/compare/3.1.1...3.1.2) (2023-11-16)
 
 
