@@ -13,5 +13,8 @@ import scala.concurrent.Future
 
 /** A generic agent */
 trait Agent {
+  /** A single interaction of the agent with the environment
+   * @return a [[Future]] that indicates when the interaction is completed
+   * */
   def step(): Future[Unit]
 }

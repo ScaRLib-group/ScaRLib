@@ -16,6 +16,7 @@ import scala.reflect.runtime.{universe => ru}
 
 import scala.concurrent.ExecutionContext
 
+/** The module that contains the internal domain specific language used to configure a learning system */
 object DSL {
 
   private var rf: Option[RewardFunction] = None

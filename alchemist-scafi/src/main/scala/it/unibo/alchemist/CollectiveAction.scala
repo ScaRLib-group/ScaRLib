@@ -17,6 +17,7 @@ import org.danilopianini.util.{ListSet, ListSets}
 import java.util
 import _root_.scala.jdk.CollectionConverters.IteratorHasAsScala
 
+/** Represents a collective action performed after that each agent has decided the individual [[Action]] */
 abstract class CollectiveAction[T, P <: Position[P]](
     val environment: Environment[T,P],
     distribution: TimeDistribution[T]

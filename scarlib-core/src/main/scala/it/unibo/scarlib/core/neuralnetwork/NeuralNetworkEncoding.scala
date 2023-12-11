@@ -11,8 +11,11 @@ package it.unibo.scarlib.core.neuralnetwork
 
 import it.unibo.scarlib.core.model.State
 
+/** A type-class that represents how a [[State]] is encoded and passed to the neural network*/
 trait NeuralNetworkEncoding[A <: State]{
+    /** The number of element in the encoding */
     def elements(): Int
 
+    /** The encoded state */
     def toSeq(element: A): Seq[Double]
 }
