@@ -16,6 +16,7 @@ import me.shadaj.scalapy.py.{PyQuote, SeqConverters}
 
 import java.text.SimpleDateFormat
 import java.util.Date
+import scala.reflect.io.{File, Path}
 import scala.util.Random
 
 /** The DQN learning algorithm
@@ -94,8 +95,13 @@ class DeepQLearner(
       .deepLearningLib()
       .save(
         targetNetwork.state_dict(),
-        s"${learningConfiguration.snapshotPath}-$episode-$timeMark-agent-$agentId"
+        s"${learningConfiguration.snapshotPath}${File.pathSeparator}$episode-$timeMark-agent-$agentId"
       )
+  }
+
+  override def loadSnapshot(path: String): Unit = {
+    targetNetwork.load_state_dict(TorchSupport.deepLearningLib().load(path, map_location = AutodiffDevice()))
+    policyNetwork.load_state_dict(TorchSupport.deepLearningLib().load(path, map_location = AutodiffDevice()))
   }
 }
 

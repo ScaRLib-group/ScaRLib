@@ -8,7 +8,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.Random
 
-object VMASAgent {
+@deprecated("Use CTDEAgent instead")
+object VmasCTDEAgent {
     private var INSTANCE_COUNTER = -1
 
     private def GET_AND_INCREMENT: Int = {
@@ -17,7 +18,11 @@ object VMASAgent {
     }
 }
 
-class VMASAgent(environment: VmasEnvironment, actionSpace: Seq[VMASAction], dataset: ReplayBuffer[State, Action], agentId : Int = VMASAgent.GET_AND_INCREMENT)
+@deprecated("Use CTDEAgent instead")
+class VmasCTDEAgent(environment: VmasEnvironment, 
+                    actionSpace: Seq[VMASAction], 
+                    dataset: ReplayBuffer[State, Action], 
+                    agentId: Int = VmasCTDEAgent.GET_AND_INCREMENT)
   extends CTDEAgent(agentId = agentId,
       environment = environment,
       actionSpace = actionSpace,

@@ -39,6 +39,9 @@ class CTDESystem(
 
   private val learner = new DeepQLearner(dataset, actionSpace, learningConfiguration, logger)
 
+
+
+
   /** Starts the learning process
    *
    * @param episodes the number of episodes agents are trained for
@@ -67,6 +70,11 @@ class CTDESystem(
     }
 
   }
+
+    final def learn(episodes: Int, episodeLength: Int, snapshot: String): Unit = {
+        learner.loadSnapshot(snapshot)
+        learn(episodes, episodeLength)
+    }
 
   /** Starts the testing process
    *

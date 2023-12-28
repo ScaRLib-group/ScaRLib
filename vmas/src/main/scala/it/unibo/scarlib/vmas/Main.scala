@@ -1,7 +1,7 @@
 package it.unibo.scarlib.vmas
 
 import it.unibo.scarlib.core.model.EmptyState.encoding
-import it.unibo.scarlib.core.system.CTDESystem
+import it.unibo.scarlib.core.system.{CTDEAgent, CTDESystem}
 import it.unibo.scarlib.core.model.{Action, DeepQLearner, LearningConfiguration, ReplayBuffer, State}
 import it.unibo.scarlib.core.neuralnetwork.NeuralNetworkEncoding
 import it.unibo.scarlib.core.util.Logger
@@ -19,24 +19,24 @@ object Main extends App {
 //    py"from Cleaning import CleaningScenario".call()
 //    val scenario = py"CleaningScenario()".call()
     val scenario = py.module("Cleaning").CleaningScenario()
-    val stateDescriptor = VMASStateDescriptor(hasPosition=false, hasVelocity=false, lidars = Seq[Int](50))
+    val stateDescriptor = VmasStateDescriptor(hasPosition=false, hasVelocity=false, lidars = Seq[Int](50))
     VMASState.setDescriptor(stateDescriptor)
     private val memory = ReplayBuffer[VMASState, VMASAction](10000)
     private val actions = VMASAction.toSeq
     private val learningConfiguration = new LearningConfiguration(
-        snapshotPath = "snapshot/",
+        snapshotPath = "snapshot",
         dqnFactory = new NNFactory(stateDescriptor, actions)
     )
     val rewardFunction = new CohisionAndCollisionRewardFunction()
     val nAgents = 1
     private val envSettings = VmasSettings(scenario = scenario, nEnv = 1, nAgents = nAgents, nTargets = 8,
-        nSteps = 1000, nEpochs = 150, device = "cpu")
+        nSteps = 1000, nEpochs = 102, device = "cpu")
     //WANDBLogger.login()
     WANDBLogger.init()
     val environment = new VmasEnvironment(rewardFunction, actions, envSettings, WANDBLogger, render = true)
-    var agents = Seq[VMASAgent]()
+    var agents = Seq[CTDEAgent]()
     for (i <- 0 until nAgents) {
-        val agent = new VMASAgent(environment, actions, memory.asInstanceOf[ReplayBuffer[State, Action]])
+        val agent = new CTDEAgent(agentId = i, environment, actions, memory.asInstanceOf[ReplayBuffer[State, Action]])
         agents = agents :+ agent
     }
     val ctde = new CTDESystem(
@@ -47,5 +47,5 @@ object Main extends App {
         learningConfiguration = learningConfiguration,
         logger = WANDBLogger
     )(ExecutionContext.global, VMASState.encoding)
-    ctde.learn(envSettings.nEpochs, envSettings.nSteps)
+    ctde.learn(envSettings.nEpochs, envSettings.nSteps, "./snapshot/-102-2023-12-07-17-39-24-agent-0")
 }

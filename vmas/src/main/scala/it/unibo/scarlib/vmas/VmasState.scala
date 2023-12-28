@@ -7,8 +7,8 @@ import me.shadaj.scalapy.py
 
 object VMASState{
     def apply(array: py.Dynamic): VMASState = new VMASState(py.module("torch").tensor(array).to(AutodiffDevice()))
-    private var stateDescriptor: Option[VMASStateDescriptor] = None
-    def setDescriptor(descriptor: VMASStateDescriptor): Unit = stateDescriptor = Some(descriptor)
+    private var stateDescriptor: Option[VmasStateDescriptor] = None
+    def setDescriptor(descriptor: VmasStateDescriptor): Unit = stateDescriptor = Some(descriptor)
 
     implicit val encoding: NeuralNetworkEncoding[State] = new NeuralNetworkEncoding[State] {
 
