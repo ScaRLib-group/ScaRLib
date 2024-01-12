@@ -95,7 +95,7 @@ class DeepQLearner(
       .deepLearningLib()
       .save(
         targetNetwork.state_dict(),
-        s"${learningConfiguration.snapshotPath}${File.pathSeparator}$episode-$timeMark-agent-$agentId"
+        s"${learningConfiguration.snapshotPath}${File.separator}$episode-$timeMark-agent-$agentId"
       )
   }
 

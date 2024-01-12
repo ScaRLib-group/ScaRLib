@@ -90,6 +90,7 @@ class CTDESystem(
 
     @tailrec
     def episode(time: Int): Unit = {
+      print(time)
       if (time > 0) {
         Await.ready(Future.sequence(agents.map(_.step())), scala.concurrent.duration.Duration.Inf)
         episode(time - 1)

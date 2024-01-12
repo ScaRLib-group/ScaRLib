@@ -1,6 +1,6 @@
 package it.unibo.scarlib.vmas
 
-import it.unibo.scarlib.core.model.{Action, Environment, RewardFunction, State}
+import it.unibo.scarlib.core.model.{Action, AutodiffDevice, Environment, RewardFunction, State}
 import it.unibo.scarlib.core.neuralnetwork.TorchSupport
 import it.unibo.scarlib.core.util.{AgentGlobalStore, Logger}
 import it.unibo.scarlib.vmas.WANDBLogger
@@ -14,19 +14,23 @@ import scala.collection.mutable
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class VmasEnvironment(rewardFunction: RewardFunction,
-                      actionSpace: Seq[Action], settings: VmasSettings, logger: Logger, render: Boolean = false)
+                      actionSpace: Seq[Action],
+                      settings: VmasSettings,
+                      logger: Logger, render: Boolean = false
+                     )
   extends Environment(rewardFunction, actionSpace) {
 
 
     private val VMAS: py.Module = py.module("vmas")
-    private val env:py.Dynamic = VMAS.make_env(
-        scenario=settings.scenario,
-        num_envs=settings.nEnv,
-        device=settings.device,
-        continuos_actions=settings.continuousActions,
-        dict_spaces=settings.dictionarySpaces,
-        n_agents=settings.nAgents,
-        n_targets=settings.nTargets
+    private val env: py.Dynamic = VMAS.make_env(
+        scenario = settings.scenario,
+        num_envs = settings.nEnv,
+        device = settings.device,
+        continuos_actions = settings.continuousActions,
+        dict_spaces = settings.dictionarySpaces,
+        n_agents = settings.nAgents,
+        n_targets = settings.nTargets,
+        neighbours = settings.neighbours
     )
 
     //TODO Handling multiple environments
@@ -35,7 +39,7 @@ class VmasEnvironment(rewardFunction: RewardFunction,
     private var epochs = 0
 
     private var actions: Seq[py.Dynamic] = Seq[py.Dynamic]()
-    private var futures = Seq[Future[(Double, State)]]()
+    private var promises = Seq[scala.concurrent.Promise[(Double, State)]]()
     private var frames: py.Dynamic = py.Dynamic.global.list(Seq[py.Dynamic]().toPythonCopy)
     private val PIL = py.module("PIL")
 
@@ -49,36 +53,37 @@ class VmasEnvironment(rewardFunction: RewardFunction,
         //Check if agent is the last one
         //val agentPos = agents(agentId).pos //Tensor of shape [n_env, 2] - NOT USED
         actions = actions :+ action.asInstanceOf[VMASAction].toTensor()
-        val nAgents:Int = env.n_agents.as[Int]
-        val isLast = nAgents-1 == agentId
+        val nAgents: Int = env.n_agents.as[Int]
+        val isLast = nAgents - 1 == agentId
         val promise = scala.concurrent.Promise[(Double, State)]()
         val future = promise.future
-        futures = futures :+ future
-        if (isLast){
+        promises = promises :+ promise
+        if (isLast) {
             steps += 1
             val result = env.step(actions.toPythonCopy)
             actions = Seq[py.Dynamic]()
             val observations = result.bracketAccess(0)
             val rewards = result.bracketAccess(1)
-            for (i <- 0 until nAgents ) {
-                val agentName = "agent_"+i
+            for (i <- 0 until nAgents) {
+                val agentName = "agent_" + i
                 val reward = rewards.bracketAccess(agentName).as[Double]
                 AgentGlobalStore().put(i, s"agent-$i-reward", reward)
                 val observation = observations.bracketAccess(agentName)
                 val state = new VMASState(observation)
-                lastObservation = lastObservation.updated(agentId, Some(state))  //TODO check if this is correct
-                promise.success((reward, state))
+                lastObservation = lastObservation.updated(agentId, Some(state)) //TODO check if this is correct
+                promises(i).success((reward, state))
                 if (render) {
                     frames.append(
-                        PIL.Image.fromarray(env.render(mode="rgb_array", agent_index_focus=py"None"))
+                        PIL.Image.fromarray(env.render(mode = "rgb_array", agent_index_focus = py"None"))
                     )
                 }
                 if (steps == settings.nSteps) {
-                    if(render) render(epochs)
+                    if (render) render(epochs)
                     epochs += 1
                     steps = 0
                 }
             }
+            promises = Seq[scala.concurrent.Promise[(Double, State)]]()
         }
         return future
     }

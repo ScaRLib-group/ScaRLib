@@ -2,8 +2,8 @@ package it.unibo.scarlib.vmas
 
 import it.unibo.scarlib.core.model.EmptyState.encoding
 import it.unibo.scarlib.core.system.{CTDEAgent, CTDESystem}
-import it.unibo.scarlib.core.model.{Action, DeepQLearner, LearningConfiguration, ReplayBuffer, State}
-import it.unibo.scarlib.core.neuralnetwork.NeuralNetworkEncoding
+import it.unibo.scarlib.core.model.{Action, DeepQLearner, Environment, LearningConfiguration, ReplayBuffer, State}
+import it.unibo.scarlib.core.neuralnetwork.{NeuralNetworkEncoding, NeuralNetworkSnapshot}
 import it.unibo.scarlib.core.util.Logger
 import me.shadaj.scalapy.py
 import me.shadaj.scalapy.py.PyQuote
@@ -11,15 +11,9 @@ import me.shadaj.scalapy.py.PyQuote
 import scala.concurrent.ExecutionContext
 
 object Main extends App {
-//    py.module("sys").path.append("src/main/resources/Cleaning.py")
-//    py"import sys".call()
-//    py"sys.path.append('src/main/resources')".call()
-//    py"print('ciao')".call()
-//    py"import Cleaning".call()
-//    py"from Cleaning import CleaningScenario".call()
-//    val scenario = py"CleaningScenario()".call()
-    val scenario = py.module("Cleaning").CleaningScenario()
-    val stateDescriptor = VmasStateDescriptor(hasPosition=false, hasVelocity=false, lidars = Seq[Int](50))
+    val scenario = py.module("CohesionAndCollisionNoLidar").Scenario()
+    val nNeighbour = 5
+    val stateDescriptor = VmasStateDescriptor(hasPosition=true, hasVelocity=false, extraDimension = nNeighbour * 2)
     VMASState.setDescriptor(stateDescriptor)
     private val memory = ReplayBuffer[VMASState, VMASAction](10000)
     private val actions = VMASAction.toSeq
@@ -27,13 +21,11 @@ object Main extends App {
         snapshotPath = "snapshot",
         dqnFactory = new NNFactory(stateDescriptor, actions)
     )
-    val rewardFunction = new CohisionAndCollisionRewardFunction()
-    val nAgents = 1
-    private val envSettings = VmasSettings(scenario = scenario, nEnv = 1, nAgents = nAgents, nTargets = 8,
-        nSteps = 1000, nEpochs = 102, device = "cpu")
-    //WANDBLogger.login()
+    val nAgents = 100
+    private val envSettings = VmasSettings(scenario = scenario, nEnv = 1, nAgents = nAgents, nTargets = 0,
+        nSteps = 1000, nEpochs = 150, device = "cuda", neighbours = 5)
     WANDBLogger.init()
-    val environment = new VmasEnvironment(rewardFunction, actions, envSettings, WANDBLogger, render = true)
+    val environment = new VmasEnvironment(null, actions, envSettings, WANDBLogger, render = true)
     var agents = Seq[CTDEAgent]()
     for (i <- 0 until nAgents) {
         val agent = new CTDEAgent(agentId = i, environment, actions, memory.asInstanceOf[ReplayBuffer[State, Action]])
@@ -47,5 +39,13 @@ object Main extends App {
         learningConfiguration = learningConfiguration,
         logger = WANDBLogger
     )(ExecutionContext.global, VMASState.encoding)
-    ctde.learn(envSettings.nEpochs, envSettings.nSteps, "./snapshot/-102-2023-12-07-17-39-24-agent-0")
+    //ctde.learn(envSettings.nEpochs, envSettings.nSteps)
+    ctde.runTest(100, NeuralNetworkSnapshot("cohesion-collision-snapshot", stateDescriptor.getSize, 64))
+
+
+
+//    implicit val configuration: Environment => Unit = (e: Environment) => {
+//        val env = e.asInstanceOf[VmasEnvironment]
+//
+//    }
 }

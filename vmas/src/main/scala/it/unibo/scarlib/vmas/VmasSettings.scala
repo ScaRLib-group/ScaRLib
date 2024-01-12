@@ -12,5 +12,6 @@ case class VmasSettings(
                          nEpochs: Int = 1,
                          device: String = AutodiffDevice().as[String],
                          continuousActions: Boolean = true,
-                         dictionarySpaces: Boolean = true
+                         dictionarySpaces: Boolean = true,
+                         neighbours: Int = 0
                        )
