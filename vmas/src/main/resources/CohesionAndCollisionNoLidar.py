@@ -23,7 +23,7 @@ class Scenario(BaseScenario):
         self.n_agents = kwargs.get("n_agents", 5)
         self.neighbours = kwargs.get("neighbours", 5)
         self.device = kwargs.get("device", Device.get())
-        self.agent_radius = 0.05
+        self.agent_radius = 0.01
         self.viewer_zoom = 1
         self.target_distance = kwargs.get("target_distance", 0.25)
         self._comms_range = kwargs.get("comms_range", 0.35)
@@ -32,8 +32,8 @@ class Scenario(BaseScenario):
         world = World(
             batch_dim,
             device,
-            x_semidim=1,
-            y_semidim=1,
+            x_semidim=2,
+            y_semidim=2,
             collision_force=500,
             substeps=2,
             drag=0.25,
@@ -52,8 +52,8 @@ class Scenario(BaseScenario):
     def reset_world_at(self, env_index: int = None):
         entities = self.world.entities
         world = self.world
-        x_bounds = (-world.x_semidim, world.x_semidim)
-        y_bounds = (-world.y_semidim, world.y_semidim)
+        x_bounds = (-world.x_semidim/2, world.x_semidim/2)
+        y_bounds = (-world.y_semidim/2, world.y_semidim/2)
         for entity in entities:
             for j in range(world.batch_dim):
                 import random
@@ -61,54 +61,44 @@ class Scenario(BaseScenario):
                 entity.set_pos(tensor(pos), batch_index=j)
 
 
-
     def cohesionFactor(self, distances):
-        max_distance = distances.max(dim=1, keepdim=True).values
-        mask = (max_distance <= self.target_distance)
-        max_distance[mask] = 0.0
-        mask = (max_distance > self.target_distance)
-        max_distance[mask] -= self.target_distance
-        max_distance[mask] *= -1
-        return max_distance
+        max_distance = torch.clamp(distances.max(dim=1, keepdim=True).values - self.target_distance, min=0.0)
+        return -max_distance
 
     def collisionFactor(self, distances):
         min_distance = distances.min(dim=1, keepdim=True).values
-        mask = (min_distance > self.target_distance)
-        min_distance[mask] = 0.0
-        mask = (min_distance <= self.target_distance)
-        min_distance[mask] /= self.target_distance
-        min_distance[mask].log_()
-        min_distance[mask] *= 2
+        mask = min_distance <= self.target_distance
+        min_distance[mask] = torch.where(mask, 2 * torch.log(min_distance[mask] / self.target_distance), torch.tensor(0.0, device=self.device))
         return min_distance
 
-    def reward(self, agent: Agent):
+    def reward(self, agent):
         agents = agent.obs
         if agents is None:
             return torch.zeros(self.world.batch_dim, dtype=torch.float32, device=self.device)
-        diffs = agents - agent.state.pos.unsqueeze(1).to(self.device)
-        # Calculate Euclidean distance (L2 norm)
-        distances = torch.norm(diffs, dim=-1).to(self.device)
-        # Calculate cohesion factor
-        cohesion_factor = self.cohesionFactor(distances)
-        # Calculate collision factor
-        collision_factor = self.collisionFactor(distances)
-        return (cohesion_factor + collision_factor).to(self.device)
 
-    def observation(self, agent: Agent):
-        agents = self.world.agents
-        agents = list(filter(lambda x: x != agent, agents))
+        diffs = agents - agent.state.pos.unsqueeze(1).to(self.device)
+        distances = torch.norm(diffs, dim=-1)
+
+        cohesion_factor = self.cohesionFactor(distances)
+        collision_factor = self.collisionFactor(distances)
+
+        return cohesion_factor + collision_factor
+
+    def observation(self, agent):
+        agents = [a for a in self.world.agents if a != agent]
+        agent_pos_to_device = agent.state.pos.to(self.device)
         agents_positions = torch.stack([t.state.pos for t in agents], dim=1).to(self.device)
-        diffs = agents_positions - agent.state.pos.unsqueeze(1).to(self.device)
-        # Calculate Euclidean distance (L2 norm)
-        distances = torch.norm(diffs, dim=-1).to(self.device)
-        # Get five closers
-        distances, indexes = distances.sort(dim=1)
-        indexes = indexes[:, :5]
-        # Use indexes to get positions of the five closers
+        diffs = agents_positions - agent_pos_to_device.unsqueeze(1)
+        distances = torch.norm(diffs, dim=-1)
+
+        distances, indexes = distances.topk(self.neighbours, dim=1, largest=False)
         agents_positions = agents_positions.gather(dim=1, index=indexes.unsqueeze(-1).expand(-1, -1, 2))
+
         agent.obs = agents_positions
         num_envs = self.world.batch_dim
-        return torch.cat((agent.state.pos.view(num_envs, 2).to(self.device), agents_positions.view(-1).view(num_envs, self.neighbours * 2)), dim=-1).to(self.device)
+
+        return torch.cat([agent_pos_to_device.view(num_envs, 2), agents_positions.view(num_envs, -1)], dim=-1)
+
 
     def info(self, agent: Agent) -> Dict[str, Tensor]:
         info = {

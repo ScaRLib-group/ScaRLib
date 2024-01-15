@@ -27,6 +27,6 @@ case object SouthEast extends VMASAction(tuple = (1f * VMASAction.speed, -1f * V
 case object SouthWest extends VMASAction(tuple = (-1f * VMASAction.speed, -1f * VMASAction.speed))
 
 object VMASAction{
-    val speed = 0.5f
+    val speed = 1f
     def toSeq: Seq[VMASAction] = Seq(North, South, East, West, NorthEast, NorthWest, SouthEast, SouthWest)
 }

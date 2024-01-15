@@ -5,13 +5,15 @@ import it.unibo.scarlib.core.neuralnetwork.TorchSupport
 import it.unibo.scarlib.core.util.{AgentGlobalStore, Logger}
 import it.unibo.scarlib.vmas.WANDBLogger
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import me.shadaj.scalapy.py
 import me.shadaj.scalapy.py.PyQuote
 import me.shadaj.scalapy.py.SeqConverters
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.concurrent.Executors
 import scala.collection.mutable
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class VmasEnvironment(rewardFunction: RewardFunction,
                       actionSpace: Seq[Action],
@@ -21,6 +23,7 @@ class VmasEnvironment(rewardFunction: RewardFunction,
   extends Environment(rewardFunction, actionSpace) {
 
 
+    private var framesFutures = List[Future[py.Dynamic]]()
     private val VMAS: py.Module = py.module("vmas")
     private val env: py.Dynamic = VMAS.make_env(
         scenario = settings.scenario,
@@ -32,6 +35,7 @@ class VmasEnvironment(rewardFunction: RewardFunction,
         n_targets = settings.nTargets,
         neighbours = settings.neighbours
     )
+    implicit val ec: ExecutionContext = ExecutionContext.fromExecutor(Executors.newSingleThreadExecutor())
 
     //TODO Handling multiple environments
     private var lastObservation: List[Option[VMASState]] = List.fill(settings.nAgents)(None)
@@ -72,12 +76,12 @@ class VmasEnvironment(rewardFunction: RewardFunction,
                 val state = new VMASState(observation)
                 lastObservation = lastObservation.updated(agentId, Some(state)) //TODO check if this is correct
                 promises(i).success((reward, state))
-                if (render) {
-                    frames.append(
-                        PIL.Image.fromarray(env.render(mode = "rgb_array", agent_index_focus = py"None"))
-                    )
+                if (render && steps % 25 == 0) {
+                    framesFutures = framesFutures :+ appendFrame()
                 }
                 if (steps == settings.nSteps) {
+                    val combinedFuture: Future[List[py.Dynamic]] = Future.sequence(framesFutures)
+                    combinedFuture.onComplete(_ => ())
                     if (render) render(epochs)
                     epochs += 1
                     steps = 0
@@ -87,6 +91,10 @@ class VmasEnvironment(rewardFunction: RewardFunction,
         }
         return future
     }
+
+    private def appendFrame(): Future[py.Dynamic] = Future(frames.append(
+            PIL.Image.fromarray(env.render(mode = "rgb_array", agent_index_focus = py"None"))
+        ))
 
     /** Gets the current state of the environment */
     override def observe(agentId: Int): State = {
@@ -111,15 +119,22 @@ class VmasEnvironment(rewardFunction: RewardFunction,
     }
 
     def render(epoch: Int) = {
-        val gifName = settings.scenario.__class__.__name__.as[String] + "-" + epoch + ".gif"
-        frames.bracketAccess(0).save(
+        // Get the current date and time
+        val currentDateTime: LocalDateTime = LocalDateTime.now()
+        // Define the desired date-time format
+        val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("ddMMyyyyHHmmss")
+        // Format the current date and time using the defined formatter
+        val formattedDateTime: String = currentDateTime.format(formatter)
+        val gifName = settings.scenario.__class__.__name__.as[String] + "-" + epoch + "-" + formattedDateTime + ".gif"
+        print("Saving gif: " + gifName)
+        Future(frames.bracketAccess(0).save(
             gifName,
             save_all = true,
             append_images = py"${frames}[1:]",
             duration = 1,
             loop = 0
-        )
-        frames = py.Dynamic.global.list(Seq[py.Dynamic]().toPythonCopy)
+        )).onComplete(_ => frames = py.Dynamic.global.list(Seq[py.Dynamic]().toPythonCopy))
+        //frames = py.Dynamic.global.list(Seq[py.Dynamic]().toPythonCopy)
     }
 
     def logOnFile(): Unit = ???
