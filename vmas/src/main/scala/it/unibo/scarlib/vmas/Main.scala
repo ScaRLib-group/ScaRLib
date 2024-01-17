@@ -21,10 +21,10 @@ object Main extends App {
         snapshotPath = "snapshot",
         dqnFactory = new NNFactory(stateDescriptor, actions)
     )
-    val nAgents = 500
-    val nSteps = 500
+    val nAgents = 200
+    val nSteps = 100
     private val envSettings = VmasSettings(scenario = scenario, nEnv = 1, nAgents = nAgents, nTargets = 0,
-        nSteps = nSteps, nEpochs = 150, device = "cuda", neighbours = 5)
+        nSteps = nSteps, nEpochs = 150, device = "cpu", neighbours = 5)
     WANDBLogger.init()
     val environment = new VmasEnvironment(null, actions, envSettings, WANDBLogger, render = false)
     var agents = Seq[CTDEAgent]()
@@ -41,7 +41,7 @@ object Main extends App {
         logger = WANDBLogger
     )(ExecutionContext.global, VMASState.encoding)
     //ctde.learn(envSettings.nEpochs, envSettings.nSteps)
-    ctde.runTest(nSteps, NeuralNetworkSnapshot("cohesion-collision-snapshot", stateDescriptor.getSize, 64))
+    ctde.runTest(nSteps, NeuralNetworkSnapshot("138-2024-01-16-18-24-46-agent-0", stateDescriptor.getSize, 64))
 
 
 

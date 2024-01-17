@@ -25,7 +25,9 @@ class VmasEnvironment(rewardFunction: RewardFunction,
 
     private var framesFutures = List[Future[py.Dynamic]]()
     private val VMAS: py.Module = py.module("vmas")
-    private val env: py.Dynamic = VMAS.make_env(
+    private var env: py.Dynamic = makeEnv()
+
+    def makeEnv(): py.Dynamic = VMAS.make_env(
         scenario = settings.scenario,
         num_envs = settings.nEnv,
         device = settings.device,
@@ -35,12 +37,14 @@ class VmasEnvironment(rewardFunction: RewardFunction,
         n_targets = settings.nTargets,
         neighbours = settings.neighbours
     )
+
     implicit val ec: ExecutionContext = ExecutionContext.fromExecutor(Executors.newSingleThreadExecutor())
 
     //TODO Handling multiple environments
     private var lastObservation: List[Option[VMASState]] = List.fill(settings.nAgents)(None)
     private var steps = 0
     private var epochs = 0
+    private val rendererExecutor = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(10));
 
     private var actions: Seq[py.Dynamic] = Seq[py.Dynamic]()
     private var promises = Seq[scala.concurrent.Promise[(Double, State)]]()
@@ -85,6 +89,7 @@ class VmasEnvironment(rewardFunction: RewardFunction,
                     if (render) render(epochs)
                     epochs += 1
                     steps = 0
+                    env = makeEnv()
                 }
             }
             promises = Seq[scala.concurrent.Promise[(Double, State)]]()
@@ -127,14 +132,15 @@ class VmasEnvironment(rewardFunction: RewardFunction,
         val formattedDateTime: String = currentDateTime.format(formatter)
         val gifName = settings.scenario.__class__.__name__.as[String] + "-" + epoch + "-" + formattedDateTime + ".gif"
         print("Saving gif: " + gifName)
-        Future(frames.bracketAccess(0).save(
+        val frames_copy = frames.copy()
+        Future(frames_copy.bracketAccess(0).save(
             gifName,
             save_all = true,
-            append_images = py"${frames}[1:]",
+            append_images = py"${frames_copy}[1:]",
             duration = 1,
             loop = 0
-        )).onComplete(_ => frames = py.Dynamic.global.list(Seq[py.Dynamic]().toPythonCopy))
-        //frames = py.Dynamic.global.list(Seq[py.Dynamic]().toPythonCopy)
+        ))(rendererExecutor).onComplete(_ => ())
+        frames = py.Dynamic.global.list(Seq[py.Dynamic]().toPythonCopy)
     }
 
     def logOnFile(): Unit = ???

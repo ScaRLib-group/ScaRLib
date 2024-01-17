@@ -18,4 +18,5 @@ object AutodiffDevice {
   def apply() =
     deepLearningLib()
       .device(if (deepLearningLib().cuda.is_available().as[Boolean]) "cuda" else "cpu")
+//        .device("cpu")
 }
