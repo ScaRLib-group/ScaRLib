@@ -16,18 +16,28 @@ import java.util.concurrent.Executors
 import scala.collection.mutable
 
 class VmasEnvironment(rewardFunction: RewardFunction,
-                      actionSpace: Seq[Action],
-                      settings: VmasSettings,
-                      logger: Logger, render: Boolean = false
-                     )
+                      actionSpace: Seq[Action])
   extends Environment(rewardFunction, actionSpace) {
 
 
+    private var settings: VmasSettings = _
+    private var logger: Logger = _
+    private var render: Boolean = false
     private var framesFutures = List[Future[py.Dynamic]]()
     private val VMAS: py.Module = py.module("vmas")
-    private var env: py.Dynamic = makeEnv()
+    private var env: py.Dynamic = py.Dynamic.global.None
 
-    def makeEnv(): py.Dynamic = VMAS.make_env(
+    def setSettings(settings: VmasSettings): Unit = {
+        this.settings = settings
+        lastObservation = List.fill(settings.nAgents)(None)
+    }
+
+    def setLogger(logger: Logger): Unit = this.logger = logger
+    def enableRender(flag: Boolean): Unit = this.render = flag
+
+    def initEnv(): Unit = env = makeEnv()
+
+    private def makeEnv(): py.Dynamic = VMAS.make_env(
         scenario = settings.scenario,
         num_envs = settings.nEnv,
         device = settings.device,
@@ -41,7 +51,7 @@ class VmasEnvironment(rewardFunction: RewardFunction,
     implicit val ec: ExecutionContext = ExecutionContext.fromExecutor(Executors.newSingleThreadExecutor())
 
     //TODO Handling multiple environments
-    private var lastObservation: List[Option[VMASState]] = List.fill(settings.nAgents)(None)
+    private var lastObservation: List[Option[VMASState]] = List.empty
     private var steps = 0
     private var epochs = 0
     private val rendererExecutor = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(10));

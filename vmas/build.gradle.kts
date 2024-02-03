@@ -17,6 +17,7 @@ dependencies {
     testImplementation(libs.junit.api)
     testRuntimeOnly(libs.junit.engine)
     implementation(project(":scarlib-core"))
+    implementation(project(":dsl-core"))
     implementation(libs.scalapy)
 }
 

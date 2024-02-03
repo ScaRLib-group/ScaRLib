@@ -19,6 +19,10 @@ if typing.TYPE_CHECKING:
 
 
 class Scenario(BaseScenario):
+
+    def __init__(self, f):
+        f()
+
     def make_world(self, batch_dim: int, device: torch.device, **kwargs) -> World:
         self.n_agents = kwargs.get("n_agents", 5)
         self.neighbours = kwargs.get("neighbours", 5)
