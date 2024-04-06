@@ -134,7 +134,7 @@ implementation("io.github.davidedomini:scarlib-core:$version")
 implementation("io.github.davidedomini:dsl-core:$version")
 ```
 
-## Quik start-up
+## Quick start-up
 
 To speed up the process of developing new experiments, we have provided a [template repository](https://github.com/ScaRLib-group/ScaRLib-experiments-startup) from which you can start, ensuring:
 - Necessary libraries are pre-imported
