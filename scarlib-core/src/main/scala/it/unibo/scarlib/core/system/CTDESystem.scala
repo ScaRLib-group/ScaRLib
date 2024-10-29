@@ -9,7 +9,8 @@
 
 package it.unibo.scarlib.core.system
 
-import it.unibo.scarlib.core.model._
+import it.unibo.scarlib.core.model.{Action, Decay, DeepQLearner, Environment, LearningConfiguration, ReplayBuffer, State}
+import it.unibo.scarlib.core.util.{Logger, TorchLiveLogger}
 import it.unibo.scarlib.core.neuralnetwork.{NeuralNetworkEncoding, NeuralNetworkSnapshot}
 
 import scala.annotation.tailrec
@@ -30,12 +31,16 @@ class CTDESystem(
                   environment: Environment,
                   dataset: ReplayBuffer[State, Action],
                   actionSpace: Seq[Action],
-                  learningConfiguration: LearningConfiguration
+                  learningConfiguration: LearningConfiguration,
+                  logger: Logger = TorchLiveLogger
 )(implicit context: ExecutionContext, encoding: NeuralNetworkEncoding[State]) {
 
   private val epsilon: Decay[Double] = learningConfiguration.epsilon
-  private val learner =
-    new DeepQLearner(dataset, actionSpace, learningConfiguration)
+
+  private val learner = new DeepQLearner(dataset, actionSpace, learningConfiguration, logger)
+
+
+
 
   /** Starts the learning process
    *
@@ -47,6 +52,7 @@ class CTDESystem(
     @tailrec
     def singleEpisode(time: Int): Unit =
       if (time > 0) {
+        println("Time: " + time)
         agents.foreach(_.notifyNewPolicy(learner.behavioural))
         Await.ready(Future.sequence(agents.map(_.step())), scala.concurrent.duration.Duration.Inf)
         environment.log()
@@ -65,6 +71,11 @@ class CTDESystem(
 
   }
 
+    final def learn(episodes: Int, episodeLength: Int, snapshot: String): Unit = {
+        learner.loadSnapshot(snapshot)
+        learn(episodes, episodeLength)
+    }
+
   /** Starts the testing process
    *
    * @param episodeLength the length of the episode
@@ -79,6 +90,7 @@ class CTDESystem(
 
     @tailrec
     def episode(time: Int): Unit = {
+      println(time)
       if (time > 0) {
         Await.ready(Future.sequence(agents.map(_.step())), scala.concurrent.duration.Duration.Inf)
         episode(time - 1)

@@ -10,12 +10,13 @@
 package it.unibo.scarlib.core.model
 
 import it.unibo.scarlib.core.neuralnetwork.{NeuralNetworkEncoding, SimpleSequentialDQN, TorchSupport}
-import it.unibo.scarlib.core.util.TorchLiveLogger
+import it.unibo.scarlib.core.util.{Logger, TorchLiveLogger}
 import me.shadaj.scalapy.py
 import me.shadaj.scalapy.py.{PyQuote, SeqConverters}
 
 import java.text.SimpleDateFormat
 import java.util.Date
+import scala.reflect.io.{File, Path}
 import scala.util.Random
 
 /** The DQN learning algorithm
@@ -27,7 +28,8 @@ import scala.util.Random
 class DeepQLearner(
     memory: ReplayBuffer[State, Action],
     actionSpace: Seq[Action],
-    learningConfiguration: LearningConfiguration
+    learningConfiguration: LearningConfiguration,
+    logger: Logger
 )(implicit encoding: NeuralNetworkEncoding[State]) extends Learner {
 
   private val random = learningConfiguration.random
@@ -71,7 +73,7 @@ class DeepQLearner(
       val expectedValue = (nextStateValues * gamma) + rewards
       val criterion = TorchSupport.neuralNetworkModule().SmoothL1Loss()
       val loss = criterion(stateActionValue, expectedValue.unsqueeze(1))
-      TorchLiveLogger.logScalar("Loss", loss.item().as[Double], updates)
+      logger.logScalar("Loss", loss.item().as[Double], updates)
       optimizer.zero_grad()
       loss.backward()
       it.unibo.scarlib.core.neuralnetwork.TorchSupport
@@ -93,8 +95,13 @@ class DeepQLearner(
       .deepLearningLib()
       .save(
         targetNetwork.state_dict(),
-        s"${learningConfiguration.snapshotPath}-$episode-$timeMark-agent-$agentId"
+        s"${learningConfiguration.snapshotPath}${File.separator}$episode-$timeMark-agent-$agentId"
       )
+  }
+
+  override def loadSnapshot(path: String): Unit = {
+    targetNetwork.load_state_dict(TorchSupport.deepLearningLib().load(path, map_location = AutodiffDevice()))
+    policyNetwork.load_state_dict(TorchSupport.deepLearningLib().load(path, map_location = AutodiffDevice()))
   }
 }
 

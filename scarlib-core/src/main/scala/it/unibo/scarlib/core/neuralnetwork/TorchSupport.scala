@@ -20,4 +20,6 @@ object TorchSupport extends DeepLearningSupport[py.Module] {
   override def optimizerModule(): py.Module = py.module("torch.optim")
 
   override def logger(): py.Module = py.module("torch.utils.tensorboard")
+
+  override def arrayModule: py.Module = py.module("numpy")
 }

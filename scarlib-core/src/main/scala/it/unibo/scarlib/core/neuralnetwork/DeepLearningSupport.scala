@@ -18,5 +18,7 @@ trait DeepLearningSupport[M]{
 
   def logger(): M
 
+  def arrayModule: M
+
 }
 

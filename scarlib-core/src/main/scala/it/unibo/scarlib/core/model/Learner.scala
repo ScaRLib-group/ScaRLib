@@ -23,4 +23,5 @@ trait Learner {
   /** Takes a snapshot of the current policy */
   def snapshot(episode: Int, agentId: Int): Unit
 
+  def loadSnapshot(path: String): Unit
 }
